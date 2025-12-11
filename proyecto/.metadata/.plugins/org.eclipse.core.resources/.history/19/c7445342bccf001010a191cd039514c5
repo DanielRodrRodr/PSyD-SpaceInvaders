@@ -1,0 +1,207 @@
+   1              		.cpu arm7tdmi
+   2              		.fpu softvfp
+   3              		.eabi_attribute 20, 1
+   4              		.eabi_attribute 21, 1
+   5              		.eabi_attribute 23, 3
+   6              		.eabi_attribute 24, 1
+   7              		.eabi_attribute 25, 1
+   8              		.eabi_attribute 26, 1
+   9              		.eabi_attribute 30, 6
+  10              		.eabi_attribute 18, 4
+  11              		.file	"sprite.c"
+  21              	.Ltext0:
+  22              		.file 1 "../sprite.c"
+ 1300              		.align	2
+ 1301              		.global	sprite_draw
+ 1303              	sprite_draw:
+ 1304              	.LFB0:
+   1:../sprite.c   **** #include "config.h"
+   2:../sprite.c   **** #include "sprite.h"
+   3:../sprite.c   **** 
+   4:../sprite.c   **** extern uint8 lcd_buffer[];
+   5:../sprite.c   **** 
+   6:../sprite.c   **** boolean sprite_draw( Sprite *self, uint16 col, uint16 row )
+   7:../sprite.c   **** {
+ 1305              		.loc 1 7 0
+ 1306              		.cfi_startproc
+ 1307              		@ Function supports interworking.
+ 1308              		@ args = 0, pretend = 0, frame = 24
+ 1309              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1310 0000 0DC0A0E1 		mov	ip, sp
+ 1311              	.LCFI0:
+ 1312              		.cfi_def_cfa_register 12
+ 1313 0004 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1314 0008 04B04CE2 		sub	fp, ip, #4
+ 1315              		.cfi_offset 14, -8
+ 1316              		.cfi_offset 13, -12
+ 1317              		.cfi_offset 11, -16
+ 1318              	.LCFI1:
+ 1319              		.cfi_def_cfa 11, 4
+ 1320 000c 18D04DE2 		sub	sp, sp, #24
+ 1321 0010 20000BE5 		str	r0, [fp, #-32]
+ 1322 0014 0230A0E1 		mov	r3, r2
+ 1323 0018 B2124BE1 		strh	r1, [fp, #-34]	@ movhi
+ 1324 001c B4324BE1 		strh	r3, [fp, #-36]	@ movhi
+   8:../sprite.c   ****     boolean collision;
+   9:../sprite.c   ****     uint16 x, y, spriteIdx, lcdOffset;
+  10:../sprite.c   ****       
+  11:../sprite.c   ****     collision = FALSE;
+ 1325              		.loc 1 11 0
+ 1326 0020 0030A0E3 		mov	r3, #0
+ 1327 0024 0D304BE5 		strb	r3, [fp, #-13]
+  12:../sprite.c   ****     for( y=0, spriteIdx=0, lcdOffset=row*2*GAME_WIDTH+col; y<self->height*2; y++, lcdOffset+=GAME_W
+ 1328              		.loc 1 12 0
+ 1329 0028 0030A0E3 		mov	r3, #0
+ 1330 002c B2314BE1 		strh	r3, [fp, #-18]	@ movhi
+ 1331 0030 0030A0E3 		mov	r3, #0
+ 1332 0034 B4314BE1 		strh	r3, [fp, #-20]	@ movhi
+ 1333 0038 B4325BE1 		ldrh	r3, [fp, #-36]	@ movhi
+ 1334 003c 0320A0E1 		mov	r2, r3	@ movhi
+ 1335 0040 0221A0E1 		mov	r2, r2, asl #2
+ 1336 0044 033082E0 		add	r3, r2, r3
+ 1337 0048 0333A0E1 		mov	r3, r3, asl #6
+ 1338 004c 0338A0E1 		mov	r3, r3, asl #16
+ 1339 0050 2328A0E1 		mov	r2, r3, lsr #16
+ 1340 0054 B2325BE1 		ldrh	r3, [fp, #-34]	@ movhi
+ 1341 0058 033082E0 		add	r3, r2, r3
+ 1342 005c B6314BE1 		strh	r3, [fp, #-22]	@ movhi
+ 1343 0060 2D0000EA 		b	.L2
+ 1344              	.L7:
+  13:../sprite.c   ****         for( x=0; x<self->width; x++, spriteIdx++ )
+ 1345              		.loc 1 13 0
+ 1346 0064 0030A0E3 		mov	r3, #0
+ 1347 0068 B0314BE1 		strh	r3, [fp, #-16]	@ movhi
+ 1348 006c 1F0000EA 		b	.L3
+ 1349              	.L6:
+  14:../sprite.c   ****             if( self->pixMap[spriteIdx] )
+ 1350              		.loc 1 14 0
+ 1351 0070 20301BE5 		ldr	r3, [fp, #-32]
+ 1352 0074 042093E5 		ldr	r2, [r3, #4]
+ 1353 0078 B4315BE1 		ldrh	r3, [fp, #-20]
+ 1354 007c 033082E0 		add	r3, r2, r3
+ 1355 0080 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 1356 0084 000053E3 		cmp	r3, #0
+ 1357 0088 1200000A 		beq	.L4
+  15:../sprite.c   ****             {
+  16:../sprite.c   ****                 if( lcd_buffer[lcdOffset + x] )
+ 1358              		.loc 1 16 0
+ 1359 008c B6215BE1 		ldrh	r2, [fp, #-22]
+ 1360 0090 B0315BE1 		ldrh	r3, [fp, #-16]
+ 1361 0094 033082E0 		add	r3, r2, r3
+ 1362 0098 A8209FE5 		ldr	r2, .L8
+ 1363 009c 0330D2E7 		ldrb	r3, [r2, r3]	@ zero_extendqisi2
+ 1364 00a0 000053E3 		cmp	r3, #0
+ 1365 00a4 0100000A 		beq	.L5
+  17:../sprite.c   ****                     collision = TRUE;
+ 1366              		.loc 1 17 0
+ 1367 00a8 0130A0E3 		mov	r3, #1
+ 1368 00ac 0D304BE5 		strb	r3, [fp, #-13]
+ 1369              	.L5:
+  18:../sprite.c   ****                 lcd_buffer[lcdOffset + x] = self->pixMap[spriteIdx];
+ 1370              		.loc 1 18 0
+ 1371 00b0 B6215BE1 		ldrh	r2, [fp, #-22]
+ 1372 00b4 B0315BE1 		ldrh	r3, [fp, #-16]
+ 1373 00b8 033082E0 		add	r3, r2, r3
+ 1374 00bc 20201BE5 		ldr	r2, [fp, #-32]
+ 1375 00c0 041092E5 		ldr	r1, [r2, #4]
+ 1376 00c4 B4215BE1 		ldrh	r2, [fp, #-20]
+ 1377 00c8 022081E0 		add	r2, r1, r2
+ 1378 00cc 0010D2E5 		ldrb	r1, [r2, #0]	@ zero_extendqisi2
+ 1379 00d0 70209FE5 		ldr	r2, .L8
+ 1380 00d4 0310C2E7 		strb	r1, [r2, r3]
+ 1381              	.L4:
+  13:../sprite.c   ****         for( x=0; x<self->width; x++, spriteIdx++ )
+ 1382              		.loc 1 13 0
+ 1383 00d8 B0315BE1 		ldrh	r3, [fp, #-16]	@ movhi
+ 1384 00dc 013083E2 		add	r3, r3, #1
+ 1385 00e0 B0314BE1 		strh	r3, [fp, #-16]	@ movhi
+ 1386 00e4 B4315BE1 		ldrh	r3, [fp, #-20]	@ movhi
+ 1387 00e8 013083E2 		add	r3, r3, #1
+ 1388 00ec B4314BE1 		strh	r3, [fp, #-20]	@ movhi
+ 1389              	.L3:
+  13:../sprite.c   ****         for( x=0; x<self->width; x++, spriteIdx++ )
+ 1390              		.loc 1 13 0 is_stmt 0 discriminator 1
+ 1391 00f0 20301BE5 		ldr	r3, [fp, #-32]
+ 1392 00f4 B030D3E1 		ldrh	r3, [r3, #0]
+ 1393 00f8 B0215BE1 		ldrh	r2, [fp, #-16]
+ 1394 00fc 030052E1 		cmp	r2, r3
+ 1395 0100 DAFFFF3A 		bcc	.L6
+  12:../sprite.c   ****     for( y=0, spriteIdx=0, lcdOffset=row*2*GAME_WIDTH+col; y<self->height*2; y++, lcdOffset+=GAME_W
+ 1396              		.loc 1 12 0 is_stmt 1
+ 1397 0104 B2315BE1 		ldrh	r3, [fp, #-18]	@ movhi
+ 1398 0108 013083E2 		add	r3, r3, #1
+ 1399 010c B2314BE1 		strh	r3, [fp, #-18]	@ movhi
+ 1400 0110 B6315BE1 		ldrh	r3, [fp, #-22]	@ movhi
+ 1401 0114 A03083E2 		add	r3, r3, #160
+ 1402 0118 B6314BE1 		strh	r3, [fp, #-22]	@ movhi
+ 1403              	.L2:
+  12:../sprite.c   ****     for( y=0, spriteIdx=0, lcdOffset=row*2*GAME_WIDTH+col; y<self->height*2; y++, lcdOffset+=GAME_W
+ 1404              		.loc 1 12 0 is_stmt 0 discriminator 1
+ 1405 011c B2215BE1 		ldrh	r2, [fp, #-18]
+ 1406 0120 20301BE5 		ldr	r3, [fp, #-32]
+ 1407 0124 B230D3E1 		ldrh	r3, [r3, #2]
+ 1408 0128 8330A0E1 		mov	r3, r3, asl #1
+ 1409 012c 030052E1 		cmp	r2, r3
+ 1410 0130 CBFFFFBA 		blt	.L7
+  19:../sprite.c   ****             }
+  20:../sprite.c   ****     return collision;
+ 1411              		.loc 1 20 0 is_stmt 1
+ 1412 0134 0D305BE5 		ldrb	r3, [fp, #-13]	@ zero_extendqisi2
+  21:../sprite.c   **** }
+ 1413              		.loc 1 21 0
+ 1414 0138 0300A0E1 		mov	r0, r3
+ 1415 013c 0CD04BE2 		sub	sp, fp, #12
+ 1416 0140 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1417 0144 1EFF2FE1 		bx	lr
+ 1418              	.L9:
+ 1419              		.align	2
+ 1420              	.L8:
+ 1421 0148 00000000 		.word	lcd_buffer
+ 1422              		.cfi_endproc
+ 1423              	.LFE0:
+ 1425              		.align	2
+ 1426              		.global	sprite_clear
+ 1428              	sprite_clear:
+ 1429              	.LFB1:
+  22:../sprite.c   **** 
+  23:../sprite.c   **** void sprite_clear( Sprite *self, uint16 col, uint16 row )
+  24:../sprite.c   **** {
+ 1430              		.loc 1 24 0
+ 1431              		.cfi_startproc
+ 1432              		@ Function supports interworking.
+ 1433              		@ args = 0, pretend = 0, frame = 8
+ 1434              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1435 014c 0DC0A0E1 		mov	ip, sp
+ 1436              	.LCFI2:
+ 1437              		.cfi_def_cfa_register 12
+ 1438 0150 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1439 0154 04B04CE2 		sub	fp, ip, #4
+ 1440              		.cfi_offset 14, -8
+ 1441              		.cfi_offset 13, -12
+ 1442              		.cfi_offset 11, -16
+ 1443              	.LCFI3:
+ 1444              		.cfi_def_cfa 11, 4
+ 1445 0158 08D04DE2 		sub	sp, sp, #8
+ 1446 015c 10000BE5 		str	r0, [fp, #-16]
+ 1447 0160 0230A0E1 		mov	r3, r2
+ 1448 0164 B2114BE1 		strh	r1, [fp, #-18]	@ movhi
+ 1449 0168 B4314BE1 		strh	r3, [fp, #-20]	@ movhi
+  25:../sprite.c   **** }
+ 1450              		.loc 1 25 0
+ 1451 016c 0CD04BE2 		sub	sp, fp, #12
+ 1452 0170 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1453 0174 1EFF2FE1 		bx	lr
+ 1454              		.cfi_endproc
+ 1455              	.LFE1:
+ 1457              	.Letext0:
+DEFINED SYMBOLS
+                            *ABS*:00000000 sprite.c
+C:\Users\Mendi\AppData\Local\Temp\ccBYxVJ8.s:1300   .text:00000000 $a
+C:\Users\Mendi\AppData\Local\Temp\ccBYxVJ8.s:1303   .text:00000000 sprite_draw
+C:\Users\Mendi\AppData\Local\Temp\ccBYxVJ8.s:1421   .text:00000148 $d
+C:\Users\Mendi\AppData\Local\Temp\ccBYxVJ8.s:1425   .text:0000014c $a
+C:\Users\Mendi\AppData\Local\Temp\ccBYxVJ8.s:1428   .text:0000014c sprite_clear
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+lcd_buffer

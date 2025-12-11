@@ -1,0 +1,7 @@
+10:03:45 **** Clean-only build of configuration Debug for project proyecto ****
+cs-make clean 
+cs-rm -rf  proyecto.siz  ./credit.o ./enemy.o ./enemyshot.o ./game.o ./hiscore.o ./kernelcoop.o ./lives.o ./pixmaps.o ./player.o ./playershot.o ./proyecto.o ./random.o ./score.o ./shield.o ./sound.o ./sprite.o ./swarm.o ./ufo.o  ./credit.d ./enemy.d ./enemyshot.d ./game.d ./hiscore.d ./kernelcoop.d ./lives.d ./pixmaps.d ./player.d ./playershot.d ./proyecto.d ./random.d ./score.d ./shield.d ./sound.d ./sprite.d ./swarm.d ./ufo.d  proyecto.hex  proyecto.lst  proyecto.elf
+' '
+
+10:03:45 Build Finished (took 388ms)
+

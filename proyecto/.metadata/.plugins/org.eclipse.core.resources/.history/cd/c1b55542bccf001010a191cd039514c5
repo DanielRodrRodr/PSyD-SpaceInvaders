@@ -1,0 +1,594 @@
+   1              		.cpu arm7tdmi
+   2              		.fpu softvfp
+   3              		.eabi_attribute 20, 1
+   4              		.eabi_attribute 21, 1
+   5              		.eabi_attribute 23, 3
+   6              		.eabi_attribute 24, 1
+   7              		.eabi_attribute 25, 1
+   8              		.eabi_attribute 26, 1
+   9              		.eabi_attribute 30, 6
+  10              		.eabi_attribute 18, 4
+  11              		.file	"swarm.c"
+  21              	.Ltext0:
+  22              		.file 1 "../swarm.c"
+ 1405              		.align	2
+ 1408              	formation:
+ 1409 0000 02       		.byte	2
+ 1410 0001 02       		.byte	2
+ 1411 0002 02       		.byte	2
+ 1412 0003 02       		.byte	2
+ 1413 0004 02       		.byte	2
+ 1414 0005 00       		.byte	0
+ 1415 0006 00       		.byte	0
+ 1416 0007 00       		.byte	0
+ 1417 0008 00       		.byte	0
+ 1418 0009 00       		.byte	0
+ 1419 000a 00       		.byte	0
+ 1420 000b 00       		.byte	0
+ 1421 000c 00       		.byte	0
+ 1422 000d 00       		.byte	0
+ 1423 000e 00       		.byte	0
+ 1424 000f 01       		.byte	1
+ 1425 0010 01       		.byte	1
+ 1426 0011 01       		.byte	1
+ 1427 0012 01       		.byte	1
+ 1428 0013 01       		.byte	1
+ 1429 0014 01       		.byte	1
+ 1430 0015 01       		.byte	1
+ 1431 0016 01       		.byte	1
+ 1432 0017 01       		.byte	1
+ 1433 0018 01       		.byte	1
+ 1434 0019 000000   		.align	2
+ 1437              	formationSpriteSet:
+ 1438 001c 01       		.byte	1
+ 1439 001d 00       		.byte	0
+ 1440 001e 01       		.byte	1
+ 1441 001f 00       		.byte	0
+ 1442 0020 01       		.byte	1
+ 1443 0021 01       		.byte	1
+ 1444 0022 00       		.byte	0
+ 1445 0023 01       		.byte	1
+ 1446 0024 00       		.byte	0
+ 1447 0025 01       		.byte	1
+ 1448 0026 01       		.byte	1
+ 1449 0027 00       		.byte	0
+ 1450 0028 01       		.byte	1
+ 1451 0029 00       		.byte	0
+ 1452 002a 01       		.byte	1
+ 1453 002b 01       		.byte	1
+ 1454 002c 00       		.byte	0
+ 1455 002d 01       		.byte	1
+ 1456 002e 00       		.byte	0
+ 1457 002f 01       		.byte	1
+ 1458 0030 01       		.byte	1
+ 1459 0031 00       		.byte	0
+ 1460 0032 01       		.byte	1
+ 1461 0033 00       		.byte	0
+ 1462 0034 01       		.byte	1
+ 1463 0035 000000   		.text
+ 1464              		.align	2
+ 1465              		.global	swarm_init
+ 1467              	swarm_init:
+ 1468              	.LFB0:
+   1:../swarm.c    **** #include <timers.h>
+   2:../swarm.c    **** #include "config.h"
+   3:../swarm.c    **** #include "random.h"
+   4:../swarm.c    **** #include "pixmaps.h"
+   5:../swarm.c    **** #include "wavs.h"
+   6:../swarm.c    **** #include "swarm.h"
+   7:../swarm.c    **** 
+   8:../swarm.c    **** static const enemy_type_t formation[SWARM_YLEN][SWARM_XLEN] =
+   9:../swarm.c    **** {
+  10:../swarm.c    ****     { squid,    squid,    squid,    squid,    squid   }, 
+  11:../swarm.c    ****     { alien,    alien,    alien,    alien,    alien   },
+  12:../swarm.c    ****     { alien,    alien,    alien,    alien,    alien   },       
+  13:../swarm.c    ****     { metroid,  metroid,  metroid,  metroid,  metroid },
+  14:../swarm.c    ****     { metroid,  metroid,  metroid,  metroid,  metroid }
+  15:../swarm.c    **** 
+  16:../swarm.c    **** };
+  17:../swarm.c    ****     
+  18:../swarm.c    **** static const uint8 formationSpriteSet[SWARM_YLEN][SWARM_XLEN] =
+  19:../swarm.c    **** {
+  20:../swarm.c    ****     { 1, 0, 1, 0, 1 }, 
+  21:../swarm.c    ****     { 1, 0, 1, 0, 1 },
+  22:../swarm.c    ****     { 1, 0, 1, 0, 1 },       
+  23:../swarm.c    ****     { 1, 0, 1, 0, 1 },
+  24:../swarm.c    ****     { 1, 0, 1, 0, 1 }
+  25:../swarm.c    **** };
+  26:../swarm.c    **** 
+  27:../swarm.c    **** static boolean swarm_findNextAlive( Swarm *self );
+  28:../swarm.c    **** static void swarm_moveSound( Swarm *self );
+  29:../swarm.c    **** static void swarm_updateLeftFront( Swarm *self );
+  30:../swarm.c    **** static void swarm_updateRightFront( Swarm *self );
+  31:../swarm.c    **** static void swarm_updateDownFront( Swarm *self );
+  32:../swarm.c    **** 
+  33:../swarm.c    **** void swarm_init( Swarm *self )
+  34:../swarm.c    **** {
+ 1469              		.loc 1 34 0
+ 1470              		.cfi_startproc
+ 1471              		@ Function supports interworking.
+ 1472              		@ args = 0, pretend = 0, frame = 16
+ 1473              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1474 0000 0DC0A0E1 		mov	ip, sp
+ 1475              	.LCFI0:
+ 1476              		.cfi_def_cfa_register 12
+ 1477 0004 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1478 0008 04B04CE2 		sub	fp, ip, #4
+ 1479              		.cfi_offset 14, -8
+ 1480              		.cfi_offset 13, -12
+ 1481              		.cfi_offset 11, -16
+ 1482              	.LCFI1:
+ 1483              		.cfi_def_cfa 11, 4
+ 1484 000c 18D04DE2 		sub	sp, sp, #24
+ 1485 0010 18000BE5 		str	r0, [fp, #-24]
+  35:../swarm.c    ****     uint8 x, y;
+  36:../swarm.c    ****     Enemy *enemy;
+  37:../swarm.c    ****         
+  38:../swarm.c    ****     self->state = swarmMovingRight;
+ 1486              		.loc 1 38 0
+ 1487 0014 18301BE5 		ldr	r3, [fp, #-24]
+ 1488 0018 0120A0E3 		mov	r2, #1
+ 1489 001c 0020C3E5 		strb	r2, [r3, #0]
+  39:../swarm.c    ****     self->toMoveY = 0;
+ 1490              		.loc 1 39 0
+ 1491 0020 18301BE5 		ldr	r3, [fp, #-24]
+ 1492 0024 0020A0E3 		mov	r2, #0
+ 1493 0028 EE23C3E5 		strb	r2, [r3, #1006]
+  40:../swarm.c    ****     self->toMoveX = 0;
+ 1494              		.loc 1 40 0
+ 1495 002c 18301BE5 		ldr	r3, [fp, #-24]
+ 1496 0030 0020A0E3 		mov	r2, #0
+ 1497 0034 ED23C3E5 		strb	r2, [r3, #1005]
+  41:../swarm.c    ****     for( y=0; y<SWARM_YLEN; y++ )
+ 1498              		.loc 1 41 0
+ 1499 0038 0030A0E3 		mov	r3, #0
+ 1500 003c 0E304BE5 		strb	r3, [fp, #-14]
+ 1501 0040 460000EA 		b	.L2
+ 1502              	.L5:
+  42:../swarm.c    ****         for( x=0; x<SWARM_XLEN; x++ )
+ 1503              		.loc 1 42 0
+ 1504 0044 0030A0E3 		mov	r3, #0
+ 1505 0048 0D304BE5 		strb	r3, [fp, #-13]
+ 1506 004c 3D0000EA 		b	.L3
+ 1507              	.L4:
+  43:../swarm.c    ****         {
+  44:../swarm.c    ****         	enemy = &self->enemies[y][x];
+ 1508              		.loc 1 44 0 discriminator 2
+ 1509 0050 18301BE5 		ldr	r3, [fp, #-24]
+ 1510 0054 043083E2 		add	r3, r3, #4
+ 1511 0058 0310A0E1 		mov	r1, r3
+ 1512 005c 0E205BE5 		ldrb	r2, [fp, #-14]	@ zero_extendqisi2
+ 1513 0060 0230A0E1 		mov	r3, r2
+ 1514 0064 0331A0E1 		mov	r3, r3, asl #2
+ 1515 0068 023083E0 		add	r3, r3, r2
+ 1516 006c 0321A0E1 		mov	r2, r3, asl #2
+ 1517 0070 023083E0 		add	r3, r3, r2
+ 1518 0074 8331A0E1 		mov	r3, r3, asl #3
+ 1519 0078 0300A0E1 		mov	r0, r3
+ 1520 007c 0D205BE5 		ldrb	r2, [fp, #-13]	@ zero_extendqisi2
+ 1521 0080 0230A0E1 		mov	r3, r2
+ 1522 0084 0331A0E1 		mov	r3, r3, asl #2
+ 1523 0088 023083E0 		add	r3, r3, r2
+ 1524 008c 8331A0E1 		mov	r3, r3, asl #3
+ 1525 0090 033080E0 		add	r3, r0, r3
+ 1526 0094 033081E0 		add	r3, r1, r3
+ 1527 0098 14300BE5 		str	r3, [fp, #-20]
+  45:../swarm.c    ****             enemy_init( enemy, formation[y][x], formationSpriteSet[y][x], SWARM_MIN_COL + x*ENEMY_W
+ 1528              		.loc 1 45 0 discriminator 2
+ 1529 009c 0E205BE5 		ldrb	r2, [fp, #-14]	@ zero_extendqisi2
+ 1530 00a0 0D005BE5 		ldrb	r0, [fp, #-13]	@ zero_extendqisi2
+ 1531 00a4 20119FE5 		ldr	r1, .L6
+ 1532 00a8 0230A0E1 		mov	r3, r2
+ 1533 00ac 0331A0E1 		mov	r3, r3, asl #2
+ 1534 00b0 023083E0 		add	r3, r3, r2
+ 1535 00b4 003083E0 		add	r3, r3, r0
+ 1536 00b8 033081E0 		add	r3, r1, r3
+ 1537 00bc 0010D3E5 		ldrb	r1, [r3, #0]	@ zero_extendqisi2
+ 1538 00c0 0E205BE5 		ldrb	r2, [fp, #-14]	@ zero_extendqisi2
+ 1539 00c4 0DC05BE5 		ldrb	ip, [fp, #-13]	@ zero_extendqisi2
+ 1540 00c8 00019FE5 		ldr	r0, .L6+4
+ 1541 00cc 0230A0E1 		mov	r3, r2
+ 1542 00d0 0331A0E1 		mov	r3, r3, asl #2
+ 1543 00d4 023083E0 		add	r3, r3, r2
+ 1544 00d8 0C3083E0 		add	r3, r3, ip
+ 1545 00dc 033080E0 		add	r3, r0, r3
+ 1546 00e0 0020D3E5 		ldrb	r2, [r3, #0]	@ zero_extendqisi2
+ 1547 00e4 0D305BE5 		ldrb	r3, [fp, #-13]	@ zero_extendqisi2
+ 1548 00e8 0338A0E1 		mov	r3, r3, asl #16
+ 1549 00ec 2338A0E1 		mov	r3, r3, lsr #16
+ 1550 00f0 0332A0E1 		mov	r3, r3, asl #4
+ 1551 00f4 0338A0E1 		mov	r3, r3, asl #16
+ 1552 00f8 23C8A0E1 		mov	ip, r3, lsr #16
+ 1553 00fc 0E305BE5 		ldrb	r3, [fp, #-14]	@ zero_extendqisi2
+ 1554 0100 0338A0E1 		mov	r3, r3, asl #16
+ 1555 0104 2338A0E1 		mov	r3, r3, lsr #16
+ 1556 0108 0300A0E1 		mov	r0, r3	@ movhi
+ 1557 010c 0001A0E1 		mov	r0, r0, asl #2
+ 1558 0110 033080E0 		add	r3, r0, r3
+ 1559 0114 8330A0E1 		mov	r3, r3, asl #1
+ 1560 0118 0338A0E1 		mov	r3, r3, asl #16
+ 1561 011c 2338A0E1 		mov	r3, r3, lsr #16
+ 1562 0120 123083E2 		add	r3, r3, #18
+ 1563 0124 0338A0E1 		mov	r3, r3, asl #16
+ 1564 0128 2338A0E1 		mov	r3, r3, lsr #16
+ 1565 012c 00308DE5 		str	r3, [sp, #0]
+ 1566 0130 14001BE5 		ldr	r0, [fp, #-20]
+ 1567 0134 0C30A0E1 		mov	r3, ip
+ 1568 0138 FEFFFFEB 		bl	enemy_init
+  42:../swarm.c    ****         for( x=0; x<SWARM_XLEN; x++ )
+ 1569              		.loc 1 42 0 discriminator 2
+ 1570 013c 0D305BE5 		ldrb	r3, [fp, #-13]
+ 1571 0140 013083E2 		add	r3, r3, #1
+ 1572 0144 0D304BE5 		strb	r3, [fp, #-13]
+ 1573              	.L3:
+  42:../swarm.c    ****         for( x=0; x<SWARM_XLEN; x++ )
+ 1574              		.loc 1 42 0 is_stmt 0 discriminator 1
+ 1575 0148 0D305BE5 		ldrb	r3, [fp, #-13]	@ zero_extendqisi2
+ 1576 014c 040053E3 		cmp	r3, #4
+ 1577 0150 BEFFFF9A 		bls	.L4
+  41:../swarm.c    ****     for( y=0; y<SWARM_YLEN; y++ )
+ 1578              		.loc 1 41 0 is_stmt 1
+ 1579 0154 0E305BE5 		ldrb	r3, [fp, #-14]
+ 1580 0158 013083E2 		add	r3, r3, #1
+ 1581 015c 0E304BE5 		strb	r3, [fp, #-14]
+ 1582              	.L2:
+  41:../swarm.c    ****     for( y=0; y<SWARM_YLEN; y++ )
+ 1583              		.loc 1 41 0 is_stmt 0 discriminator 1
+ 1584 0160 0E305BE5 		ldrb	r3, [fp, #-14]	@ zero_extendqisi2
+ 1585 0164 040053E3 		cmp	r3, #4
+ 1586 0168 B5FFFF9A 		bls	.L5
+  46:../swarm.c    ****         }
+  47:../swarm.c    ****     self->enemiesRemaining = SWARM_YLEN*SWARM_XLEN;
+ 1587              		.loc 1 47 0 is_stmt 1
+ 1588 016c 18301BE5 		ldr	r3, [fp, #-24]
+ 1589 0170 1920A0E3 		mov	r2, #25
+ 1590 0174 EC23C3E5 		strb	r2, [r3, #1004]
+  48:../swarm.c    ****     swarm_updateLeftFront( self );
+ 1591              		.loc 1 48 0
+ 1592 0178 18001BE5 		ldr	r0, [fp, #-24]
+ 1593 017c 4C0000EB 		bl	swarm_updateLeftFront
+  49:../swarm.c    ****     swarm_updateRightFront( self );
+ 1594              		.loc 1 49 0
+ 1595 0180 18001BE5 		ldr	r0, [fp, #-24]
+ 1596 0184 520000EB 		bl	swarm_updateRightFront
+  50:../swarm.c    ****     swarm_updateDownFront( self );   
+ 1597              		.loc 1 50 0
+ 1598 0188 18001BE5 		ldr	r0, [fp, #-24]
+ 1599 018c 580000EB 		bl	swarm_updateDownFront
+  51:../swarm.c    ****     self->stepSound[0] = (Sound){ SWARM_MOVE0 };
+ 1600              		.loc 1 51 0
+ 1601 0190 18301BE5 		ldr	r3, [fp, #-24]
+ 1602 0194 38209FE5 		ldr	r2, .L6+8
+ 1603 0198 002483E5 		str	r2, [r3, #1024]
+  52:../swarm.c    ****     self->stepSound[1] = (Sound){ SWARM_MOVE1 };
+ 1604              		.loc 1 52 0
+ 1605 019c 18301BE5 		ldr	r3, [fp, #-24]
+ 1606 01a0 30209FE5 		ldr	r2, .L6+12
+ 1607 01a4 042483E5 		str	r2, [r3, #1028]
+  53:../swarm.c    ****     self->stepSound[2] = (Sound){ SWARM_MOVE2 };
+ 1608              		.loc 1 53 0
+ 1609 01a8 18301BE5 		ldr	r3, [fp, #-24]
+ 1610 01ac 28209FE5 		ldr	r2, .L6+16
+ 1611 01b0 082483E5 		str	r2, [r3, #1032]
+  54:../swarm.c    ****     self->stepSound[3] = (Sound){ SWARM_MOVE3 };
+ 1612              		.loc 1 54 0
+ 1613 01b4 18301BE5 		ldr	r3, [fp, #-24]
+ 1614 01b8 20209FE5 		ldr	r2, .L6+20
+ 1615 01bc 0C2483E5 		str	r2, [r3, #1036]
+  55:../swarm.c    **** }
+ 1616              		.loc 1 55 0
+ 1617 01c0 0CD04BE2 		sub	sp, fp, #12
+ 1618 01c4 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1619 01c8 1EFF2FE1 		bx	lr
+ 1620              	.L7:
+ 1621              		.align	2
+ 1622              	.L6:
+ 1623 01cc 00000000 		.word	formation
+ 1624 01d0 1C000000 		.word	formationSpriteSet
+ 1625 01d4 00D24E0C 		.word	206492160
+ 1626 01d8 00E94E0C 		.word	206498048
+ 1627 01dc 00014F0C 		.word	206504192
+ 1628 01e0 001A4F0C 		.word	206510592
+ 1629              		.cfi_endproc
+ 1630              	.LFE0:
+ 1632              		.align	2
+ 1633              		.global	swarm_lauch
+ 1635              	swarm_lauch:
+ 1636              	.LFB1:
+  56:../swarm.c    **** 
+  57:../swarm.c    **** void swarm_lauch( Swarm *self )
+  58:../swarm.c    **** {
+ 1637              		.loc 1 58 0
+ 1638              		.cfi_startproc
+ 1639              		@ Function supports interworking.
+ 1640              		@ args = 0, pretend = 0, frame = 8
+ 1641              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1642 01e4 0DC0A0E1 		mov	ip, sp
+ 1643              	.LCFI2:
+ 1644              		.cfi_def_cfa_register 12
+ 1645 01e8 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1646 01ec 04B04CE2 		sub	fp, ip, #4
+ 1647              		.cfi_offset 14, -8
+ 1648              		.cfi_offset 13, -12
+ 1649              		.cfi_offset 11, -16
+ 1650              	.LCFI3:
+ 1651              		.cfi_def_cfa 11, 4
+ 1652 01f0 08D04DE2 		sub	sp, sp, #8
+ 1653 01f4 10000BE5 		str	r0, [fp, #-16]
+  59:../swarm.c    **** }
+ 1654              		.loc 1 59 0
+ 1655 01f8 0CD04BE2 		sub	sp, fp, #12
+ 1656 01fc 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1657 0200 1EFF2FE1 		bx	lr
+ 1658              		.cfi_endproc
+ 1659              	.LFE1:
+ 1661              		.align	2
+ 1662              		.global	swarm_update
+ 1664              	swarm_update:
+ 1665              	.LFB2:
+  60:../swarm.c    **** 
+  61:../swarm.c    **** void swarm_update( Swarm *self, Player *player )
+  62:../swarm.c    **** {
+ 1666              		.loc 1 62 0
+ 1667              		.cfi_startproc
+ 1668              		@ Function supports interworking.
+ 1669              		@ args = 0, pretend = 0, frame = 8
+ 1670              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1671 0204 0DC0A0E1 		mov	ip, sp
+ 1672              	.LCFI4:
+ 1673              		.cfi_def_cfa_register 12
+ 1674 0208 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1675 020c 04B04CE2 		sub	fp, ip, #4
+ 1676              		.cfi_offset 14, -8
+ 1677              		.cfi_offset 13, -12
+ 1678              		.cfi_offset 11, -16
+ 1679              	.LCFI5:
+ 1680              		.cfi_def_cfa 11, 4
+ 1681 0210 08D04DE2 		sub	sp, sp, #8
+ 1682 0214 10000BE5 		str	r0, [fp, #-16]
+ 1683 0218 14100BE5 		str	r1, [fp, #-20]
+  63:../swarm.c    **** }
+ 1684              		.loc 1 63 0
+ 1685 021c 0CD04BE2 		sub	sp, fp, #12
+ 1686 0220 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1687 0224 1EFF2FE1 		bx	lr
+ 1688              		.cfi_endproc
+ 1689              	.LFE2:
+ 1691              		.align	2
+ 1692              		.global	swarm_getShooter
+ 1694              	swarm_getShooter:
+ 1695              	.LFB3:
+  64:../swarm.c    **** 
+  65:../swarm.c    **** Enemy *swarm_getShooter( Swarm *self )
+  66:../swarm.c    **** {
+ 1696              		.loc 1 66 0
+ 1697              		.cfi_startproc
+ 1698              		@ Function supports interworking.
+ 1699              		@ args = 0, pretend = 0, frame = 8
+ 1700              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1701 0228 0DC0A0E1 		mov	ip, sp
+ 1702              	.LCFI6:
+ 1703              		.cfi_def_cfa_register 12
+ 1704 022c 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1705 0230 04B04CE2 		sub	fp, ip, #4
+ 1706              		.cfi_offset 14, -8
+ 1707              		.cfi_offset 13, -12
+ 1708              		.cfi_offset 11, -16
+ 1709              	.LCFI7:
+ 1710              		.cfi_def_cfa 11, 4
+ 1711 0234 08D04DE2 		sub	sp, sp, #8
+ 1712 0238 10000BE5 		str	r0, [fp, #-16]
+  67:../swarm.c    **** }
+ 1713              		.loc 1 67 0
+ 1714 023c 0300A0E1 		mov	r0, r3
+ 1715 0240 0CD04BE2 		sub	sp, fp, #12
+ 1716 0244 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1717 0248 1EFF2FE1 		bx	lr
+ 1718              		.cfi_endproc
+ 1719              	.LFE3:
+ 1721              		.align	2
+ 1722              		.global	swarm_hit
+ 1724              	swarm_hit:
+ 1725              	.LFB4:
+  68:../swarm.c    **** 
+  69:../swarm.c    **** void swarm_hit( Swarm *self, Enemy *enemy )
+  70:../swarm.c    **** {
+ 1726              		.loc 1 70 0
+ 1727              		.cfi_startproc
+ 1728              		@ Function supports interworking.
+ 1729              		@ args = 0, pretend = 0, frame = 8
+ 1730              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1731 024c 0DC0A0E1 		mov	ip, sp
+ 1732              	.LCFI8:
+ 1733              		.cfi_def_cfa_register 12
+ 1734 0250 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1735 0254 04B04CE2 		sub	fp, ip, #4
+ 1736              		.cfi_offset 14, -8
+ 1737              		.cfi_offset 13, -12
+ 1738              		.cfi_offset 11, -16
+ 1739              	.LCFI9:
+ 1740              		.cfi_def_cfa 11, 4
+ 1741 0258 08D04DE2 		sub	sp, sp, #8
+ 1742 025c 10000BE5 		str	r0, [fp, #-16]
+ 1743 0260 14100BE5 		str	r1, [fp, #-20]
+  71:../swarm.c    **** }
+ 1744              		.loc 1 71 0
+ 1745 0264 0CD04BE2 		sub	sp, fp, #12
+ 1746 0268 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1747 026c 1EFF2FE1 		bx	lr
+ 1748              		.cfi_endproc
+ 1749              	.LFE4:
+ 1751              		.align	2
+ 1753              	swarm_findNextAlive:
+ 1754              	.LFB5:
+  72:../swarm.c    **** 
+  73:../swarm.c    **** static boolean swarm_findNextAlive( Swarm *self )
+  74:../swarm.c    **** {   
+ 1755              		.loc 1 74 0
+ 1756              		.cfi_startproc
+ 1757              		@ Function supports interworking.
+ 1758              		@ args = 0, pretend = 0, frame = 8
+ 1759              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1760 0270 0DC0A0E1 		mov	ip, sp
+ 1761              	.LCFI10:
+ 1762              		.cfi_def_cfa_register 12
+ 1763 0274 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1764 0278 04B04CE2 		sub	fp, ip, #4
+ 1765              		.cfi_offset 14, -8
+ 1766              		.cfi_offset 13, -12
+ 1767              		.cfi_offset 11, -16
+ 1768              	.LCFI11:
+ 1769              		.cfi_def_cfa 11, 4
+ 1770 027c 08D04DE2 		sub	sp, sp, #8
+ 1771 0280 10000BE5 		str	r0, [fp, #-16]
+  75:../swarm.c    **** }
+ 1772              		.loc 1 75 0
+ 1773 0284 0300A0E1 		mov	r0, r3
+ 1774 0288 0CD04BE2 		sub	sp, fp, #12
+ 1775 028c 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1776 0290 1EFF2FE1 		bx	lr
+ 1777              		.cfi_endproc
+ 1778              	.LFE5:
+ 1780              		.align	2
+ 1782              	swarm_moveSound:
+ 1783              	.LFB6:
+  76:../swarm.c    **** 
+  77:../swarm.c    **** static void swarm_moveSound( Swarm *self )
+  78:../swarm.c    **** {
+ 1784              		.loc 1 78 0
+ 1785              		.cfi_startproc
+ 1786              		@ Function supports interworking.
+ 1787              		@ args = 0, pretend = 0, frame = 8
+ 1788              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1789 0294 0DC0A0E1 		mov	ip, sp
+ 1790              	.LCFI12:
+ 1791              		.cfi_def_cfa_register 12
+ 1792 0298 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1793 029c 04B04CE2 		sub	fp, ip, #4
+ 1794              		.cfi_offset 14, -8
+ 1795              		.cfi_offset 13, -12
+ 1796              		.cfi_offset 11, -16
+ 1797              	.LCFI13:
+ 1798              		.cfi_def_cfa 11, 4
+ 1799 02a0 08D04DE2 		sub	sp, sp, #8
+ 1800 02a4 10000BE5 		str	r0, [fp, #-16]
+  79:../swarm.c    **** }
+ 1801              		.loc 1 79 0
+ 1802 02a8 0CD04BE2 		sub	sp, fp, #12
+ 1803 02ac 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1804 02b0 1EFF2FE1 		bx	lr
+ 1805              		.cfi_endproc
+ 1806              	.LFE6:
+ 1808              		.align	2
+ 1810              	swarm_updateLeftFront:
+ 1811              	.LFB7:
+  80:../swarm.c    **** 
+  81:../swarm.c    **** static void swarm_updateLeftFront( Swarm *self )
+  82:../swarm.c    **** {
+ 1812              		.loc 1 82 0
+ 1813              		.cfi_startproc
+ 1814              		@ Function supports interworking.
+ 1815              		@ args = 0, pretend = 0, frame = 8
+ 1816              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1817 02b4 0DC0A0E1 		mov	ip, sp
+ 1818              	.LCFI14:
+ 1819              		.cfi_def_cfa_register 12
+ 1820 02b8 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1821 02bc 04B04CE2 		sub	fp, ip, #4
+ 1822              		.cfi_offset 14, -8
+ 1823              		.cfi_offset 13, -12
+ 1824              		.cfi_offset 11, -16
+ 1825              	.LCFI15:
+ 1826              		.cfi_def_cfa 11, 4
+ 1827 02c0 08D04DE2 		sub	sp, sp, #8
+ 1828 02c4 10000BE5 		str	r0, [fp, #-16]
+  83:../swarm.c    **** }
+ 1829              		.loc 1 83 0
+ 1830 02c8 0CD04BE2 		sub	sp, fp, #12
+ 1831 02cc 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1832 02d0 1EFF2FE1 		bx	lr
+ 1833              		.cfi_endproc
+ 1834              	.LFE7:
+ 1836              		.align	2
+ 1838              	swarm_updateRightFront:
+ 1839              	.LFB8:
+  84:../swarm.c    **** 
+  85:../swarm.c    **** static void swarm_updateRightFront( Swarm *self )
+  86:../swarm.c    **** {
+ 1840              		.loc 1 86 0
+ 1841              		.cfi_startproc
+ 1842              		@ Function supports interworking.
+ 1843              		@ args = 0, pretend = 0, frame = 8
+ 1844              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1845 02d4 0DC0A0E1 		mov	ip, sp
+ 1846              	.LCFI16:
+ 1847              		.cfi_def_cfa_register 12
+ 1848 02d8 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1849 02dc 04B04CE2 		sub	fp, ip, #4
+ 1850              		.cfi_offset 14, -8
+ 1851              		.cfi_offset 13, -12
+ 1852              		.cfi_offset 11, -16
+ 1853              	.LCFI17:
+ 1854              		.cfi_def_cfa 11, 4
+ 1855 02e0 08D04DE2 		sub	sp, sp, #8
+ 1856 02e4 10000BE5 		str	r0, [fp, #-16]
+  87:../swarm.c    **** }
+ 1857              		.loc 1 87 0
+ 1858 02e8 0CD04BE2 		sub	sp, fp, #12
+ 1859 02ec 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1860 02f0 1EFF2FE1 		bx	lr
+ 1861              		.cfi_endproc
+ 1862              	.LFE8:
+ 1864              		.align	2
+ 1866              	swarm_updateDownFront:
+ 1867              	.LFB9:
+  88:../swarm.c    **** 
+  89:../swarm.c    **** static void swarm_updateDownFront( Swarm *self )
+  90:../swarm.c    **** {
+ 1868              		.loc 1 90 0
+ 1869              		.cfi_startproc
+ 1870              		@ Function supports interworking.
+ 1871              		@ args = 0, pretend = 0, frame = 8
+ 1872              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1873 02f4 0DC0A0E1 		mov	ip, sp
+ 1874              	.LCFI18:
+ 1875              		.cfi_def_cfa_register 12
+ 1876 02f8 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1877 02fc 04B04CE2 		sub	fp, ip, #4
+ 1878              		.cfi_offset 14, -8
+ 1879              		.cfi_offset 13, -12
+ 1880              		.cfi_offset 11, -16
+ 1881              	.LCFI19:
+ 1882              		.cfi_def_cfa 11, 4
+ 1883 0300 08D04DE2 		sub	sp, sp, #8
+ 1884 0304 10000BE5 		str	r0, [fp, #-16]
+  91:../swarm.c    **** }
+ 1885              		.loc 1 91 0
+ 1886 0308 0CD04BE2 		sub	sp, fp, #12
+ 1887 030c 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1888 0310 1EFF2FE1 		bx	lr
+ 1889              		.cfi_endproc
+ 1890              	.LFE9:
+ 1892              	.Letext0:
+DEFINED SYMBOLS
+                            *ABS*:00000000 swarm.c
+C:\Users\Mendi\AppData\Local\Temp\cco9JVks.s:1405   .rodata:00000000 $d
+C:\Users\Mendi\AppData\Local\Temp\cco9JVks.s:1408   .rodata:00000000 formation
+C:\Users\Mendi\AppData\Local\Temp\cco9JVks.s:1437   .rodata:0000001c formationSpriteSet
+C:\Users\Mendi\AppData\Local\Temp\cco9JVks.s:1464   .text:00000000 $a
+C:\Users\Mendi\AppData\Local\Temp\cco9JVks.s:1467   .text:00000000 swarm_init
+C:\Users\Mendi\AppData\Local\Temp\cco9JVks.s:1810   .text:000002b4 swarm_updateLeftFront
+C:\Users\Mendi\AppData\Local\Temp\cco9JVks.s:1838   .text:000002d4 swarm_updateRightFront
+C:\Users\Mendi\AppData\Local\Temp\cco9JVks.s:1866   .text:000002f4 swarm_updateDownFront
+C:\Users\Mendi\AppData\Local\Temp\cco9JVks.s:1623   .text:000001cc $d
+C:\Users\Mendi\AppData\Local\Temp\cco9JVks.s:1632   .text:000001e4 $a
+C:\Users\Mendi\AppData\Local\Temp\cco9JVks.s:1635   .text:000001e4 swarm_lauch
+C:\Users\Mendi\AppData\Local\Temp\cco9JVks.s:1664   .text:00000204 swarm_update
+C:\Users\Mendi\AppData\Local\Temp\cco9JVks.s:1694   .text:00000228 swarm_getShooter
+C:\Users\Mendi\AppData\Local\Temp\cco9JVks.s:1724   .text:0000024c swarm_hit
+C:\Users\Mendi\AppData\Local\Temp\cco9JVks.s:1753   .text:00000270 swarm_findNextAlive
+C:\Users\Mendi\AppData\Local\Temp\cco9JVks.s:1782   .text:00000294 swarm_moveSound
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+enemy_init
