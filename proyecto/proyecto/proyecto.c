@@ -12,6 +12,7 @@
 #include <iis.h>
 
 #include "config.h"
+#include "enemyShot.h"
 #include "random.h"
 #include "pixmaps.h"
 #include "game.h"
@@ -21,7 +22,7 @@
 #include "kernelcoop.h"
 
 /////////////////////////////////////////////////////////////////////////////
-// Declaración de tareas
+// Declaraciï¿½n de tareas
 /////////////////////////////////////////////////////////////////////////////
 
 void player_update_task( void );
@@ -35,7 +36,7 @@ void keys_read_task( void );
 void pbs_read_task( void );
 
 /////////////////////////////////////////////////////////////////////////////
-// Declaración de otras funciones
+// Declaraciï¿½n de otras funciones
 /////////////////////////////////////////////////////////////////////////////
 
 void wellcomeScreen_draw( void );
@@ -62,8 +63,17 @@ void main( void )
     game_init( &game );                                         /* Inicializa el juego */
 
     scheduler_init();                                           /* Inicializa el kernel */
-    create_task( pbs_read_task, PBS_READ_PERIOD/TICK_PERIOD );  /* Crea las tareas de la aplicación */
-    /* no olvidar crear resto de tareas */
+    create_task( pbs_read_task, PBS_READ_PERIOD/TICK_PERIOD );  /* Crea las tareas de la aplicaciï¿½n */
+    create_task(player_update_task(), PLAYER_UPDATE_PERIOD/TICK_PERIOD);
+    create_task(playerShot_update_task(), PLAYERSHOT_UPDATE_PERIOD/TICK_PERIOD);
+    create_task(swarm_update_task(), SWARM_UPDATE_PERIOD/TICK_PERIOD);
+    create_task(enemyShot_launch_task(), ENEMYSHOT_LAUNCH_PERIOD/TICK_PERIOD);
+    create_task(enemyShot_update_task(), ENEMYSHOT_UPDATE_PERIOD/TICK_PERIOD);
+    create_task(ufo_launch_task(), UFO_LAUNCH_PERIOD/TICK_PERIOD);
+    create_task(ufo_update_task(), UFO_UPDATE_PERIOD/TICK_PERIOD);
+    create_task(keys_read_task(), KEYS_READ_PERIOD/TICK_PERIOD);
+
+    
 
     while( 1 )
     {
@@ -85,6 +95,7 @@ void main( void )
 
 void player_update_task( void )
 {
+    player_update(&game.player);
 }
 
 void ufo_launch_task( void )
@@ -100,22 +111,28 @@ void ufo_update_task( void )
 
 void playerShot_update_task( void )
 {   
+    playerShot_update(&game.playerShot, &game.shield, &game.swarm, &game.enemyShot, &game.ufo);
 }
 
 void swarm_update_task( void )
 {
+    swarm_update(&game.swarm, &game.player);
 }
 
 void enemyShot_update_task( void )
 {
+    enemyShot_update(&game.enemyShot, &game.shield, &game.player);
 }
 
 void enemyShot_launch_task( void )
 {
+    
 }
 
 void keys_read_task( void )
 {
+    // creo que es el keyboard
+    
 }
 
 void pbs_read_task( void )
