@@ -17,6 +17,9 @@
 #include "game.h"
 #include "player.h"
 #include "playerShot.h"
+#include "swarm.h"
+#include "enemyShot.h"
+#include "ufo.h"
 
 #include "kernelcoop.h"
 
@@ -24,155 +27,188 @@
 // Declaración de tareas
 /////////////////////////////////////////////////////////////////////////////
 
-void player_update_task( void );
-void playerShot_update_task( void );
-void swarm_update_task( void );
-void enemyShot_launch_task( void );
-void enemyShot_update_task( void );
-void ufo_launch_task( void );
-void ufo_update_task( void );
-void keys_read_task( void );
-void pbs_read_task( void );
+void player_update_task(void);
+void playerShot_update_task(void);
+void swarm_update_task(void);
+void enemyShot_launch_task(void);
+void enemyShot_update_task(void);
+void ufo_launch_task(void);
+void ufo_update_task(void);
+void keys_read_task(void);
+void pbs_read_task(void);
 
 /////////////////////////////////////////////////////////////////////////////
 // Declaración de otras funciones
 /////////////////////////////////////////////////////////////////////////////
 
-void wellcomeScreen_draw( void );
-void gameOverScreen_draw( void );
+void wellcomeScreen_draw(void);
+void gameOverScreen_draw(void);
 
+// Instancia global del juego
 Game game;
 
-void main( void )
-{
-    
-    sys_init();                   /* Inicializa el sistema */
-    segs_init();
-    timers_init();
-    keypad_init(); 
-    pbs_init();
-    lcd_init();
-    iic_init();
-    uda1341ts_init();
-    iis_init( IIS_DMA );
-    
-    lcd_on();
+void main(void) {
+	sys_init(); /* Inicializa el sistema */
+	segs_init();
+	timers_init();
+	keypad_init();
+	pbs_init();
+	lcd_init();
+	iic_init();
+	uda1341ts_init();
+	iis_init(IIS_DMA);
 
-    random_init( (BCDSEC << 16) | (BCDMIN << 8) | BCDHOUR );    /* Semilla el generador de numeros pseudoaleatorios */
-    game_init( &game );                                         /* Inicializa el juego */
+	lcd_on();
 
-    scheduler_init();                                           /* Inicializa el kernel */
-    create_task( pbs_read_task, PBS_READ_PERIOD/TICK_PERIOD );  /* Crea las tareas de la aplicación */
-    /* no olvidar crear resto de tareas */
+	random_init((BCDSEC << 16) | (BCDMIN << 8) | BCDHOUR ); /* Semilla aleatoria */
+	game_init(&game); /* Inicializa el juego */
 
-    while( 1 )
-    {
-        wellcomeScreen_draw();
-        game_launch( &game );                                    /* Lanza el juego */
+	scheduler_init(); /* Inicializa el kernel */
 
-        timer0_open_tick( scheduler, TICKS_PER_SEC );            /* Arranca multitarea */
-        while( game.credit.value < 3 )
-        {
-            /* sleep(); */  // descomentar cuando funcione
-            dispacher();
-        }
-        timer0_close();                                          /* Para multitarea */
-            
-        gameOverScreen_draw();
-           game_restart( &game );
-    }  
+	// ------------------------------------------------------------------------
+	// CREACION DE TAREAS
+	// ------------------------------------------------------------------------
+	create_task(keys_read_task, KEYS_READ_PERIOD / TICK_PERIOD);
+	create_task(pbs_read_task, PBS_READ_PERIOD / TICK_PERIOD);
+
+	create_task(player_update_task, PLAYER_UPDATE_PERIOD / TICK_PERIOD);
+	create_task(playerShot_update_task, PLAYERSHOT_UPDATE_PERIOD / TICK_PERIOD);
+	create_task(swarm_update_task, SWARM_UPDATE_PERIOD / TICK_PERIOD);
+	create_task(enemyShot_launch_task, ENEMYSHOT_LAUNCH_PERIOD / TICK_PERIOD);
+	create_task(enemyShot_update_task, ENEMYSHOT_UPDATE_PERIOD / TICK_PERIOD);
+	create_task(ufo_launch_task, UFO_LAUNCH_PERIOD / TICK_PERIOD);
+	create_task(ufo_update_task, UFO_UPDATE_PERIOD / TICK_PERIOD);
+
+	while (1) {
+		wellcomeScreen_draw();
+
+		while (game.credit.value == 0) {
+			if (pb_pressed()) {
+				while (pb_pressed())
+					;
+				credit_update(&game.credit, 1);
+				lcd_putint(120, 80, BLACK, game.credit.value);
+			}
+		}
+
+		lcd_clear();
+		game_launch(&game);
+
+		timer0_open_tick(scheduler, TICKS_PER_SEC); /* ARRANCA EL KERNEL */
+
+		while (game.player.state != playerDead) {
+			// sleep();
+			dispacher();
+		}
+
+		timer0_close(); /* PARA EL KERNEL */
+
+		gameOverScreen_draw();
+		game_restart(&game); /* Reinicia estructuras para la siguiente vez */
+	}
 }
 
-void player_update_task( void )
-{
+/////////////////////////////////////////////////////////////////////////////
+// IMPLEMENTACIÓN DE TAREAS
+/////////////////////////////////////////////////////////////////////////////
+
+void player_update_task(void) {
+	player_update(&game.player);
 }
 
-void ufo_launch_task( void )
-{   
-    if( random_get() & 0x1 )                                      /* Lanza UFOs con probabilidad del 50% */
-        ufo_launch( &game.ufo );
+void ufo_launch_task(void) {
+	if ((random_get() & 0xFF) < 10)
+		ufo_launch(&game.ufo);
 }
 
-void ufo_update_task( void )
-{
-    ufo_update( &game.ufo );
+void ufo_update_task(void) {
+	ufo_update(&game.ufo);
 }
 
-void playerShot_update_task( void )
-{   
+void playerShot_update_task(void) {
+	// Pasa los punteros correctos: (Shot, Shields[], Swarm, EnemyShot, Ufo)
+	playerShot_update(&game.playerShot, game.shield, &game.swarm,
+			&game.enemyShot, &game.ufo);
 }
 
-void swarm_update_task( void )
-{
+void swarm_update_task(void) {
+	swarm_update(&game.swarm, &game.player);
 }
 
-void enemyShot_update_task( void )
-{
+void enemyShot_update_task(void) {
+	enemyShot_update(&game.enemyShot, game.shield, &game.player);
 }
 
-void enemyShot_launch_task( void )
-{
+void enemyShot_launch_task(void) {
+	uint16 col, row;
+
+	col = (random_get() & 0xFF) + 20;
+	if (col > 300)
+		col = 20;
+
+	row = 40;
+
+	enemyShot_launch(&game.enemyShot, col, row);
 }
 
-void keys_read_task( void )
-{
+void keys_read_task(void) {
+	uint8 key;
+	key = keypad_scan();
+
+	if (key == KEYPAD_KEY4) {
+		player_left(&game.player);
+	} else if (key == KEYPAD_KEY6) {
+		player_right(&game.player);
+	}
+
+	if (key == KEYPAD_KEY5 || key == KEYPAD_KEYF) {
+		playerShot_launch(&game.playerShot, &game.player);
+	}
 }
 
-void pbs_read_task( void )
-{
-    static boolean init = TRUE;
-    static enum { wait_keydown, scan, wait_keyup } state;
+void pbs_read_task(void) {
+	static boolean init = TRUE;
+	static enum {
+		wait_keydown, scan, wait_keyup
+	} state;
 
-    if( init )
-    {
-        init  = FALSE;
-        state = wait_keydown;
-    }
-    else switch( state )
-    {
-        case wait_keydown:
-            if( pb_pressed() )
-                state = scan;
-            break;
-        case scan:
-            switch( pb_scan() )
-            {
-                case PB_RIGHT:
-                case PB_LEFT:
-                    credit_update( &game.credit, 1 );
-                    state = wait_keyup;
-                    break;
-                default:
-                    state = wait_keyup;
-            }
-            break;
-        case wait_keyup:
-            if( !pb_pressed() )
-                state = wait_keydown;
-            break;
-    }
+	if (init) {
+		init = FALSE;
+		state = wait_keydown;
+	} else
+		switch (state) {
+		case wait_keydown:
+			if (pb_pressed())
+				state = scan;
+			break;
+		case scan:
+			if (pb_scan()) {
+				credit_update(&game.credit, 1);
+				state = wait_keyup;
+			}
+			break;
+		case wait_keyup:
+			if (!pb_pressed())
+				state = wait_keydown;
+			break;
+		}
 }
 
 /*******************************************************************/
 
-
-void wellcomeScreen_draw( void )
-{
-    lcd_clear();
-    lcd_puts_x2( 48, 16, BLACK, "DEMO DEMO DEMO" );
-    lcd_puts( 48, 64, BLACK, "El juego consiste en pulsar" );
-    lcd_puts( 80, 80, BLACK, "3 veces un pulsador" );
-
-    lcd_puts( 20, 192, BLACK, "Para comenzar pulse cualquier tecla" );
-
-    keypad_getchar();
-    lcd_clear();
+void wellcomeScreen_draw(void) {
+	lcd_clear();
+	lcd_puts_x2(30, 16, BLACK, "SPACE INVADERS");
+	lcd_puts(48, 64, BLACK, "Insert Coin (Pulsador)");
+	lcd_puts(48, 80, BLACK, "Creditos: ");
+	lcd_putint(120, 80, BLACK, game.credit.value);
+	lcd_puts(20, 192, BLACK, "Pulse Pulsador para Credito");
 }
 
-void gameOverScreen_draw( void )
-{
-    lcd_clear();
-    lcd_puts( 36,  80, BLACK, "Ha presionado 3 veces un pulsador" );
-    lcd_puts( 20, 192, BLACK, "Para continuar pulse cualquier tecla" );
-    keypad_getchar();
+void gameOverScreen_draw(void) {
+	lcd_clear();
+	lcd_puts_x2(40, 80, BLACK, "GAME OVER");
+	lcd_puts(20, 192, BLACK, "Pulse una tecla para reiniciar");
+	while (keypad_scan() == KEYPAD_FAILURE)
+		; // Espera a pulsar tecla
 }

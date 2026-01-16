@@ -1,0 +1,802 @@
+   1              		.cpu arm7tdmi
+   2              		.fpu softvfp
+   3              		.eabi_attribute 20, 1
+   4              		.eabi_attribute 21, 1
+   5              		.eabi_attribute 23, 3
+   6              		.eabi_attribute 24, 1
+   7              		.eabi_attribute 25, 1
+   8              		.eabi_attribute 26, 1
+   9              		.eabi_attribute 30, 6
+  10              		.eabi_attribute 18, 4
+  11              		.file	"enemy.c"
+  21              	.Ltext0:
+  22              		.file 1 "../enemy.c"
+ 1354              		.align	2
+ 1355              		.global	enemy_init
+ 1357              	enemy_init:
+ 1358              	.LFB0:
+   1:../enemy.c    **** #include "config.h"
+   2:../enemy.c    **** #include "pixmaps.h"
+   3:../enemy.c    **** #include "wavs.h"
+   4:../enemy.c    **** #include "enemy.h"
+   5:../enemy.c    **** 
+   6:../enemy.c    **** static void enemy_draw(Enemy *self);
+   7:../enemy.c    **** static void enemy_clear(Enemy *self);
+   8:../enemy.c    **** 
+   9:../enemy.c    **** void enemy_init(Enemy *self, enemy_type_t type, uint8 spriteSet, uint16 col,
+  10:../enemy.c    **** 		uint16 row) {
+ 1359              		.loc 1 10 0
+ 1360              		.cfi_startproc
+ 1361              		@ Function supports interworking.
+ 1362              		@ args = 4, pretend = 0, frame = 8
+ 1363              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1364 0000 0DC0A0E1 		mov	ip, sp
+ 1365              	.LCFI0:
+ 1366              		.cfi_def_cfa_register 12
+ 1367 0004 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1368 0008 04B04CE2 		sub	fp, ip, #4
+ 1369              		.cfi_offset 14, -8
+ 1370              		.cfi_offset 13, -12
+ 1371              		.cfi_offset 11, -16
+ 1372              	.LCFI1:
+ 1373              		.cfi_def_cfa 11, 4
+ 1374 000c 08D04DE2 		sub	sp, sp, #8
+ 1375 0010 10000BE5 		str	r0, [fp, #-16]
+ 1376 0014 11104BE5 		strb	r1, [fp, #-17]
+ 1377 0018 12204BE5 		strb	r2, [fp, #-18]
+ 1378 001c B4314BE1 		strh	r3, [fp, #-20]	@ movhi
+  11:../enemy.c    **** 	self->state = enemyAlive;
+ 1379              		.loc 1 11 0
+ 1380 0020 10301BE5 		ldr	r3, [fp, #-16]
+ 1381 0024 0020A0E3 		mov	r2, #0
+ 1382 0028 0020C3E5 		strb	r2, [r3, #0]
+  12:../enemy.c    **** 	self->type = type;
+ 1383              		.loc 1 12 0
+ 1384 002c 10301BE5 		ldr	r3, [fp, #-16]
+ 1385 0030 11205BE5 		ldrb	r2, [fp, #-17]
+ 1386 0034 0120C3E5 		strb	r2, [r3, #1]
+  13:../enemy.c    **** 	self->col = col;
+ 1387              		.loc 1 13 0
+ 1388 0038 B4215BE1 		ldrh	r2, [fp, #-20]
+ 1389 003c 10301BE5 		ldr	r3, [fp, #-16]
+ 1390 0040 B420C3E1 		strh	r2, [r3, #4]	@ movhi
+  14:../enemy.c    **** 	self->row = row;
+ 1391              		.loc 1 14 0
+ 1392 0044 B420DBE1 		ldrh	r2, [fp, #4]
+ 1393 0048 10301BE5 		ldr	r3, [fp, #-16]
+ 1394 004c B620C3E1 		strh	r2, [r3, #6]	@ movhi
+  15:../enemy.c    **** 	self->spriteSet = spriteSet;
+ 1395              		.loc 1 15 0
+ 1396 0050 10301BE5 		ldr	r3, [fp, #-16]
+ 1397 0054 12205BE5 		ldrb	r2, [fp, #-18]
+ 1398 0058 0820C3E5 		strb	r2, [r3, #8]
+  16:../enemy.c    **** 	switch (type) {
+ 1399              		.loc 1 16 0
+ 1400 005c 11305BE5 		ldrb	r3, [fp, #-17]	@ zero_extendqisi2
+ 1401 0060 010053E3 		cmp	r3, #1
+ 1402 0064 1100000A 		beq	.L4
+ 1403 0068 020053E3 		cmp	r3, #2
+ 1404 006c 1D00000A 		beq	.L5
+ 1405 0070 000053E3 		cmp	r3, #0
+ 1406 0074 2900001A 		bne	.L2
+ 1407              	.L3:
+  17:../enemy.c    **** 	case alien:
+  18:../enemy.c    **** 		self->score = ALIEN_SCORE;
+ 1408              		.loc 1 18 0
+ 1409 0078 10301BE5 		ldr	r3, [fp, #-16]
+ 1410 007c 1420A0E3 		mov	r2, #20
+ 1411 0080 0320C3E5 		strb	r2, [r3, #3]
+  19:../enemy.c    **** 		self->sprite[0] =
+ 1412              		.loc 1 19 0
+ 1413 0084 10301BE5 		ldr	r3, [fp, #-16]
+ 1414 0088 C4209FE5 		ldr	r2, .L6
+ 1415 008c 0C3083E2 		add	r3, r3, #12
+ 1416 0090 030092E8 		ldmia	r2, {r0, r1}
+ 1417 0094 030083E8 		stmia	r3, {r0, r1}
+  20:../enemy.c    **** 				(Sprite ) { ENEMY_WIDTH, ENEMY_HEIGHT, alienPixMap_0 };
+  21:../enemy.c    **** 		self->sprite[1] =
+ 1418              		.loc 1 21 0
+ 1419 0098 10301BE5 		ldr	r3, [fp, #-16]
+ 1420 009c B4209FE5 		ldr	r2, .L6+4
+ 1421 00a0 143083E2 		add	r3, r3, #20
+ 1422 00a4 030092E8 		ldmia	r2, {r0, r1}
+ 1423 00a8 030083E8 		stmia	r3, {r0, r1}
+  22:../enemy.c    **** 				(Sprite ) { ENEMY_WIDTH, ENEMY_HEIGHT, alienPixMap_1 };
+  23:../enemy.c    **** 		break;
+ 1424              		.loc 1 23 0
+ 1425 00ac 1B0000EA 		b	.L2
+ 1426              	.L4:
+  24:../enemy.c    **** 	case metroid:
+  25:../enemy.c    **** 		self->score = METROID_SCORE;
+ 1427              		.loc 1 25 0
+ 1428 00b0 10301BE5 		ldr	r3, [fp, #-16]
+ 1429 00b4 0A20A0E3 		mov	r2, #10
+ 1430 00b8 0320C3E5 		strb	r2, [r3, #3]
+  26:../enemy.c    **** 		self->sprite[0] =
+ 1431              		.loc 1 26 0
+ 1432 00bc 10301BE5 		ldr	r3, [fp, #-16]
+ 1433 00c0 94209FE5 		ldr	r2, .L6+8
+ 1434 00c4 0C3083E2 		add	r3, r3, #12
+ 1435 00c8 030092E8 		ldmia	r2, {r0, r1}
+ 1436 00cc 030083E8 		stmia	r3, {r0, r1}
+  27:../enemy.c    **** 				(Sprite ) { ENEMY_WIDTH, ENEMY_HEIGHT, metroidPixMap_0 };
+  28:../enemy.c    **** 		self->sprite[1] =
+ 1437              		.loc 1 28 0
+ 1438 00d0 10301BE5 		ldr	r3, [fp, #-16]
+ 1439 00d4 84209FE5 		ldr	r2, .L6+12
+ 1440 00d8 143083E2 		add	r3, r3, #20
+ 1441 00dc 030092E8 		ldmia	r2, {r0, r1}
+ 1442 00e0 030083E8 		stmia	r3, {r0, r1}
+  29:../enemy.c    **** 				(Sprite ) { ENEMY_WIDTH, ENEMY_HEIGHT, metroidPixMap_1 };
+  30:../enemy.c    **** 		break;
+ 1443              		.loc 1 30 0
+ 1444 00e4 0D0000EA 		b	.L2
+ 1445              	.L5:
+  31:../enemy.c    **** 	case squid:
+  32:../enemy.c    **** 		self->score = SQUID_SCORE;
+ 1446              		.loc 1 32 0
+ 1447 00e8 10301BE5 		ldr	r3, [fp, #-16]
+ 1448 00ec 1E20A0E3 		mov	r2, #30
+ 1449 00f0 0320C3E5 		strb	r2, [r3, #3]
+  33:../enemy.c    **** 		self->sprite[0] =
+ 1450              		.loc 1 33 0
+ 1451 00f4 10301BE5 		ldr	r3, [fp, #-16]
+ 1452 00f8 64209FE5 		ldr	r2, .L6+16
+ 1453 00fc 0C3083E2 		add	r3, r3, #12
+ 1454 0100 030092E8 		ldmia	r2, {r0, r1}
+ 1455 0104 030083E8 		stmia	r3, {r0, r1}
+  34:../enemy.c    **** 				(Sprite ) { ENEMY_WIDTH, ENEMY_HEIGHT, squidPixMap_0 };
+  35:../enemy.c    **** 		self->sprite[1] =
+ 1456              		.loc 1 35 0
+ 1457 0108 10301BE5 		ldr	r3, [fp, #-16]
+ 1458 010c 54209FE5 		ldr	r2, .L6+20
+ 1459 0110 143083E2 		add	r3, r3, #20
+ 1460 0114 030092E8 		ldmia	r2, {r0, r1}
+ 1461 0118 030083E8 		stmia	r3, {r0, r1}
+  36:../enemy.c    **** 				(Sprite ) { ENEMY_WIDTH, ENEMY_HEIGHT, squidPixMap_1 };
+  37:../enemy.c    **** 		break;
+ 1462              		.loc 1 37 0
+ 1463 011c 0000A0E1 		mov	r0, r0	@ nop
+ 1464              	.L2:
+  38:../enemy.c    **** 	}
+  39:../enemy.c    **** 	self->explosionSprite = (Sprite ) { ENEMY_WIDTH, ENEMY_HEIGHT,
+ 1465              		.loc 1 39 0
+ 1466 0120 10301BE5 		ldr	r3, [fp, #-16]
+ 1467 0124 40209FE5 		ldr	r2, .L6+24
+ 1468 0128 1C3083E2 		add	r3, r3, #28
+ 1469 012c 030092E8 		ldmia	r2, {r0, r1}
+ 1470 0130 030083E8 		stmia	r3, {r0, r1}
+  40:../enemy.c    **** 					enemyExplosionPixMap };
+  41:../enemy.c    **** 	self->explosionSound = (Sound ) { ENEMY_EXPLOSION };
+ 1471              		.loc 1 41 0
+ 1472 0134 10301BE5 		ldr	r3, [fp, #-16]
+ 1473 0138 30209FE5 		ldr	r2, .L6+28
+ 1474 013c 242083E5 		str	r2, [r3, #36]
+  42:../enemy.c    **** 	enemy_draw(self);
+ 1475              		.loc 1 42 0
+ 1476 0140 10001BE5 		ldr	r0, [fp, #-16]
+ 1477 0144 0A0000EB 		bl	enemy_draw
+  43:../enemy.c    **** }
+ 1478              		.loc 1 43 0
+ 1479 0148 0CD04BE2 		sub	sp, fp, #12
+ 1480 014c 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1481 0150 1EFF2FE1 		bx	lr
+ 1482              	.L7:
+ 1483              		.align	2
+ 1484              	.L6:
+ 1485 0154 00000000 		.word	C.2.5004
+ 1486 0158 08000000 		.word	C.3.5005
+ 1487 015c 10000000 		.word	C.4.5006
+ 1488 0160 18000000 		.word	C.5.5007
+ 1489 0164 20000000 		.word	C.6.5008
+ 1490 0168 28000000 		.word	C.7.5009
+ 1491 016c 30000000 		.word	C.8.5011
+ 1492 0170 00AE4D0C 		.word	206417408
+ 1493              		.cfi_endproc
+ 1494              	.LFE0:
+ 1496              		.align	2
+ 1498              	enemy_draw:
+ 1499              	.LFB1:
+  44:../enemy.c    **** 
+  45:../enemy.c    **** static void enemy_draw(Enemy *self) {
+ 1500              		.loc 1 45 0
+ 1501              		.cfi_startproc
+ 1502              		@ Function supports interworking.
+ 1503              		@ args = 0, pretend = 0, frame = 8
+ 1504              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1505 0174 0DC0A0E1 		mov	ip, sp
+ 1506              	.LCFI2:
+ 1507              		.cfi_def_cfa_register 12
+ 1508 0178 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1509 017c 04B04CE2 		sub	fp, ip, #4
+ 1510              		.cfi_offset 14, -8
+ 1511              		.cfi_offset 13, -12
+ 1512              		.cfi_offset 11, -16
+ 1513              	.LCFI3:
+ 1514              		.cfi_def_cfa 11, 4
+ 1515 0180 08D04DE2 		sub	sp, sp, #8
+ 1516 0184 10000BE5 		str	r0, [fp, #-16]
+  46:../enemy.c    **** 	switch (self->state) {
+ 1517              		.loc 1 46 0
+ 1518 0188 10301BE5 		ldr	r3, [fp, #-16]
+ 1519 018c 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 1520 0190 010053E3 		cmp	r3, #1
+ 1521 0194 1600000A 		beq	.L11
+ 1522 0198 020053E3 		cmp	r3, #2
+ 1523 019c 2300000A 		beq	.L13
+ 1524 01a0 000053E3 		cmp	r3, #0
+ 1525 01a4 2200001A 		bne	.L8
+ 1526              	.L10:
+  47:../enemy.c    **** 	case enemyAlive:
+  48:../enemy.c    **** 		sprite_draw(&self->sprite[self->spriteSet], self->col, self->row);
+ 1527              		.loc 1 48 0
+ 1528 01a8 10301BE5 		ldr	r3, [fp, #-16]
+ 1529 01ac 0C2083E2 		add	r2, r3, #12
+ 1530 01b0 10301BE5 		ldr	r3, [fp, #-16]
+ 1531 01b4 0830D3E5 		ldrb	r3, [r3, #8]	@ zero_extendqisi2
+ 1532 01b8 8331A0E1 		mov	r3, r3, asl #3
+ 1533 01bc 031082E0 		add	r1, r2, r3
+ 1534 01c0 10301BE5 		ldr	r3, [fp, #-16]
+ 1535 01c4 B430D3E1 		ldrh	r3, [r3, #4]
+ 1536 01c8 0338A0E1 		mov	r3, r3, asl #16
+ 1537 01cc 2328A0E1 		mov	r2, r3, lsr #16
+ 1538 01d0 10301BE5 		ldr	r3, [fp, #-16]
+ 1539 01d4 B630D3E1 		ldrh	r3, [r3, #6]
+ 1540 01d8 0338A0E1 		mov	r3, r3, asl #16
+ 1541 01dc 2338A0E1 		mov	r3, r3, lsr #16
+ 1542 01e0 0100A0E1 		mov	r0, r1
+ 1543 01e4 0210A0E1 		mov	r1, r2
+ 1544 01e8 0320A0E1 		mov	r2, r3
+ 1545 01ec FEFFFFEB 		bl	sprite_draw
+  49:../enemy.c    **** 		break;
+ 1546              		.loc 1 49 0
+ 1547 01f0 0F0000EA 		b	.L8
+ 1548              	.L11:
+  50:../enemy.c    **** 	case enemyExploding:
+  51:../enemy.c    **** 		sprite_draw(&self->explosionSprite, self->col, self->row);
+ 1549              		.loc 1 51 0
+ 1550 01f4 10301BE5 		ldr	r3, [fp, #-16]
+ 1551 01f8 1C1083E2 		add	r1, r3, #28
+ 1552 01fc 10301BE5 		ldr	r3, [fp, #-16]
+ 1553 0200 B430D3E1 		ldrh	r3, [r3, #4]
+ 1554 0204 0338A0E1 		mov	r3, r3, asl #16
+ 1555 0208 2328A0E1 		mov	r2, r3, lsr #16
+ 1556 020c 10301BE5 		ldr	r3, [fp, #-16]
+ 1557 0210 B630D3E1 		ldrh	r3, [r3, #6]
+ 1558 0214 0338A0E1 		mov	r3, r3, asl #16
+ 1559 0218 2338A0E1 		mov	r3, r3, lsr #16
+ 1560 021c 0100A0E1 		mov	r0, r1
+ 1561 0220 0210A0E1 		mov	r1, r2
+ 1562 0224 0320A0E1 		mov	r2, r3
+ 1563 0228 FEFFFFEB 		bl	sprite_draw
+  52:../enemy.c    **** 		break;
+ 1564              		.loc 1 52 0
+ 1565 022c 000000EA 		b	.L8
+ 1566              	.L13:
+  53:../enemy.c    **** 	case enemyDead:
+  54:../enemy.c    **** 		break;
+ 1567              		.loc 1 54 0
+ 1568 0230 0000A0E1 		mov	r0, r0	@ nop
+ 1569              	.L8:
+  55:../enemy.c    **** 	}
+  56:../enemy.c    **** }
+ 1570              		.loc 1 56 0
+ 1571 0234 0CD04BE2 		sub	sp, fp, #12
+ 1572 0238 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1573 023c 1EFF2FE1 		bx	lr
+ 1574              		.cfi_endproc
+ 1575              	.LFE1:
+ 1577              		.align	2
+ 1579              	enemy_clear:
+ 1580              	.LFB2:
+  57:../enemy.c    **** 
+  58:../enemy.c    **** static void enemy_clear(Enemy *self) {
+ 1581              		.loc 1 58 0
+ 1582              		.cfi_startproc
+ 1583              		@ Function supports interworking.
+ 1584              		@ args = 0, pretend = 0, frame = 8
+ 1585              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1586 0240 0DC0A0E1 		mov	ip, sp
+ 1587              	.LCFI4:
+ 1588              		.cfi_def_cfa_register 12
+ 1589 0244 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1590 0248 04B04CE2 		sub	fp, ip, #4
+ 1591              		.cfi_offset 14, -8
+ 1592              		.cfi_offset 13, -12
+ 1593              		.cfi_offset 11, -16
+ 1594              	.LCFI5:
+ 1595              		.cfi_def_cfa 11, 4
+ 1596 024c 08D04DE2 		sub	sp, sp, #8
+ 1597 0250 10000BE5 		str	r0, [fp, #-16]
+  59:../enemy.c    **** 	switch (self->state) {
+ 1598              		.loc 1 59 0
+ 1599 0254 10301BE5 		ldr	r3, [fp, #-16]
+ 1600 0258 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 1601 025c 010053E3 		cmp	r3, #1
+ 1602 0260 1600000A 		beq	.L17
+ 1603 0264 020053E3 		cmp	r3, #2
+ 1604 0268 2300000A 		beq	.L19
+ 1605 026c 000053E3 		cmp	r3, #0
+ 1606 0270 2200001A 		bne	.L14
+ 1607              	.L16:
+  60:../enemy.c    **** 	case enemyAlive:
+  61:../enemy.c    **** 		sprite_clear(&self->sprite[self->spriteSet], self->col, self->row);
+ 1608              		.loc 1 61 0
+ 1609 0274 10301BE5 		ldr	r3, [fp, #-16]
+ 1610 0278 0C2083E2 		add	r2, r3, #12
+ 1611 027c 10301BE5 		ldr	r3, [fp, #-16]
+ 1612 0280 0830D3E5 		ldrb	r3, [r3, #8]	@ zero_extendqisi2
+ 1613 0284 8331A0E1 		mov	r3, r3, asl #3
+ 1614 0288 031082E0 		add	r1, r2, r3
+ 1615 028c 10301BE5 		ldr	r3, [fp, #-16]
+ 1616 0290 B430D3E1 		ldrh	r3, [r3, #4]
+ 1617 0294 0338A0E1 		mov	r3, r3, asl #16
+ 1618 0298 2328A0E1 		mov	r2, r3, lsr #16
+ 1619 029c 10301BE5 		ldr	r3, [fp, #-16]
+ 1620 02a0 B630D3E1 		ldrh	r3, [r3, #6]
+ 1621 02a4 0338A0E1 		mov	r3, r3, asl #16
+ 1622 02a8 2338A0E1 		mov	r3, r3, lsr #16
+ 1623 02ac 0100A0E1 		mov	r0, r1
+ 1624 02b0 0210A0E1 		mov	r1, r2
+ 1625 02b4 0320A0E1 		mov	r2, r3
+ 1626 02b8 FEFFFFEB 		bl	sprite_clear
+  62:../enemy.c    **** 		break;
+ 1627              		.loc 1 62 0
+ 1628 02bc 0F0000EA 		b	.L14
+ 1629              	.L17:
+  63:../enemy.c    **** 	case enemyExploding:
+  64:../enemy.c    **** 		sprite_clear(&self->explosionSprite, self->col, self->row);
+ 1630              		.loc 1 64 0
+ 1631 02c0 10301BE5 		ldr	r3, [fp, #-16]
+ 1632 02c4 1C1083E2 		add	r1, r3, #28
+ 1633 02c8 10301BE5 		ldr	r3, [fp, #-16]
+ 1634 02cc B430D3E1 		ldrh	r3, [r3, #4]
+ 1635 02d0 0338A0E1 		mov	r3, r3, asl #16
+ 1636 02d4 2328A0E1 		mov	r2, r3, lsr #16
+ 1637 02d8 10301BE5 		ldr	r3, [fp, #-16]
+ 1638 02dc B630D3E1 		ldrh	r3, [r3, #6]
+ 1639 02e0 0338A0E1 		mov	r3, r3, asl #16
+ 1640 02e4 2338A0E1 		mov	r3, r3, lsr #16
+ 1641 02e8 0100A0E1 		mov	r0, r1
+ 1642 02ec 0210A0E1 		mov	r1, r2
+ 1643 02f0 0320A0E1 		mov	r2, r3
+ 1644 02f4 FEFFFFEB 		bl	sprite_clear
+  65:../enemy.c    **** 		break;
+ 1645              		.loc 1 65 0
+ 1646 02f8 000000EA 		b	.L14
+ 1647              	.L19:
+  66:../enemy.c    **** 	case enemyDead:
+  67:../enemy.c    **** 		break;
+ 1648              		.loc 1 67 0
+ 1649 02fc 0000A0E1 		mov	r0, r0	@ nop
+ 1650              	.L14:
+  68:../enemy.c    **** 	}
+  69:../enemy.c    **** }
+ 1651              		.loc 1 69 0
+ 1652 0300 0CD04BE2 		sub	sp, fp, #12
+ 1653 0304 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1654 0308 1EFF2FE1 		bx	lr
+ 1655              		.cfi_endproc
+ 1656              	.LFE2:
+ 1658              		.align	2
+ 1659              		.global	enemy_launch
+ 1661              	enemy_launch:
+ 1662              	.LFB3:
+  70:../enemy.c    **** 
+  71:../enemy.c    **** void enemy_launch(Enemy *self) {
+ 1663              		.loc 1 71 0
+ 1664              		.cfi_startproc
+ 1665              		@ Function supports interworking.
+ 1666              		@ args = 0, pretend = 0, frame = 8
+ 1667              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1668 030c 0DC0A0E1 		mov	ip, sp
+ 1669              	.LCFI6:
+ 1670              		.cfi_def_cfa_register 12
+ 1671 0310 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1672 0314 04B04CE2 		sub	fp, ip, #4
+ 1673              		.cfi_offset 14, -8
+ 1674              		.cfi_offset 13, -12
+ 1675              		.cfi_offset 11, -16
+ 1676              	.LCFI7:
+ 1677              		.cfi_def_cfa 11, 4
+ 1678 0318 08D04DE2 		sub	sp, sp, #8
+ 1679 031c 10000BE5 		str	r0, [fp, #-16]
+  72:../enemy.c    **** 	if (self->state == enemyAlive)
+ 1680              		.loc 1 72 0
+ 1681 0320 10301BE5 		ldr	r3, [fp, #-16]
+ 1682 0324 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 1683 0328 000053E3 		cmp	r3, #0
+ 1684 032c 0100001A 		bne	.L20
+  73:../enemy.c    **** 		enemy_draw(self);
+ 1685              		.loc 1 73 0
+ 1686 0330 10001BE5 		ldr	r0, [fp, #-16]
+ 1687 0334 8EFFFFEB 		bl	enemy_draw
+ 1688              	.L20:
+  74:../enemy.c    **** }
+ 1689              		.loc 1 74 0
+ 1690 0338 0CD04BE2 		sub	sp, fp, #12
+ 1691 033c 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1692 0340 1EFF2FE1 		bx	lr
+ 1693              		.cfi_endproc
+ 1694              	.LFE3:
+ 1696              		.align	2
+ 1697              		.global	enemy_left
+ 1699              	enemy_left:
+ 1700              	.LFB4:
+  75:../enemy.c    **** 
+  76:../enemy.c    **** void enemy_left(Enemy *self) {
+ 1701              		.loc 1 76 0
+ 1702              		.cfi_startproc
+ 1703              		@ Function supports interworking.
+ 1704              		@ args = 0, pretend = 0, frame = 8
+ 1705              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1706 0344 0DC0A0E1 		mov	ip, sp
+ 1707              	.LCFI8:
+ 1708              		.cfi_def_cfa_register 12
+ 1709 0348 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1710 034c 04B04CE2 		sub	fp, ip, #4
+ 1711              		.cfi_offset 14, -8
+ 1712              		.cfi_offset 13, -12
+ 1713              		.cfi_offset 11, -16
+ 1714              	.LCFI9:
+ 1715              		.cfi_def_cfa 11, 4
+ 1716 0350 08D04DE2 		sub	sp, sp, #8
+ 1717 0354 10000BE5 		str	r0, [fp, #-16]
+  77:../enemy.c    **** 	if (self->state == enemyAlive) {
+ 1718              		.loc 1 77 0
+ 1719 0358 10301BE5 		ldr	r3, [fp, #-16]
+ 1720 035c 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 1721 0360 000053E3 		cmp	r3, #0
+ 1722 0364 1600001A 		bne	.L22
+  78:../enemy.c    **** 		enemy_clear(self);
+ 1723              		.loc 1 78 0
+ 1724 0368 10001BE5 		ldr	r0, [fp, #-16]
+ 1725 036c B3FFFFEB 		bl	enemy_clear
+  79:../enemy.c    **** 		self->col -= ENEMY_ADVANCE_COL;
+ 1726              		.loc 1 79 0
+ 1727 0370 10301BE5 		ldr	r3, [fp, #-16]
+ 1728 0374 B430D3E1 		ldrh	r3, [r3, #4]
+ 1729 0378 0338A0E1 		mov	r3, r3, asl #16
+ 1730 037c 2338A0E1 		mov	r3, r3, lsr #16
+ 1731 0380 023043E2 		sub	r3, r3, #2
+ 1732 0384 0338A0E1 		mov	r3, r3, asl #16
+ 1733 0388 2338A0E1 		mov	r3, r3, lsr #16
+ 1734 038c 0338A0E1 		mov	r3, r3, asl #16
+ 1735 0390 2328A0E1 		mov	r2, r3, lsr #16
+ 1736 0394 10301BE5 		ldr	r3, [fp, #-16]
+ 1737 0398 B420C3E1 		strh	r2, [r3, #4]	@ movhi
+  80:../enemy.c    **** 		self->spriteSet = !self->spriteSet;
+ 1738              		.loc 1 80 0
+ 1739 039c 10301BE5 		ldr	r3, [fp, #-16]
+ 1740 03a0 0830D3E5 		ldrb	r3, [r3, #8]	@ zero_extendqisi2
+ 1741 03a4 000053E3 		cmp	r3, #0
+ 1742 03a8 0030A013 		movne	r3, #0
+ 1743 03ac 0130A003 		moveq	r3, #1
+ 1744 03b0 FF2003E2 		and	r2, r3, #255
+ 1745 03b4 10301BE5 		ldr	r3, [fp, #-16]
+ 1746 03b8 0820C3E5 		strb	r2, [r3, #8]
+  81:../enemy.c    **** 		enemy_draw(self);
+ 1747              		.loc 1 81 0
+ 1748 03bc 10001BE5 		ldr	r0, [fp, #-16]
+ 1749 03c0 6BFFFFEB 		bl	enemy_draw
+ 1750              	.L22:
+  82:../enemy.c    **** 	}
+  83:../enemy.c    **** }
+ 1751              		.loc 1 83 0
+ 1752 03c4 0CD04BE2 		sub	sp, fp, #12
+ 1753 03c8 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1754 03cc 1EFF2FE1 		bx	lr
+ 1755              		.cfi_endproc
+ 1756              	.LFE4:
+ 1758              		.align	2
+ 1759              		.global	enemy_right
+ 1761              	enemy_right:
+ 1762              	.LFB5:
+  84:../enemy.c    **** 
+  85:../enemy.c    **** void enemy_right(Enemy *self) {
+ 1763              		.loc 1 85 0
+ 1764              		.cfi_startproc
+ 1765              		@ Function supports interworking.
+ 1766              		@ args = 0, pretend = 0, frame = 8
+ 1767              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1768 03d0 0DC0A0E1 		mov	ip, sp
+ 1769              	.LCFI10:
+ 1770              		.cfi_def_cfa_register 12
+ 1771 03d4 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1772 03d8 04B04CE2 		sub	fp, ip, #4
+ 1773              		.cfi_offset 14, -8
+ 1774              		.cfi_offset 13, -12
+ 1775              		.cfi_offset 11, -16
+ 1776              	.LCFI11:
+ 1777              		.cfi_def_cfa 11, 4
+ 1778 03dc 08D04DE2 		sub	sp, sp, #8
+ 1779 03e0 10000BE5 		str	r0, [fp, #-16]
+  86:../enemy.c    **** 	if (self->state == enemyAlive) {
+ 1780              		.loc 1 86 0
+ 1781 03e4 10301BE5 		ldr	r3, [fp, #-16]
+ 1782 03e8 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 1783 03ec 000053E3 		cmp	r3, #0
+ 1784 03f0 1600001A 		bne	.L24
+  87:../enemy.c    **** 		enemy_clear(self);
+ 1785              		.loc 1 87 0
+ 1786 03f4 10001BE5 		ldr	r0, [fp, #-16]
+ 1787 03f8 90FFFFEB 		bl	enemy_clear
+  88:../enemy.c    **** 		self->col += ENEMY_ADVANCE_COL;
+ 1788              		.loc 1 88 0
+ 1789 03fc 10301BE5 		ldr	r3, [fp, #-16]
+ 1790 0400 B430D3E1 		ldrh	r3, [r3, #4]
+ 1791 0404 0338A0E1 		mov	r3, r3, asl #16
+ 1792 0408 2338A0E1 		mov	r3, r3, lsr #16
+ 1793 040c 023083E2 		add	r3, r3, #2
+ 1794 0410 0338A0E1 		mov	r3, r3, asl #16
+ 1795 0414 2338A0E1 		mov	r3, r3, lsr #16
+ 1796 0418 0338A0E1 		mov	r3, r3, asl #16
+ 1797 041c 2328A0E1 		mov	r2, r3, lsr #16
+ 1798 0420 10301BE5 		ldr	r3, [fp, #-16]
+ 1799 0424 B420C3E1 		strh	r2, [r3, #4]	@ movhi
+  89:../enemy.c    **** 		self->spriteSet = !self->spriteSet;
+ 1800              		.loc 1 89 0
+ 1801 0428 10301BE5 		ldr	r3, [fp, #-16]
+ 1802 042c 0830D3E5 		ldrb	r3, [r3, #8]	@ zero_extendqisi2
+ 1803 0430 000053E3 		cmp	r3, #0
+ 1804 0434 0030A013 		movne	r3, #0
+ 1805 0438 0130A003 		moveq	r3, #1
+ 1806 043c FF2003E2 		and	r2, r3, #255
+ 1807 0440 10301BE5 		ldr	r3, [fp, #-16]
+ 1808 0444 0820C3E5 		strb	r2, [r3, #8]
+  90:../enemy.c    **** 		enemy_draw(self);
+ 1809              		.loc 1 90 0
+ 1810 0448 10001BE5 		ldr	r0, [fp, #-16]
+ 1811 044c 48FFFFEB 		bl	enemy_draw
+ 1812              	.L24:
+  91:../enemy.c    **** 	}
+  92:../enemy.c    **** }
+ 1813              		.loc 1 92 0
+ 1814 0450 0CD04BE2 		sub	sp, fp, #12
+ 1815 0454 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1816 0458 1EFF2FE1 		bx	lr
+ 1817              		.cfi_endproc
+ 1818              	.LFE5:
+ 1820              		.align	2
+ 1821              		.global	enemy_down
+ 1823              	enemy_down:
+ 1824              	.LFB6:
+  93:../enemy.c    **** 
+  94:../enemy.c    **** void enemy_down(Enemy *self) {
+ 1825              		.loc 1 94 0
+ 1826              		.cfi_startproc
+ 1827              		@ Function supports interworking.
+ 1828              		@ args = 0, pretend = 0, frame = 8
+ 1829              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1830 045c 0DC0A0E1 		mov	ip, sp
+ 1831              	.LCFI12:
+ 1832              		.cfi_def_cfa_register 12
+ 1833 0460 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1834 0464 04B04CE2 		sub	fp, ip, #4
+ 1835              		.cfi_offset 14, -8
+ 1836              		.cfi_offset 13, -12
+ 1837              		.cfi_offset 11, -16
+ 1838              	.LCFI13:
+ 1839              		.cfi_def_cfa 11, 4
+ 1840 0468 08D04DE2 		sub	sp, sp, #8
+ 1841 046c 10000BE5 		str	r0, [fp, #-16]
+  95:../enemy.c    **** 	if (self->state == enemyAlive) {
+ 1842              		.loc 1 95 0
+ 1843 0470 10301BE5 		ldr	r3, [fp, #-16]
+ 1844 0474 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 1845 0478 000053E3 		cmp	r3, #0
+ 1846 047c 1600001A 		bne	.L26
+  96:../enemy.c    **** 		enemy_clear(self);
+ 1847              		.loc 1 96 0
+ 1848 0480 10001BE5 		ldr	r0, [fp, #-16]
+ 1849 0484 6DFFFFEB 		bl	enemy_clear
+  97:../enemy.c    **** 		self->row += ENEMY_ADVANCE_ROW;
+ 1850              		.loc 1 97 0
+ 1851 0488 10301BE5 		ldr	r3, [fp, #-16]
+ 1852 048c B630D3E1 		ldrh	r3, [r3, #6]
+ 1853 0490 0338A0E1 		mov	r3, r3, asl #16
+ 1854 0494 2338A0E1 		mov	r3, r3, lsr #16
+ 1855 0498 043083E2 		add	r3, r3, #4
+ 1856 049c 0338A0E1 		mov	r3, r3, asl #16
+ 1857 04a0 2338A0E1 		mov	r3, r3, lsr #16
+ 1858 04a4 0338A0E1 		mov	r3, r3, asl #16
+ 1859 04a8 2328A0E1 		mov	r2, r3, lsr #16
+ 1860 04ac 10301BE5 		ldr	r3, [fp, #-16]
+ 1861 04b0 B620C3E1 		strh	r2, [r3, #6]	@ movhi
+  98:../enemy.c    **** 		self->spriteSet = !self->spriteSet;
+ 1862              		.loc 1 98 0
+ 1863 04b4 10301BE5 		ldr	r3, [fp, #-16]
+ 1864 04b8 0830D3E5 		ldrb	r3, [r3, #8]	@ zero_extendqisi2
+ 1865 04bc 000053E3 		cmp	r3, #0
+ 1866 04c0 0030A013 		movne	r3, #0
+ 1867 04c4 0130A003 		moveq	r3, #1
+ 1868 04c8 FF2003E2 		and	r2, r3, #255
+ 1869 04cc 10301BE5 		ldr	r3, [fp, #-16]
+ 1870 04d0 0820C3E5 		strb	r2, [r3, #8]
+  99:../enemy.c    **** 		enemy_draw(self);
+ 1871              		.loc 1 99 0
+ 1872 04d4 10001BE5 		ldr	r0, [fp, #-16]
+ 1873 04d8 25FFFFEB 		bl	enemy_draw
+ 1874              	.L26:
+ 100:../enemy.c    **** 	}
+ 101:../enemy.c    **** }
+ 1875              		.loc 1 101 0
+ 1876 04dc 0CD04BE2 		sub	sp, fp, #12
+ 1877 04e0 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1878 04e4 1EFF2FE1 		bx	lr
+ 1879              		.cfi_endproc
+ 1880              	.LFE6:
+ 1882              		.align	2
+ 1883              		.global	enemy_hit
+ 1885              	enemy_hit:
+ 1886              	.LFB7:
+ 102:../enemy.c    **** 
+ 103:../enemy.c    **** void enemy_hit(Enemy *self) {
+ 1887              		.loc 1 103 0
+ 1888              		.cfi_startproc
+ 1889              		@ Function supports interworking.
+ 1890              		@ args = 0, pretend = 0, frame = 8
+ 1891              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1892 04e8 0DC0A0E1 		mov	ip, sp
+ 1893              	.LCFI14:
+ 1894              		.cfi_def_cfa_register 12
+ 1895 04ec 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1896 04f0 04B04CE2 		sub	fp, ip, #4
+ 1897              		.cfi_offset 14, -8
+ 1898              		.cfi_offset 13, -12
+ 1899              		.cfi_offset 11, -16
+ 1900              	.LCFI15:
+ 1901              		.cfi_def_cfa 11, 4
+ 1902 04f4 08D04DE2 		sub	sp, sp, #8
+ 1903 04f8 10000BE5 		str	r0, [fp, #-16]
+ 104:../enemy.c    **** 	if (self->state == enemyAlive) {
+ 1904              		.loc 1 104 0
+ 1905 04fc 10301BE5 		ldr	r3, [fp, #-16]
+ 1906 0500 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 1907 0504 000053E3 		cmp	r3, #0
+ 1908 0508 0D00001A 		bne	.L28
+ 105:../enemy.c    **** 		enemy_clear(self);
+ 1909              		.loc 1 105 0
+ 1910 050c 10001BE5 		ldr	r0, [fp, #-16]
+ 1911 0510 4AFFFFEB 		bl	enemy_clear
+ 106:../enemy.c    **** 		self->countDown = ENEMY_EXPLODING_TIME / SWARM_UPDATE_PERIOD;
+ 1912              		.loc 1 106 0
+ 1913 0514 10301BE5 		ldr	r3, [fp, #-16]
+ 1914 0518 3220A0E3 		mov	r2, #50
+ 1915 051c 0220C3E5 		strb	r2, [r3, #2]
+ 107:../enemy.c    **** 		self->state = enemyExploding;
+ 1916              		.loc 1 107 0
+ 1917 0520 10301BE5 		ldr	r3, [fp, #-16]
+ 1918 0524 0120A0E3 		mov	r2, #1
+ 1919 0528 0020C3E5 		strb	r2, [r3, #0]
+ 108:../enemy.c    **** 		enemy_draw(self);
+ 1920              		.loc 1 108 0
+ 1921 052c 10001BE5 		ldr	r0, [fp, #-16]
+ 1922 0530 0FFFFFEB 		bl	enemy_draw
+ 109:../enemy.c    **** 		sound_play(&self->explosionSound);
+ 1923              		.loc 1 109 0
+ 1924 0534 10301BE5 		ldr	r3, [fp, #-16]
+ 1925 0538 243083E2 		add	r3, r3, #36
+ 1926 053c 0300A0E1 		mov	r0, r3
+ 1927 0540 FEFFFFEB 		bl	sound_play
+ 1928              	.L28:
+ 110:../enemy.c    **** 	}
+ 111:../enemy.c    **** }
+ 1929              		.loc 1 111 0
+ 1930 0544 0CD04BE2 		sub	sp, fp, #12
+ 1931 0548 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1932 054c 1EFF2FE1 		bx	lr
+ 1933              		.cfi_endproc
+ 1934              	.LFE7:
+ 1936              		.align	2
+ 1937              		.global	enemy_kill
+ 1939              	enemy_kill:
+ 1940              	.LFB8:
+ 112:../enemy.c    **** 
+ 113:../enemy.c    **** void enemy_kill(Enemy *self) {
+ 1941              		.loc 1 113 0
+ 1942              		.cfi_startproc
+ 1943              		@ Function supports interworking.
+ 1944              		@ args = 0, pretend = 0, frame = 8
+ 1945              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1946 0550 0DC0A0E1 		mov	ip, sp
+ 1947              	.LCFI16:
+ 1948              		.cfi_def_cfa_register 12
+ 1949 0554 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1950 0558 04B04CE2 		sub	fp, ip, #4
+ 1951              		.cfi_offset 14, -8
+ 1952              		.cfi_offset 13, -12
+ 1953              		.cfi_offset 11, -16
+ 1954              	.LCFI17:
+ 1955              		.cfi_def_cfa 11, 4
+ 1956 055c 08D04DE2 		sub	sp, sp, #8
+ 1957 0560 10000BE5 		str	r0, [fp, #-16]
+ 114:../enemy.c    **** 	enemy_clear(self);
+ 1958              		.loc 1 114 0
+ 1959 0564 10001BE5 		ldr	r0, [fp, #-16]
+ 1960 0568 34FFFFEB 		bl	enemy_clear
+ 115:../enemy.c    **** 	self->state = enemyDead;
+ 1961              		.loc 1 115 0
+ 1962 056c 10301BE5 		ldr	r3, [fp, #-16]
+ 1963 0570 0220A0E3 		mov	r2, #2
+ 1964 0574 0020C3E5 		strb	r2, [r3, #0]
+ 116:../enemy.c    **** }
+ 1965              		.loc 1 116 0
+ 1966 0578 0CD04BE2 		sub	sp, fp, #12
+ 1967 057c 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1968 0580 1EFF2FE1 		bx	lr
+ 1969              		.cfi_endproc
+ 1970              	.LFE8:
+ 1972              		.section	.rodata
+ 1973              		.align	2
+ 1976              	C.2.5004:
+ 1977 0000 1000     		.short	16
+ 1978 0002 0A00     		.short	10
+ 1979 0004 00000000 		.word	alienPixMap_0
+ 1980              		.align	2
+ 1983              	C.3.5005:
+ 1984 0008 1000     		.short	16
+ 1985 000a 0A00     		.short	10
+ 1986 000c 00000000 		.word	alienPixMap_1
+ 1987              		.align	2
+ 1990              	C.4.5006:
+ 1991 0010 1000     		.short	16
+ 1992 0012 0A00     		.short	10
+ 1993 0014 00000000 		.word	metroidPixMap_0
+ 1994              		.align	2
+ 1997              	C.5.5007:
+ 1998 0018 1000     		.short	16
+ 1999 001a 0A00     		.short	10
+ 2000 001c 00000000 		.word	metroidPixMap_1
+ 2001              		.align	2
+ 2004              	C.6.5008:
+ 2005 0020 1000     		.short	16
+ 2006 0022 0A00     		.short	10
+ 2007 0024 00000000 		.word	squidPixMap_0
+ 2008              		.align	2
+ 2011              	C.7.5009:
+ 2012 0028 1000     		.short	16
+ 2013 002a 0A00     		.short	10
+ 2014 002c 00000000 		.word	squidPixMap_1
+ 2015              		.align	2
+ 2018              	C.8.5011:
+ 2019 0030 1000     		.short	16
+ 2020 0032 0A00     		.short	10
+ 2021 0034 00000000 		.word	enemyExplosionPixMap
+ 2022              		.text
+ 2023              	.Letext0:
+DEFINED SYMBOLS
+                            *ABS*:00000000 enemy.c
+C:\Users\USUARI~1\AppData\Local\Temp\ccxFQMdR.s:1354   .text:00000000 $a
+C:\Users\USUARI~1\AppData\Local\Temp\ccxFQMdR.s:1357   .text:00000000 enemy_init
+C:\Users\USUARI~1\AppData\Local\Temp\ccxFQMdR.s:1498   .text:00000174 enemy_draw
+C:\Users\USUARI~1\AppData\Local\Temp\ccxFQMdR.s:1485   .text:00000154 $d
+C:\Users\USUARI~1\AppData\Local\Temp\ccxFQMdR.s:1976   .rodata:00000000 C.2.5004
+C:\Users\USUARI~1\AppData\Local\Temp\ccxFQMdR.s:1983   .rodata:00000008 C.3.5005
+C:\Users\USUARI~1\AppData\Local\Temp\ccxFQMdR.s:1990   .rodata:00000010 C.4.5006
+C:\Users\USUARI~1\AppData\Local\Temp\ccxFQMdR.s:1997   .rodata:00000018 C.5.5007
+C:\Users\USUARI~1\AppData\Local\Temp\ccxFQMdR.s:2004   .rodata:00000020 C.6.5008
+C:\Users\USUARI~1\AppData\Local\Temp\ccxFQMdR.s:2011   .rodata:00000028 C.7.5009
+C:\Users\USUARI~1\AppData\Local\Temp\ccxFQMdR.s:2018   .rodata:00000030 C.8.5011
+C:\Users\USUARI~1\AppData\Local\Temp\ccxFQMdR.s:1496   .text:00000174 $a
+C:\Users\USUARI~1\AppData\Local\Temp\ccxFQMdR.s:1579   .text:00000240 enemy_clear
+C:\Users\USUARI~1\AppData\Local\Temp\ccxFQMdR.s:1661   .text:0000030c enemy_launch
+C:\Users\USUARI~1\AppData\Local\Temp\ccxFQMdR.s:1699   .text:00000344 enemy_left
+C:\Users\USUARI~1\AppData\Local\Temp\ccxFQMdR.s:1761   .text:000003d0 enemy_right
+C:\Users\USUARI~1\AppData\Local\Temp\ccxFQMdR.s:1823   .text:0000045c enemy_down
+C:\Users\USUARI~1\AppData\Local\Temp\ccxFQMdR.s:1885   .text:000004e8 enemy_hit
+C:\Users\USUARI~1\AppData\Local\Temp\ccxFQMdR.s:1939   .text:00000550 enemy_kill
+C:\Users\USUARI~1\AppData\Local\Temp\ccxFQMdR.s:1973   .rodata:00000000 $d
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+sprite_draw
+sprite_clear
+sound_play
+alienPixMap_0
+alienPixMap_1
+metroidPixMap_0
+metroidPixMap_1
+squidPixMap_0
+squidPixMap_1
+enemyExplosionPixMap

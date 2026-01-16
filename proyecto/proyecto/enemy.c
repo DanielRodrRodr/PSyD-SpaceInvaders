@@ -39,6 +39,7 @@ void enemy_init(Enemy *self, enemy_type_t type, uint8 spriteSet, uint16 col,
 	self->explosionSprite = (Sprite ) { ENEMY_WIDTH, ENEMY_HEIGHT,
 					enemyExplosionPixMap };
 	self->explosionSound = (Sound ) { ENEMY_EXPLOSION };
+	enemy_draw(self);
 }
 
 static void enemy_draw(Enemy *self) {

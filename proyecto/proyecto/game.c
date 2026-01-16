@@ -1,7 +1,6 @@
-
 #include <lcd.h>
 #include <iis.h>
-
+#include <stdlib.h>
 #include "config.h"
 #include "pixmaps.h"
 #include "wavs.h"
@@ -9,29 +8,58 @@
 
 static const uint8 shieldCol[MAX_SHIELDS] = { 23, 69, 115 };
 
-void game_init( Game *self )
-{
-    uint8 i;
-    
-    self->state = run;
-    for( i=0; i<MAX_SHIELDS; i++ )
-        shield_init( &self->shield[i], shieldCol[i] );
-    player_init( &self->player );
-    playerShot_init( &self->playerShot );
-    ufo_init( &self->ufo );
-    swarm_init( &self->swarm );
-    enemyShot_init( &self->enemyShot );
-    hiScore_init( &self->hiScore );
-    credit_init( &self->credit );
-    self->music = (Sound){ INTRO_MUSIC };
-    sound_loop( &self->music );
+void game_init(Game *self) {
+	uint8 i;
+
+	self->state = pause;
+
+	for (i = 0; i < MAX_SHIELDS; i++)
+		shield_init(&self->shield[i], shieldCol[i]);
+
+	player_init(&self->player);
+	playerShot_init(&self->playerShot);
+	ufo_init(&self->ufo);
+	swarm_init(&self->swarm);
+	enemyShot_init(&self->enemyShot);
+	hiScore_init(&self->hiScore);
+	credit_init(&self->credit);
+
+	//self->music = (Sound ) { INTRO_MUSIC };
+	//sound_loop(&self->music);
 }
 
-void game_restart( Game *self )
-{
+void game_restart(Game *self) {
+	self->playerShot.state = noPlayerShot;
+	self->enemyShot.state = noEnemyShot;
+	self->ufo.state = noUfo;
+
+	//self->music = (Sound ) { INTRO_MUSIC };
+	//sound_loop(&self->music);
+
+	self->state = pause;
 }
 
-void game_launch( Game *self )
-{
-   credit_launch( &self->credit );
+void game_launch(Game *self) {
+	uint8 i;
+
+	credit_launch(&self->credit);
+
+	// iis_stop();
+
+	lcd_clear();
+
+	player_launch(&self->player);
+	swarm_lauch(&self->swarm);
+
+	self->ufo.state = noUfo;
+
+	for (i = 0; i < MAX_SHIELDS; i++) {
+		shield_init(&self->shield[i], shieldCol[i]);
+		// shield_draw( &self->shield[i] );
+	}
+
+	self->playerShot.state = noPlayerShot;
+	self->enemyShot.state = noEnemyShot;
+
+	self->state = run;
 }

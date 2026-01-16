@@ -82,7 +82,7 @@ void swarm_update(Swarm *self, Player *player) {
 					break;
 				}
 
-				swarm_moveSound(self);
+				//swarm_moveSound(self);
 
 				self->toMoveX++;
 				if (self->toMoveX >= SWARM_XLEN) {

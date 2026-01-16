@@ -1,0 +1,1113 @@
+   1              		.cpu arm7tdmi
+   2              		.fpu softvfp
+   3              		.eabi_attribute 20, 1
+   4              		.eabi_attribute 21, 1
+   5              		.eabi_attribute 23, 3
+   6              		.eabi_attribute 24, 1
+   7              		.eabi_attribute 25, 1
+   8              		.eabi_attribute 26, 1
+   9              		.eabi_attribute 30, 6
+  10              		.eabi_attribute 18, 4
+  11              		.file	"proyecto.c"
+  21              	.Ltext0:
+  22              		.file 1 "../proyecto.c"
+ 2521              		.align	2
+ 2522              		.global	main
+ 2524              	main:
+ 2525              	.LFB0:
+   1:../proyecto.c **** #include <s3c44b0x.h>
+   2:../proyecto.c **** #include <s3cev40.h>
+   3:../proyecto.c **** #include <common_types.h>
+   4:../proyecto.c **** #include <system.h>
+   5:../proyecto.c **** #include <segs.h>
+   6:../proyecto.c **** #include <pbs.h>
+   7:../proyecto.c **** #include <keypad.h>
+   8:../proyecto.c **** #include <timers.h>
+   9:../proyecto.c **** #include <lcd.h>
+  10:../proyecto.c **** #include <iic.h>
+  11:../proyecto.c **** #include <uda1341ts.h>
+  12:../proyecto.c **** #include <iis.h>
+  13:../proyecto.c **** 
+  14:../proyecto.c **** #include "config.h"
+  15:../proyecto.c **** #include "random.h"
+  16:../proyecto.c **** #include "pixmaps.h"
+  17:../proyecto.c **** #include "game.h"
+  18:../proyecto.c **** #include "player.h"
+  19:../proyecto.c **** #include "playerShot.h"
+  20:../proyecto.c **** #include "swarm.h"
+  21:../proyecto.c **** #include "enemyShot.h"
+  22:../proyecto.c **** #include "ufo.h"
+  23:../proyecto.c **** 
+  24:../proyecto.c **** #include "kernelcoop.h"
+  25:../proyecto.c **** 
+  26:../proyecto.c **** /////////////////////////////////////////////////////////////////////////////
+  27:../proyecto.c **** // Declaración de tareas
+  28:../proyecto.c **** /////////////////////////////////////////////////////////////////////////////
+  29:../proyecto.c **** 
+  30:../proyecto.c **** void player_update_task(void);
+  31:../proyecto.c **** void playerShot_update_task(void);
+  32:../proyecto.c **** void swarm_update_task(void);
+  33:../proyecto.c **** void enemyShot_launch_task(void);
+  34:../proyecto.c **** void enemyShot_update_task(void);
+  35:../proyecto.c **** void ufo_launch_task(void);
+  36:../proyecto.c **** void ufo_update_task(void);
+  37:../proyecto.c **** void keys_read_task(void);
+  38:../proyecto.c **** void pbs_read_task(void);
+  39:../proyecto.c **** 
+  40:../proyecto.c **** /////////////////////////////////////////////////////////////////////////////
+  41:../proyecto.c **** // Declaración de otras funciones
+  42:../proyecto.c **** /////////////////////////////////////////////////////////////////////////////
+  43:../proyecto.c **** 
+  44:../proyecto.c **** void wellcomeScreen_draw(void);
+  45:../proyecto.c **** void gameOverScreen_draw(void);
+  46:../proyecto.c **** 
+  47:../proyecto.c **** // Instancia global del juego
+  48:../proyecto.c **** Game game;
+  49:../proyecto.c **** 
+  50:../proyecto.c **** void main(void) {
+ 2526              		.loc 1 50 0
+ 2527              		.cfi_startproc
+ 2528              		@ Function supports interworking.
+ 2529              		@ args = 0, pretend = 0, frame = 0
+ 2530              		@ frame_needed = 1, uses_anonymous_args = 0
+ 2531 0000 0DC0A0E1 		mov	ip, sp
+ 2532              	.LCFI0:
+ 2533              		.cfi_def_cfa_register 12
+ 2534 0004 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 2535 0008 04B04CE2 		sub	fp, ip, #4
+ 2536              		.cfi_offset 14, -8
+ 2537              		.cfi_offset 13, -12
+ 2538              		.cfi_offset 11, -16
+ 2539              	.LCFI1:
+ 2540              		.cfi_def_cfa 11, 4
+  51:../proyecto.c **** 	sys_init(); /* Inicializa el sistema */
+ 2541              		.loc 1 51 0
+ 2542 000c FEFFFFEB 		bl	sys_init
+  52:../proyecto.c **** 	segs_init();
+ 2543              		.loc 1 52 0
+ 2544 0010 FEFFFFEB 		bl	segs_init
+  53:../proyecto.c **** 	timers_init();
+ 2545              		.loc 1 53 0
+ 2546 0014 FEFFFFEB 		bl	timers_init
+  54:../proyecto.c **** 	keypad_init();
+ 2547              		.loc 1 54 0
+ 2548 0018 FEFFFFEB 		bl	keypad_init
+  55:../proyecto.c **** 	pbs_init();
+ 2549              		.loc 1 55 0
+ 2550 001c FEFFFFEB 		bl	pbs_init
+  56:../proyecto.c **** 	lcd_init();
+ 2551              		.loc 1 56 0
+ 2552 0020 FEFFFFEB 		bl	lcd_init
+  57:../proyecto.c **** 	iic_init();
+ 2553              		.loc 1 57 0
+ 2554 0024 FEFFFFEB 		bl	iic_init
+  58:../proyecto.c **** 	uda1341ts_init();
+ 2555              		.loc 1 58 0
+ 2556 0028 FEFFFFEB 		bl	uda1341ts_init
+  59:../proyecto.c **** 	iis_init(IIS_DMA);
+ 2557              		.loc 1 59 0
+ 2558 002c 0100A0E3 		mov	r0, #1
+ 2559 0030 FEFFFFEB 		bl	iis_init
+  60:../proyecto.c **** 
+  61:../proyecto.c **** 	lcd_on();
+ 2560              		.loc 1 61 0
+ 2561 0034 FEFFFFEB 		bl	lcd_on
+  62:../proyecto.c **** 
+  63:../proyecto.c **** 	random_init((BCDSEC << 16) | (BCDMIN << 8) | BCDHOUR ); /* Semilla aleatoria */
+ 2562              		.loc 1 63 0
+ 2563 0038 4C319FE5 		ldr	r3, .L8
+ 2564 003c 003093E5 		ldr	r3, [r3, #0]
+ 2565 0040 0328A0E1 		mov	r2, r3, asl #16
+ 2566 0044 44319FE5 		ldr	r3, .L8+4
+ 2567 0048 003093E5 		ldr	r3, [r3, #0]
+ 2568 004c 0334A0E1 		mov	r3, r3, asl #8
+ 2569 0050 032082E1 		orr	r2, r2, r3
+ 2570 0054 38319FE5 		ldr	r3, .L8+8
+ 2571 0058 003093E5 		ldr	r3, [r3, #0]
+ 2572 005c 033082E1 		orr	r3, r2, r3
+ 2573 0060 0300A0E1 		mov	r0, r3
+ 2574 0064 FEFFFFEB 		bl	random_init
+  64:../proyecto.c **** 	game_init(&game); /* Inicializa el juego */
+ 2575              		.loc 1 64 0
+ 2576 0068 28019FE5 		ldr	r0, .L8+12
+ 2577 006c FEFFFFEB 		bl	game_init
+  65:../proyecto.c **** 
+  66:../proyecto.c **** 	scheduler_init(); /* Inicializa el kernel */
+ 2578              		.loc 1 66 0
+ 2579 0070 FEFFFFEB 		bl	scheduler_init
+  67:../proyecto.c **** 
+  68:../proyecto.c **** 	// ------------------------------------------------------------------------
+  69:../proyecto.c **** 	// CREACION DE TAREAS
+  70:../proyecto.c **** 	// ------------------------------------------------------------------------
+  71:../proyecto.c **** 	create_task(keys_read_task, KEYS_READ_PERIOD / TICK_PERIOD);
+ 2580              		.loc 1 71 0
+ 2581 0074 20019FE5 		ldr	r0, .L8+16
+ 2582 0078 0510A0E3 		mov	r1, #5
+ 2583 007c FEFFFFEB 		bl	create_task
+  72:../proyecto.c **** 	create_task(pbs_read_task, PBS_READ_PERIOD / TICK_PERIOD);
+ 2584              		.loc 1 72 0
+ 2585 0080 18019FE5 		ldr	r0, .L8+20
+ 2586 0084 0310A0E3 		mov	r1, #3
+ 2587 0088 FEFFFFEB 		bl	create_task
+  73:../proyecto.c **** 
+  74:../proyecto.c **** 	create_task(player_update_task, PLAYER_UPDATE_PERIOD / TICK_PERIOD);
+ 2588              		.loc 1 74 0
+ 2589 008c 10019FE5 		ldr	r0, .L8+24
+ 2590 0090 0210A0E3 		mov	r1, #2
+ 2591 0094 FEFFFFEB 		bl	create_task
+  75:../proyecto.c **** 	create_task(playerShot_update_task, PLAYERSHOT_UPDATE_PERIOD / TICK_PERIOD);
+ 2592              		.loc 1 75 0
+ 2593 0098 08019FE5 		ldr	r0, .L8+28
+ 2594 009c 0510A0E3 		mov	r1, #5
+ 2595 00a0 FEFFFFEB 		bl	create_task
+  76:../proyecto.c **** 	create_task(swarm_update_task, SWARM_UPDATE_PERIOD / TICK_PERIOD);
+ 2596              		.loc 1 76 0
+ 2597 00a4 00019FE5 		ldr	r0, .L8+32
+ 2598 00a8 0210A0E3 		mov	r1, #2
+ 2599 00ac FEFFFFEB 		bl	create_task
+  77:../proyecto.c **** 	create_task(enemyShot_launch_task, ENEMYSHOT_LAUNCH_PERIOD / TICK_PERIOD);
+ 2600              		.loc 1 77 0
+ 2601 00b0 F8009FE5 		ldr	r0, .L8+36
+ 2602 00b4 C810A0E3 		mov	r1, #200
+ 2603 00b8 FEFFFFEB 		bl	create_task
+  78:../proyecto.c **** 	create_task(enemyShot_update_task, ENEMYSHOT_UPDATE_PERIOD / TICK_PERIOD);
+ 2604              		.loc 1 78 0
+ 2605 00bc F0009FE5 		ldr	r0, .L8+40
+ 2606 00c0 0510A0E3 		mov	r1, #5
+ 2607 00c4 FEFFFFEB 		bl	create_task
+  79:../proyecto.c **** 	create_task(ufo_launch_task, UFO_LAUNCH_PERIOD / TICK_PERIOD);
+ 2608              		.loc 1 79 0
+ 2609 00c8 E8009FE5 		ldr	r0, .L8+44
+ 2610 00cc 7D1EA0E3 		mov	r1, #2000
+ 2611 00d0 FEFFFFEB 		bl	create_task
+  80:../proyecto.c **** 	create_task(ufo_update_task, UFO_UPDATE_PERIOD / TICK_PERIOD);
+ 2612              		.loc 1 80 0
+ 2613 00d4 E0009FE5 		ldr	r0, .L8+48
+ 2614 00d8 1410A0E3 		mov	r1, #20
+ 2615 00dc FEFFFFEB 		bl	create_task
+ 2616              	.L7:
+  81:../proyecto.c **** 
+  82:../proyecto.c **** 	while (1) {
+  83:../proyecto.c **** 		wellcomeScreen_draw();
+ 2617              		.loc 1 83 0
+ 2618 00e0 FEFFFFEB 		bl	wellcomeScreen_draw
+  84:../proyecto.c **** 
+  85:../proyecto.c **** 		while (game.credit.value == 0) {
+ 2619              		.loc 1 85 0
+ 2620 00e4 120000EA 		b	.L2
+ 2621              	.L4:
+  86:../proyecto.c **** 			if (pb_pressed()) {
+ 2622              		.loc 1 86 0
+ 2623 00e8 FEFFFFEB 		bl	pb_pressed
+ 2624 00ec 0030A0E1 		mov	r3, r0
+ 2625 00f0 000053E3 		cmp	r3, #0
+ 2626 00f4 0E00000A 		beq	.L2
+  87:../proyecto.c **** 				while (pb_pressed())
+ 2627              		.loc 1 87 0
+ 2628 00f8 0000A0E1 		mov	r0, r0	@ nop
+ 2629              	.L3:
+ 2630              		.loc 1 87 0 is_stmt 0 discriminator 1
+ 2631 00fc FEFFFFEB 		bl	pb_pressed
+ 2632 0100 0030A0E1 		mov	r3, r0
+ 2633 0104 000053E3 		cmp	r3, #0
+ 2634 0108 FBFFFF1A 		bne	.L3
+  88:../proyecto.c **** 					;
+  89:../proyecto.c **** 				credit_update(&game.credit, 1);
+ 2635              		.loc 1 89 0 is_stmt 1
+ 2636 010c AC009FE5 		ldr	r0, .L8+52
+ 2637 0110 0110A0E3 		mov	r1, #1
+ 2638 0114 FEFFFFEB 		bl	credit_update
+  90:../proyecto.c **** 				lcd_putint(120, 80, BLACK, game.credit.value);
+ 2639              		.loc 1 90 0
+ 2640 0118 78209FE5 		ldr	r2, .L8+12
+ 2641 011c A0309FE5 		ldr	r3, .L8+56
+ 2642 0120 B33092E1 		ldrh	r3, [r2, r3]
+ 2643 0124 7800A0E3 		mov	r0, #120
+ 2644 0128 5010A0E3 		mov	r1, #80
+ 2645 012c 0F20A0E3 		mov	r2, #15
+ 2646 0130 FEFFFFEB 		bl	lcd_putint
+ 2647              	.L2:
+  85:../proyecto.c **** 		while (game.credit.value == 0) {
+ 2648              		.loc 1 85 0 discriminator 1
+ 2649 0134 5C209FE5 		ldr	r2, .L8+12
+ 2650 0138 84309FE5 		ldr	r3, .L8+56
+ 2651 013c B33092E1 		ldrh	r3, [r2, r3]
+ 2652 0140 000053E3 		cmp	r3, #0
+ 2653 0144 E7FFFF0A 		beq	.L4
+  91:../proyecto.c **** 			}
+  92:../proyecto.c **** 		}
+  93:../proyecto.c **** 
+  94:../proyecto.c **** 		lcd_clear();
+ 2654              		.loc 1 94 0
+ 2655 0148 FEFFFFEB 		bl	lcd_clear
+  95:../proyecto.c **** 		game_launch(&game);
+ 2656              		.loc 1 95 0
+ 2657 014c 44009FE5 		ldr	r0, .L8+12
+ 2658 0150 FEFFFFEB 		bl	game_launch
+  96:../proyecto.c **** 
+  97:../proyecto.c **** 		timer0_open_tick(scheduler, TICKS_PER_SEC); /* ARRANCA EL KERNEL */
+ 2659              		.loc 1 97 0
+ 2660 0154 6C009FE5 		ldr	r0, .L8+60
+ 2661 0158 6410A0E3 		mov	r1, #100
+ 2662 015c FEFFFFEB 		bl	timer0_open_tick
+  98:../proyecto.c **** 
+  99:../proyecto.c **** 		while (game.player.state != playerDead) {
+ 2663              		.loc 1 99 0
+ 2664 0160 000000EA 		b	.L5
+ 2665              	.L6:
+ 100:../proyecto.c **** 			// sleep();
+ 101:../proyecto.c **** 			dispacher();
+ 2666              		.loc 1 101 0
+ 2667 0164 FEFFFFEB 		bl	dispacher
+ 2668              	.L5:
+  99:../proyecto.c **** 		while (game.player.state != playerDead) {
+ 2669              		.loc 1 99 0 discriminator 1
+ 2670 0168 28309FE5 		ldr	r3, .L8+12
+ 2671 016c 2830D3E5 		ldrb	r3, [r3, #40]	@ zero_extendqisi2
+ 2672 0170 040053E3 		cmp	r3, #4
+ 2673 0174 FAFFFF1A 		bne	.L6
+ 102:../proyecto.c **** 		}
+ 103:../proyecto.c **** 
+ 104:../proyecto.c **** 		timer0_close(); /* PARA EL KERNEL */
+ 2674              		.loc 1 104 0
+ 2675 0178 FEFFFFEB 		bl	timer0_close
+ 105:../proyecto.c **** 
+ 106:../proyecto.c **** 		gameOverScreen_draw();
+ 2676              		.loc 1 106 0
+ 2677 017c FEFFFFEB 		bl	gameOverScreen_draw
+ 107:../proyecto.c **** 		game_restart(&game); /* Reinicia estructuras para la siguiente vez */
+ 2678              		.loc 1 107 0
+ 2679 0180 10009FE5 		ldr	r0, .L8+12
+ 2680 0184 FEFFFFEB 		bl	game_restart
+ 108:../proyecto.c **** 	}
+ 2681              		.loc 1 108 0
+ 2682 0188 D4FFFFEA 		b	.L7
+ 2683              	.L9:
+ 2684              		.align	2
+ 2685              	.L8:
+ 2686 018c 7000D701 		.word	30867568
+ 2687 0190 7400D701 		.word	30867572
+ 2688 0194 7800D701 		.word	30867576
+ 2689 0198 00000000 		.word	game
+ 2690 019c 00000000 		.word	keys_read_task
+ 2691 01a0 00000000 		.word	pbs_read_task
+ 2692 01a4 00000000 		.word	player_update_task
+ 2693 01a8 00000000 		.word	playerShot_update_task
+ 2694 01ac 00000000 		.word	swarm_update_task
+ 2695 01b0 00000000 		.word	enemyShot_launch_task
+ 2696 01b4 00000000 		.word	enemyShot_update_task
+ 2697 01b8 00000000 		.word	ufo_launch_task
+ 2698 01bc 00000000 		.word	ufo_update_task
+ 2699 01c0 CA040000 		.word	game+1226
+ 2700 01c4 CA040000 		.word	1226
+ 2701 01c8 00000000 		.word	scheduler
+ 2702              		.cfi_endproc
+ 2703              	.LFE0:
+ 2705              		.align	2
+ 2706              		.global	player_update_task
+ 2708              	player_update_task:
+ 2709              	.LFB1:
+ 109:../proyecto.c **** }
+ 110:../proyecto.c **** 
+ 111:../proyecto.c **** /////////////////////////////////////////////////////////////////////////////
+ 112:../proyecto.c **** // IMPLEMENTACIÓN DE TAREAS
+ 113:../proyecto.c **** /////////////////////////////////////////////////////////////////////////////
+ 114:../proyecto.c **** 
+ 115:../proyecto.c **** void player_update_task(void) {
+ 2710              		.loc 1 115 0
+ 2711              		.cfi_startproc
+ 2712              		@ Function supports interworking.
+ 2713              		@ args = 0, pretend = 0, frame = 0
+ 2714              		@ frame_needed = 1, uses_anonymous_args = 0
+ 2715 01cc 0DC0A0E1 		mov	ip, sp
+ 2716              	.LCFI2:
+ 2717              		.cfi_def_cfa_register 12
+ 2718 01d0 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 2719 01d4 04B04CE2 		sub	fp, ip, #4
+ 2720              		.cfi_offset 14, -8
+ 2721              		.cfi_offset 13, -12
+ 2722              		.cfi_offset 11, -16
+ 2723              	.LCFI3:
+ 2724              		.cfi_def_cfa 11, 4
+ 116:../proyecto.c **** 	player_update(&game.player);
+ 2725              		.loc 1 116 0
+ 2726 01d8 0C009FE5 		ldr	r0, .L11
+ 2727 01dc FEFFFFEB 		bl	player_update
+ 117:../proyecto.c **** }
+ 2728              		.loc 1 117 0
+ 2729 01e0 0CD04BE2 		sub	sp, fp, #12
+ 2730 01e4 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 2731 01e8 1EFF2FE1 		bx	lr
+ 2732              	.L12:
+ 2733              		.align	2
+ 2734              	.L11:
+ 2735 01ec 28000000 		.word	game+40
+ 2736              		.cfi_endproc
+ 2737              	.LFE1:
+ 2739              		.align	2
+ 2740              		.global	ufo_launch_task
+ 2742              	ufo_launch_task:
+ 2743              	.LFB2:
+ 118:../proyecto.c **** 
+ 119:../proyecto.c **** void ufo_launch_task(void) {
+ 2744              		.loc 1 119 0
+ 2745              		.cfi_startproc
+ 2746              		@ Function supports interworking.
+ 2747              		@ args = 0, pretend = 0, frame = 0
+ 2748              		@ frame_needed = 1, uses_anonymous_args = 0
+ 2749 01f0 0DC0A0E1 		mov	ip, sp
+ 2750              	.LCFI4:
+ 2751              		.cfi_def_cfa_register 12
+ 2752 01f4 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 2753 01f8 04B04CE2 		sub	fp, ip, #4
+ 2754              		.cfi_offset 14, -8
+ 2755              		.cfi_offset 13, -12
+ 2756              		.cfi_offset 11, -16
+ 2757              	.LCFI5:
+ 2758              		.cfi_def_cfa 11, 4
+ 120:../proyecto.c **** 	if ((random_get() & 0xFF) < 10)
+ 2759              		.loc 1 120 0
+ 2760 01fc FEFFFFEB 		bl	random_get
+ 2761 0200 0030A0E1 		mov	r3, r0
+ 2762 0204 FF3003E2 		and	r3, r3, #255
+ 2763 0208 090053E3 		cmp	r3, #9
+ 2764 020c 0100008A 		bhi	.L13
+ 121:../proyecto.c **** 		ufo_launch(&game.ufo);
+ 2765              		.loc 1 121 0
+ 2766 0210 0C009FE5 		ldr	r0, .L15
+ 2767 0214 FEFFFFEB 		bl	ufo_launch
+ 2768              	.L13:
+ 122:../proyecto.c **** }
+ 2769              		.loc 1 122 0
+ 2770 0218 0CD04BE2 		sub	sp, fp, #12
+ 2771 021c 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 2772 0220 1EFF2FE1 		bx	lr
+ 2773              	.L16:
+ 2774              		.align	2
+ 2775              	.L15:
+ 2776 0224 A4040000 		.word	game+1188
+ 2777              		.cfi_endproc
+ 2778              	.LFE2:
+ 2780              		.align	2
+ 2781              		.global	ufo_update_task
+ 2783              	ufo_update_task:
+ 2784              	.LFB3:
+ 123:../proyecto.c **** 
+ 124:../proyecto.c **** void ufo_update_task(void) {
+ 2785              		.loc 1 124 0
+ 2786              		.cfi_startproc
+ 2787              		@ Function supports interworking.
+ 2788              		@ args = 0, pretend = 0, frame = 0
+ 2789              		@ frame_needed = 1, uses_anonymous_args = 0
+ 2790 0228 0DC0A0E1 		mov	ip, sp
+ 2791              	.LCFI6:
+ 2792              		.cfi_def_cfa_register 12
+ 2793 022c 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 2794 0230 04B04CE2 		sub	fp, ip, #4
+ 2795              		.cfi_offset 14, -8
+ 2796              		.cfi_offset 13, -12
+ 2797              		.cfi_offset 11, -16
+ 2798              	.LCFI7:
+ 2799              		.cfi_def_cfa 11, 4
+ 125:../proyecto.c **** 	ufo_update(&game.ufo);
+ 2800              		.loc 1 125 0
+ 2801 0234 0C009FE5 		ldr	r0, .L18
+ 2802 0238 FEFFFFEB 		bl	ufo_update
+ 126:../proyecto.c **** }
+ 2803              		.loc 1 126 0
+ 2804 023c 0CD04BE2 		sub	sp, fp, #12
+ 2805 0240 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 2806 0244 1EFF2FE1 		bx	lr
+ 2807              	.L19:
+ 2808              		.align	2
+ 2809              	.L18:
+ 2810 0248 A4040000 		.word	game+1188
+ 2811              		.cfi_endproc
+ 2812              	.LFE3:
+ 2814              		.align	2
+ 2815              		.global	playerShot_update_task
+ 2817              	playerShot_update_task:
+ 2818              	.LFB4:
+ 127:../proyecto.c **** 
+ 128:../proyecto.c **** void playerShot_update_task(void) {
+ 2819              		.loc 1 128 0
+ 2820              		.cfi_startproc
+ 2821              		@ Function supports interworking.
+ 2822              		@ args = 0, pretend = 0, frame = 0
+ 2823              		@ frame_needed = 1, uses_anonymous_args = 0
+ 2824 024c 0DC0A0E1 		mov	ip, sp
+ 2825              	.LCFI8:
+ 2826              		.cfi_def_cfa_register 12
+ 2827 0250 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 2828 0254 04B04CE2 		sub	fp, ip, #4
+ 2829              		.cfi_offset 14, -8
+ 2830              		.cfi_offset 13, -12
+ 2831              		.cfi_offset 11, -16
+ 2832              	.LCFI9:
+ 2833              		.cfi_def_cfa 11, 4
+ 2834 0258 08D04DE2 		sub	sp, sp, #8
+ 129:../proyecto.c **** 	// Pasa los punteros correctos: (Shot, Shields[], Swarm, EnemyShot, Ufo)
+ 130:../proyecto.c **** 	playerShot_update(&game.playerShot, game.shield, &game.swarm,
+ 2835              		.loc 1 130 0
+ 2836 025c 20309FE5 		ldr	r3, .L21
+ 2837 0260 00308DE5 		str	r3, [sp, #0]
+ 2838 0264 1C009FE5 		ldr	r0, .L21+4
+ 2839 0268 1C109FE5 		ldr	r1, .L21+8
+ 2840 026c 1C209FE5 		ldr	r2, .L21+12
+ 2841 0270 1C309FE5 		ldr	r3, .L21+16
+ 2842 0274 FEFFFFEB 		bl	playerShot_update
+ 131:../proyecto.c **** 			&game.enemyShot, &game.ufo);
+ 132:../proyecto.c **** }
+ 2843              		.loc 1 132 0
+ 2844 0278 0CD04BE2 		sub	sp, fp, #12
+ 2845 027c 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 2846 0280 1EFF2FE1 		bx	lr
+ 2847              	.L22:
+ 2848              		.align	2
+ 2849              	.L21:
+ 2850 0284 A4040000 		.word	game+1188
+ 2851 0288 5C000000 		.word	game+92
+ 2852 028c 04000000 		.word	game+4
+ 2853 0290 7C000000 		.word	game+124
+ 2854 0294 8C040000 		.word	game+1164
+ 2855              		.cfi_endproc
+ 2856              	.LFE4:
+ 2858              		.align	2
+ 2859              		.global	swarm_update_task
+ 2861              	swarm_update_task:
+ 2862              	.LFB5:
+ 133:../proyecto.c **** 
+ 134:../proyecto.c **** void swarm_update_task(void) {
+ 2863              		.loc 1 134 0
+ 2864              		.cfi_startproc
+ 2865              		@ Function supports interworking.
+ 2866              		@ args = 0, pretend = 0, frame = 0
+ 2867              		@ frame_needed = 1, uses_anonymous_args = 0
+ 2868 0298 0DC0A0E1 		mov	ip, sp
+ 2869              	.LCFI10:
+ 2870              		.cfi_def_cfa_register 12
+ 2871 029c 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 2872 02a0 04B04CE2 		sub	fp, ip, #4
+ 2873              		.cfi_offset 14, -8
+ 2874              		.cfi_offset 13, -12
+ 2875              		.cfi_offset 11, -16
+ 2876              	.LCFI11:
+ 2877              		.cfi_def_cfa 11, 4
+ 135:../proyecto.c **** 	swarm_update(&game.swarm, &game.player);
+ 2878              		.loc 1 135 0
+ 2879 02a4 10009FE5 		ldr	r0, .L24
+ 2880 02a8 10109FE5 		ldr	r1, .L24+4
+ 2881 02ac FEFFFFEB 		bl	swarm_update
+ 136:../proyecto.c **** }
+ 2882              		.loc 1 136 0
+ 2883 02b0 0CD04BE2 		sub	sp, fp, #12
+ 2884 02b4 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 2885 02b8 1EFF2FE1 		bx	lr
+ 2886              	.L25:
+ 2887              		.align	2
+ 2888              	.L24:
+ 2889 02bc 7C000000 		.word	game+124
+ 2890 02c0 28000000 		.word	game+40
+ 2891              		.cfi_endproc
+ 2892              	.LFE5:
+ 2894              		.align	2
+ 2895              		.global	enemyShot_update_task
+ 2897              	enemyShot_update_task:
+ 2898              	.LFB6:
+ 137:../proyecto.c **** 
+ 138:../proyecto.c **** void enemyShot_update_task(void) {
+ 2899              		.loc 1 138 0
+ 2900              		.cfi_startproc
+ 2901              		@ Function supports interworking.
+ 2902              		@ args = 0, pretend = 0, frame = 0
+ 2903              		@ frame_needed = 1, uses_anonymous_args = 0
+ 2904 02c4 0DC0A0E1 		mov	ip, sp
+ 2905              	.LCFI12:
+ 2906              		.cfi_def_cfa_register 12
+ 2907 02c8 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 2908 02cc 04B04CE2 		sub	fp, ip, #4
+ 2909              		.cfi_offset 14, -8
+ 2910              		.cfi_offset 13, -12
+ 2911              		.cfi_offset 11, -16
+ 2912              	.LCFI13:
+ 2913              		.cfi_def_cfa 11, 4
+ 139:../proyecto.c **** 	enemyShot_update(&game.enemyShot, game.shield, &game.player);
+ 2914              		.loc 1 139 0
+ 2915 02d0 14009FE5 		ldr	r0, .L27
+ 2916 02d4 14109FE5 		ldr	r1, .L27+4
+ 2917 02d8 14209FE5 		ldr	r2, .L27+8
+ 2918 02dc FEFFFFEB 		bl	enemyShot_update
+ 140:../proyecto.c **** }
+ 2919              		.loc 1 140 0
+ 2920 02e0 0CD04BE2 		sub	sp, fp, #12
+ 2921 02e4 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 2922 02e8 1EFF2FE1 		bx	lr
+ 2923              	.L28:
+ 2924              		.align	2
+ 2925              	.L27:
+ 2926 02ec 8C040000 		.word	game+1164
+ 2927 02f0 04000000 		.word	game+4
+ 2928 02f4 28000000 		.word	game+40
+ 2929              		.cfi_endproc
+ 2930              	.LFE6:
+ 2932              		.align	2
+ 2933              		.global	enemyShot_launch_task
+ 2935              	enemyShot_launch_task:
+ 2936              	.LFB7:
+ 141:../proyecto.c **** 
+ 142:../proyecto.c **** void enemyShot_launch_task(void) {
+ 2937              		.loc 1 142 0
+ 2938              		.cfi_startproc
+ 2939              		@ Function supports interworking.
+ 2940              		@ args = 0, pretend = 0, frame = 8
+ 2941              		@ frame_needed = 1, uses_anonymous_args = 0
+ 2942 02f8 0DC0A0E1 		mov	ip, sp
+ 2943              	.LCFI14:
+ 2944              		.cfi_def_cfa_register 12
+ 2945 02fc 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 2946 0300 04B04CE2 		sub	fp, ip, #4
+ 2947              		.cfi_offset 14, -8
+ 2948              		.cfi_offset 13, -12
+ 2949              		.cfi_offset 11, -16
+ 2950              	.LCFI15:
+ 2951              		.cfi_def_cfa 11, 4
+ 2952 0304 08D04DE2 		sub	sp, sp, #8
+ 143:../proyecto.c **** 	uint16 col, row;
+ 144:../proyecto.c **** 
+ 145:../proyecto.c **** 	col = (random_get() & 0xFF) + 20;
+ 2953              		.loc 1 145 0
+ 2954 0308 FEFFFFEB 		bl	random_get
+ 2955 030c 0030A0E1 		mov	r3, r0
+ 2956 0310 0338A0E1 		mov	r3, r3, asl #16
+ 2957 0314 2338A0E1 		mov	r3, r3, lsr #16
+ 2958 0318 FF3003E2 		and	r3, r3, #255
+ 2959 031c 0338A0E1 		mov	r3, r3, asl #16
+ 2960 0320 2338A0E1 		mov	r3, r3, lsr #16
+ 2961 0324 143083E2 		add	r3, r3, #20
+ 2962 0328 BE304BE1 		strh	r3, [fp, #-14]	@ movhi
+ 146:../proyecto.c **** 	if (col > 300)
+ 2963              		.loc 1 146 0
+ 2964 032c BE305BE1 		ldrh	r3, [fp, #-14]
+ 2965 0330 4B0F53E3 		cmp	r3, #300
+ 2966 0334 0100009A 		bls	.L30
+ 147:../proyecto.c **** 		col = 20;
+ 2967              		.loc 1 147 0
+ 2968 0338 1430A0E3 		mov	r3, #20
+ 2969 033c BE304BE1 		strh	r3, [fp, #-14]	@ movhi
+ 2970              	.L30:
+ 148:../proyecto.c **** 
+ 149:../proyecto.c **** 	row = 40;
+ 2971              		.loc 1 149 0
+ 2972 0340 2830A0E3 		mov	r3, #40
+ 2973 0344 B0314BE1 		strh	r3, [fp, #-16]	@ movhi
+ 150:../proyecto.c **** 
+ 151:../proyecto.c **** 	enemyShot_launch(&game.enemyShot, col, row);
+ 2974              		.loc 1 151 0
+ 2975 0348 BE205BE1 		ldrh	r2, [fp, #-14]
+ 2976 034c B0315BE1 		ldrh	r3, [fp, #-16]
+ 2977 0350 14009FE5 		ldr	r0, .L31
+ 2978 0354 0210A0E1 		mov	r1, r2
+ 2979 0358 0320A0E1 		mov	r2, r3
+ 2980 035c FEFFFFEB 		bl	enemyShot_launch
+ 152:../proyecto.c **** }
+ 2981              		.loc 1 152 0
+ 2982 0360 0CD04BE2 		sub	sp, fp, #12
+ 2983 0364 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 2984 0368 1EFF2FE1 		bx	lr
+ 2985              	.L32:
+ 2986              		.align	2
+ 2987              	.L31:
+ 2988 036c 8C040000 		.word	game+1164
+ 2989              		.cfi_endproc
+ 2990              	.LFE7:
+ 2992              		.align	2
+ 2993              		.global	keys_read_task
+ 2995              	keys_read_task:
+ 2996              	.LFB8:
+ 153:../proyecto.c **** 
+ 154:../proyecto.c **** void keys_read_task(void) {
+ 2997              		.loc 1 154 0
+ 2998              		.cfi_startproc
+ 2999              		@ Function supports interworking.
+ 3000              		@ args = 0, pretend = 0, frame = 8
+ 3001              		@ frame_needed = 1, uses_anonymous_args = 0
+ 3002 0370 0DC0A0E1 		mov	ip, sp
+ 3003              	.LCFI16:
+ 3004              		.cfi_def_cfa_register 12
+ 3005 0374 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 3006 0378 04B04CE2 		sub	fp, ip, #4
+ 3007              		.cfi_offset 14, -8
+ 3008              		.cfi_offset 13, -12
+ 3009              		.cfi_offset 11, -16
+ 3010              	.LCFI17:
+ 3011              		.cfi_def_cfa 11, 4
+ 3012 037c 08D04DE2 		sub	sp, sp, #8
+ 155:../proyecto.c **** 	uint8 key;
+ 156:../proyecto.c **** 	key = keypad_scan();
+ 3013              		.loc 1 156 0
+ 3014 0380 FEFFFFEB 		bl	keypad_scan
+ 3015 0384 0030A0E1 		mov	r3, r0
+ 3016 0388 0D304BE5 		strb	r3, [fp, #-13]
+ 157:../proyecto.c **** 
+ 158:../proyecto.c **** 	if (key == KEYPAD_KEY4) {
+ 3017              		.loc 1 158 0
+ 3018 038c 0D305BE5 		ldrb	r3, [fp, #-13]	@ zero_extendqisi2
+ 3019 0390 040053E3 		cmp	r3, #4
+ 3020 0394 0200001A 		bne	.L34
+ 159:../proyecto.c **** 		player_left(&game.player);
+ 3021              		.loc 1 159 0
+ 3022 0398 48009FE5 		ldr	r0, .L38
+ 3023 039c FEFFFFEB 		bl	player_left
+ 3024 03a0 040000EA 		b	.L35
+ 3025              	.L34:
+ 160:../proyecto.c **** 	} else if (key == KEYPAD_KEY6) {
+ 3026              		.loc 1 160 0
+ 3027 03a4 0D305BE5 		ldrb	r3, [fp, #-13]	@ zero_extendqisi2
+ 3028 03a8 060053E3 		cmp	r3, #6
+ 3029 03ac 0100001A 		bne	.L35
+ 161:../proyecto.c **** 		player_right(&game.player);
+ 3030              		.loc 1 161 0
+ 3031 03b0 30009FE5 		ldr	r0, .L38
+ 3032 03b4 FEFFFFEB 		bl	player_right
+ 3033              	.L35:
+ 162:../proyecto.c **** 	}
+ 163:../proyecto.c **** 
+ 164:../proyecto.c **** 	if (key == KEYPAD_KEY5 || key == KEYPAD_KEYF) {
+ 3034              		.loc 1 164 0
+ 3035 03b8 0D305BE5 		ldrb	r3, [fp, #-13]	@ zero_extendqisi2
+ 3036 03bc 050053E3 		cmp	r3, #5
+ 3037 03c0 0200000A 		beq	.L36
+ 3038              		.loc 1 164 0 is_stmt 0 discriminator 1
+ 3039 03c4 0D305BE5 		ldrb	r3, [fp, #-13]	@ zero_extendqisi2
+ 3040 03c8 0F0053E3 		cmp	r3, #15
+ 3041 03cc 0200001A 		bne	.L33
+ 3042              	.L36:
+ 165:../proyecto.c **** 		playerShot_launch(&game.playerShot, &game.player);
+ 3043              		.loc 1 165 0 is_stmt 1
+ 3044 03d0 14009FE5 		ldr	r0, .L38+4
+ 3045 03d4 0C109FE5 		ldr	r1, .L38
+ 3046 03d8 FEFFFFEB 		bl	playerShot_launch
+ 3047              	.L33:
+ 166:../proyecto.c **** 	}
+ 167:../proyecto.c **** }
+ 3048              		.loc 1 167 0
+ 3049 03dc 0CD04BE2 		sub	sp, fp, #12
+ 3050 03e0 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 3051 03e4 1EFF2FE1 		bx	lr
+ 3052              	.L39:
+ 3053              		.align	2
+ 3054              	.L38:
+ 3055 03e8 28000000 		.word	game+40
+ 3056 03ec 5C000000 		.word	game+92
+ 3057              		.cfi_endproc
+ 3058              	.LFE8:
+ 3060              		.align	2
+ 3061              		.global	pbs_read_task
+ 3063              	pbs_read_task:
+ 3064              	.LFB9:
+ 168:../proyecto.c **** 
+ 169:../proyecto.c **** void pbs_read_task(void) {
+ 3065              		.loc 1 169 0
+ 3066              		.cfi_startproc
+ 3067              		@ Function supports interworking.
+ 3068              		@ args = 0, pretend = 0, frame = 0
+ 3069              		@ frame_needed = 1, uses_anonymous_args = 0
+ 3070 03f0 0DC0A0E1 		mov	ip, sp
+ 3071              	.LCFI18:
+ 3072              		.cfi_def_cfa_register 12
+ 3073 03f4 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 3074 03f8 04B04CE2 		sub	fp, ip, #4
+ 3075              		.cfi_offset 14, -8
+ 3076              		.cfi_offset 13, -12
+ 3077              		.cfi_offset 11, -16
+ 3078              	.LCFI19:
+ 3079              		.cfi_def_cfa 11, 4
+ 170:../proyecto.c **** 	static boolean init = TRUE;
+ 171:../proyecto.c **** 	static enum {
+ 172:../proyecto.c **** 		wait_keydown, scan, wait_keyup
+ 173:../proyecto.c **** 	} state;
+ 174:../proyecto.c **** 
+ 175:../proyecto.c **** 	if (init) {
+ 3080              		.loc 1 175 0
+ 3081 03fc D0309FE5 		ldr	r3, .L52
+ 3082 0400 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 3083 0404 000053E3 		cmp	r3, #0
+ 3084 0408 0600000A 		beq	.L41
+ 176:../proyecto.c **** 		init = FALSE;
+ 3085              		.loc 1 176 0
+ 3086 040c C0309FE5 		ldr	r3, .L52
+ 3087 0410 0020A0E3 		mov	r2, #0
+ 3088 0414 0020C3E5 		strb	r2, [r3, #0]
+ 177:../proyecto.c **** 		state = wait_keydown;
+ 3089              		.loc 1 177 0
+ 3090 0418 B8309FE5 		ldr	r3, .L52+4
+ 3091 041c 0020A0E3 		mov	r2, #0
+ 3092 0420 0020C3E5 		strb	r2, [r3, #0]
+ 3093 0424 270000EA 		b	.L40
+ 3094              	.L41:
+ 178:../proyecto.c **** 	} else
+ 179:../proyecto.c **** 		switch (state) {
+ 3095              		.loc 1 179 0
+ 3096 0428 A8309FE5 		ldr	r3, .L52+4
+ 3097 042c 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 3098 0430 010053E3 		cmp	r3, #1
+ 3099 0434 0B00000A 		beq	.L44
+ 3100 0438 020053E3 		cmp	r3, #2
+ 3101 043c 1400000A 		beq	.L45
+ 3102 0440 000053E3 		cmp	r3, #0
+ 3103 0444 1F00001A 		bne	.L40
+ 3104              	.L43:
+ 180:../proyecto.c **** 		case wait_keydown:
+ 181:../proyecto.c **** 			if (pb_pressed())
+ 3105              		.loc 1 181 0
+ 3106 0448 FEFFFFEB 		bl	pb_pressed
+ 3107 044c 0030A0E1 		mov	r3, r0
+ 3108 0450 000053E3 		cmp	r3, #0
+ 3109 0454 1600000A 		beq	.L49
+ 182:../proyecto.c **** 				state = scan;
+ 3110              		.loc 1 182 0
+ 3111 0458 78309FE5 		ldr	r3, .L52+4
+ 3112 045c 0120A0E3 		mov	r2, #1
+ 3113 0460 0020C3E5 		strb	r2, [r3, #0]
+ 183:../proyecto.c **** 			break;
+ 3114              		.loc 1 183 0
+ 3115 0464 170000EA 		b	.L40
+ 3116              	.L44:
+ 184:../proyecto.c **** 		case scan:
+ 185:../proyecto.c **** 			if (pb_scan()) {
+ 3117              		.loc 1 185 0
+ 3118 0468 FEFFFFEB 		bl	pb_scan
+ 3119 046c 0030A0E1 		mov	r3, r0
+ 3120 0470 000053E3 		cmp	r3, #0
+ 3121 0474 1000000A 		beq	.L50
+ 186:../proyecto.c **** 				credit_update(&game.credit, 1);
+ 3122              		.loc 1 186 0
+ 3123 0478 5C009FE5 		ldr	r0, .L52+8
+ 3124 047c 0110A0E3 		mov	r1, #1
+ 3125 0480 FEFFFFEB 		bl	credit_update
+ 187:../proyecto.c **** 				state = wait_keyup;
+ 3126              		.loc 1 187 0
+ 3127 0484 4C309FE5 		ldr	r3, .L52+4
+ 3128 0488 0220A0E3 		mov	r2, #2
+ 3129 048c 0020C3E5 		strb	r2, [r3, #0]
+ 188:../proyecto.c **** 			}
+ 189:../proyecto.c **** 			break;
+ 3130              		.loc 1 189 0
+ 3131 0490 0C0000EA 		b	.L40
+ 3132              	.L45:
+ 190:../proyecto.c **** 		case wait_keyup:
+ 191:../proyecto.c **** 			if (!pb_pressed())
+ 3133              		.loc 1 191 0
+ 3134 0494 FEFFFFEB 		bl	pb_pressed
+ 3135 0498 0030A0E1 		mov	r3, r0
+ 3136 049c 000053E3 		cmp	r3, #0
+ 3137 04a0 0700001A 		bne	.L51
+ 192:../proyecto.c **** 				state = wait_keydown;
+ 3138              		.loc 1 192 0
+ 3139 04a4 2C309FE5 		ldr	r3, .L52+4
+ 3140 04a8 0020A0E3 		mov	r2, #0
+ 3141 04ac 0020C3E5 		strb	r2, [r3, #0]
+ 193:../proyecto.c **** 			break;
+ 3142              		.loc 1 193 0
+ 3143 04b0 040000EA 		b	.L40
+ 3144              	.L49:
+ 183:../proyecto.c **** 			break;
+ 3145              		.loc 1 183 0
+ 3146 04b4 0000A0E1 		mov	r0, r0	@ nop
+ 3147 04b8 020000EA 		b	.L40
+ 3148              	.L50:
+ 189:../proyecto.c **** 			break;
+ 3149              		.loc 1 189 0
+ 3150 04bc 0000A0E1 		mov	r0, r0	@ nop
+ 3151 04c0 000000EA 		b	.L40
+ 3152              	.L51:
+ 3153              		.loc 1 193 0
+ 3154 04c4 0000A0E1 		mov	r0, r0	@ nop
+ 3155              	.L40:
+ 194:../proyecto.c **** 		}
+ 195:../proyecto.c **** }
+ 3156              		.loc 1 195 0
+ 3157 04c8 0CD04BE2 		sub	sp, fp, #12
+ 3158 04cc 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 3159 04d0 1EFF2FE1 		bx	lr
+ 3160              	.L53:
+ 3161              		.align	2
+ 3162              	.L52:
+ 3163 04d4 00000000 		.word	init.4559
+ 3164 04d8 00000000 		.word	state.4564
+ 3165 04dc CA040000 		.word	game+1226
+ 3166              		.cfi_endproc
+ 3167              	.LFE9:
+ 3169              		.section	.rodata
+ 3170              		.align	2
+ 3171              	.LC0:
+ 3172 0000 53504143 		.ascii	"SPACE INVADERS\000"
+ 3172      4520494E 
+ 3172      56414445 
+ 3172      525300
+ 3173 000f 00       		.align	2
+ 3174              	.LC1:
+ 3175 0010 496E7365 		.ascii	"Insert Coin (Pulsador)\000"
+ 3175      72742043 
+ 3175      6F696E20 
+ 3175      2850756C 
+ 3175      7361646F 
+ 3176 0027 00       		.align	2
+ 3177              	.LC2:
+ 3178 0028 43726564 		.ascii	"Creditos: \000"
+ 3178      69746F73 
+ 3178      3A2000
+ 3179 0033 00       		.align	2
+ 3180              	.LC3:
+ 3181 0034 50756C73 		.ascii	"Pulse Pulsador para Credito\000"
+ 3181      65205075 
+ 3181      6C736164 
+ 3181      6F722070 
+ 3181      61726120 
+ 3182              		.text
+ 3183              		.align	2
+ 3184              		.global	wellcomeScreen_draw
+ 3186              	wellcomeScreen_draw:
+ 3187              	.LFB10:
+ 196:../proyecto.c **** 
+ 197:../proyecto.c **** /*******************************************************************/
+ 198:../proyecto.c **** 
+ 199:../proyecto.c **** void wellcomeScreen_draw(void) {
+ 3188              		.loc 1 199 0
+ 3189              		.cfi_startproc
+ 3190              		@ Function supports interworking.
+ 3191              		@ args = 0, pretend = 0, frame = 0
+ 3192              		@ frame_needed = 1, uses_anonymous_args = 0
+ 3193 04e0 0DC0A0E1 		mov	ip, sp
+ 3194              	.LCFI20:
+ 3195              		.cfi_def_cfa_register 12
+ 3196 04e4 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 3197 04e8 04B04CE2 		sub	fp, ip, #4
+ 3198              		.cfi_offset 14, -8
+ 3199              		.cfi_offset 13, -12
+ 3200              		.cfi_offset 11, -16
+ 3201              	.LCFI21:
+ 3202              		.cfi_def_cfa 11, 4
+ 200:../proyecto.c **** 	lcd_clear();
+ 3203              		.loc 1 200 0
+ 3204 04ec FEFFFFEB 		bl	lcd_clear
+ 201:../proyecto.c **** 	lcd_puts_x2(30, 16, BLACK, "SPACE INVADERS");
+ 3205              		.loc 1 201 0
+ 3206 04f0 1E00A0E3 		mov	r0, #30
+ 3207 04f4 1010A0E3 		mov	r1, #16
+ 3208 04f8 0F20A0E3 		mov	r2, #15
+ 3209 04fc 64309FE5 		ldr	r3, .L55
+ 3210 0500 FEFFFFEB 		bl	lcd_puts_x2
+ 202:../proyecto.c **** 	lcd_puts(48, 64, BLACK, "Insert Coin (Pulsador)");
+ 3211              		.loc 1 202 0
+ 3212 0504 3000A0E3 		mov	r0, #48
+ 3213 0508 4010A0E3 		mov	r1, #64
+ 3214 050c 0F20A0E3 		mov	r2, #15
+ 3215 0510 54309FE5 		ldr	r3, .L55+4
+ 3216 0514 FEFFFFEB 		bl	lcd_puts
+ 203:../proyecto.c **** 	lcd_puts(48, 80, BLACK, "Creditos: ");
+ 3217              		.loc 1 203 0
+ 3218 0518 3000A0E3 		mov	r0, #48
+ 3219 051c 5010A0E3 		mov	r1, #80
+ 3220 0520 0F20A0E3 		mov	r2, #15
+ 3221 0524 44309FE5 		ldr	r3, .L55+8
+ 3222 0528 FEFFFFEB 		bl	lcd_puts
+ 204:../proyecto.c **** 	lcd_putint(120, 80, BLACK, game.credit.value);
+ 3223              		.loc 1 204 0
+ 3224 052c 40209FE5 		ldr	r2, .L55+12
+ 3225 0530 40309FE5 		ldr	r3, .L55+16
+ 3226 0534 B33092E1 		ldrh	r3, [r2, r3]
+ 3227 0538 7800A0E3 		mov	r0, #120
+ 3228 053c 5010A0E3 		mov	r1, #80
+ 3229 0540 0F20A0E3 		mov	r2, #15
+ 3230 0544 FEFFFFEB 		bl	lcd_putint
+ 205:../proyecto.c **** 	lcd_puts(20, 192, BLACK, "Pulse Pulsador para Credito");
+ 3231              		.loc 1 205 0
+ 3232 0548 1400A0E3 		mov	r0, #20
+ 3233 054c C010A0E3 		mov	r1, #192
+ 3234 0550 0F20A0E3 		mov	r2, #15
+ 3235 0554 20309FE5 		ldr	r3, .L55+20
+ 3236 0558 FEFFFFEB 		bl	lcd_puts
+ 206:../proyecto.c **** }
+ 3237              		.loc 1 206 0
+ 3238 055c 0CD04BE2 		sub	sp, fp, #12
+ 3239 0560 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 3240 0564 1EFF2FE1 		bx	lr
+ 3241              	.L56:
+ 3242              		.align	2
+ 3243              	.L55:
+ 3244 0568 00000000 		.word	.LC0
+ 3245 056c 10000000 		.word	.LC1
+ 3246 0570 28000000 		.word	.LC2
+ 3247 0574 00000000 		.word	game
+ 3248 0578 CA040000 		.word	1226
+ 3249 057c 34000000 		.word	.LC3
+ 3250              		.cfi_endproc
+ 3251              	.LFE10:
+ 3253              		.section	.rodata
+ 3254              		.align	2
+ 3255              	.LC4:
+ 3256 0050 47414D45 		.ascii	"GAME OVER\000"
+ 3256      204F5645 
+ 3256      5200
+ 3257 005a 0000     		.align	2
+ 3258              	.LC5:
+ 3259 005c 50756C73 		.ascii	"Pulse una tecla para reiniciar\000"
+ 3259      6520756E 
+ 3259      61207465 
+ 3259      636C6120 
+ 3259      70617261 
+ 3260 007b 00       		.text
+ 3261              		.align	2
+ 3262              		.global	gameOverScreen_draw
+ 3264              	gameOverScreen_draw:
+ 3265              	.LFB11:
+ 207:../proyecto.c **** 
+ 208:../proyecto.c **** void gameOverScreen_draw(void) {
+ 3266              		.loc 1 208 0
+ 3267              		.cfi_startproc
+ 3268              		@ Function supports interworking.
+ 3269              		@ args = 0, pretend = 0, frame = 0
+ 3270              		@ frame_needed = 1, uses_anonymous_args = 0
+ 3271 0580 0DC0A0E1 		mov	ip, sp
+ 3272              	.LCFI22:
+ 3273              		.cfi_def_cfa_register 12
+ 3274 0584 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 3275 0588 04B04CE2 		sub	fp, ip, #4
+ 3276              		.cfi_offset 14, -8
+ 3277              		.cfi_offset 13, -12
+ 3278              		.cfi_offset 11, -16
+ 3279              	.LCFI23:
+ 3280              		.cfi_def_cfa 11, 4
+ 209:../proyecto.c **** 	lcd_clear();
+ 3281              		.loc 1 209 0
+ 3282 058c FEFFFFEB 		bl	lcd_clear
+ 210:../proyecto.c **** 	lcd_puts_x2(40, 80, BLACK, "GAME OVER");
+ 3283              		.loc 1 210 0
+ 3284 0590 2800A0E3 		mov	r0, #40
+ 3285 0594 5010A0E3 		mov	r1, #80
+ 3286 0598 0F20A0E3 		mov	r2, #15
+ 3287 059c 34309FE5 		ldr	r3, .L59
+ 3288 05a0 FEFFFFEB 		bl	lcd_puts_x2
+ 211:../proyecto.c **** 	lcd_puts(20, 192, BLACK, "Pulse una tecla para reiniciar");
+ 3289              		.loc 1 211 0
+ 3290 05a4 1400A0E3 		mov	r0, #20
+ 3291 05a8 C010A0E3 		mov	r1, #192
+ 3292 05ac 0F20A0E3 		mov	r2, #15
+ 3293 05b0 24309FE5 		ldr	r3, .L59+4
+ 3294 05b4 FEFFFFEB 		bl	lcd_puts
+ 212:../proyecto.c **** 	while (keypad_scan() == KEYPAD_FAILURE)
+ 3295              		.loc 1 212 0
+ 3296 05b8 0000A0E1 		mov	r0, r0	@ nop
+ 3297              	.L58:
+ 3298              		.loc 1 212 0 is_stmt 0 discriminator 1
+ 3299 05bc FEFFFFEB 		bl	keypad_scan
+ 3300 05c0 0030A0E1 		mov	r3, r0
+ 3301 05c4 FF0053E3 		cmp	r3, #255
+ 3302 05c8 FBFFFF0A 		beq	.L58
+ 213:../proyecto.c **** 		; // Espera a pulsar tecla
+ 214:../proyecto.c **** }
+ 3303              		.loc 1 214 0 is_stmt 1
+ 3304 05cc 0CD04BE2 		sub	sp, fp, #12
+ 3305 05d0 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 3306 05d4 1EFF2FE1 		bx	lr
+ 3307              	.L60:
+ 3308              		.align	2
+ 3309              	.L59:
+ 3310 05d8 50000000 		.word	.LC4
+ 3311 05dc 5C000000 		.word	.LC5
+ 3312              		.cfi_endproc
+ 3313              	.LFE11:
+ 3315              		.data
+ 3318              	init.4559:
+ 3319 0000 01       		.byte	1
+ 3320              		.bss
+ 3321              	state.4564:
+ 3322 0000 00       		.space	1
+ 3323              		.text
+ 3324              	.Letext0:
+DEFINED SYMBOLS
+                            *ABS*:00000000 proyecto.c
+                            *COM*:000004d0 game
+C:\Users\USUARI~1\AppData\Local\Temp\ccQoDRn1.s:2521   .text:00000000 $a
+C:\Users\USUARI~1\AppData\Local\Temp\ccQoDRn1.s:2524   .text:00000000 main
+C:\Users\USUARI~1\AppData\Local\Temp\ccQoDRn1.s:3186   .text:000004e0 wellcomeScreen_draw
+C:\Users\USUARI~1\AppData\Local\Temp\ccQoDRn1.s:3264   .text:00000580 gameOverScreen_draw
+C:\Users\USUARI~1\AppData\Local\Temp\ccQoDRn1.s:2686   .text:0000018c $d
+C:\Users\USUARI~1\AppData\Local\Temp\ccQoDRn1.s:2995   .text:00000370 keys_read_task
+C:\Users\USUARI~1\AppData\Local\Temp\ccQoDRn1.s:3063   .text:000003f0 pbs_read_task
+C:\Users\USUARI~1\AppData\Local\Temp\ccQoDRn1.s:2708   .text:000001cc player_update_task
+C:\Users\USUARI~1\AppData\Local\Temp\ccQoDRn1.s:2817   .text:0000024c playerShot_update_task
+C:\Users\USUARI~1\AppData\Local\Temp\ccQoDRn1.s:2861   .text:00000298 swarm_update_task
+C:\Users\USUARI~1\AppData\Local\Temp\ccQoDRn1.s:2935   .text:000002f8 enemyShot_launch_task
+C:\Users\USUARI~1\AppData\Local\Temp\ccQoDRn1.s:2897   .text:000002c4 enemyShot_update_task
+C:\Users\USUARI~1\AppData\Local\Temp\ccQoDRn1.s:2742   .text:000001f0 ufo_launch_task
+C:\Users\USUARI~1\AppData\Local\Temp\ccQoDRn1.s:2783   .text:00000228 ufo_update_task
+C:\Users\USUARI~1\AppData\Local\Temp\ccQoDRn1.s:2705   .text:000001cc $a
+C:\Users\USUARI~1\AppData\Local\Temp\ccQoDRn1.s:2735   .text:000001ec $d
+C:\Users\USUARI~1\AppData\Local\Temp\ccQoDRn1.s:2739   .text:000001f0 $a
+C:\Users\USUARI~1\AppData\Local\Temp\ccQoDRn1.s:2776   .text:00000224 $d
+C:\Users\USUARI~1\AppData\Local\Temp\ccQoDRn1.s:2780   .text:00000228 $a
+C:\Users\USUARI~1\AppData\Local\Temp\ccQoDRn1.s:2810   .text:00000248 $d
+C:\Users\USUARI~1\AppData\Local\Temp\ccQoDRn1.s:2814   .text:0000024c $a
+C:\Users\USUARI~1\AppData\Local\Temp\ccQoDRn1.s:2850   .text:00000284 $d
+C:\Users\USUARI~1\AppData\Local\Temp\ccQoDRn1.s:2858   .text:00000298 $a
+C:\Users\USUARI~1\AppData\Local\Temp\ccQoDRn1.s:2889   .text:000002bc $d
+C:\Users\USUARI~1\AppData\Local\Temp\ccQoDRn1.s:2894   .text:000002c4 $a
+C:\Users\USUARI~1\AppData\Local\Temp\ccQoDRn1.s:2926   .text:000002ec $d
+C:\Users\USUARI~1\AppData\Local\Temp\ccQoDRn1.s:2932   .text:000002f8 $a
+C:\Users\USUARI~1\AppData\Local\Temp\ccQoDRn1.s:2988   .text:0000036c $d
+C:\Users\USUARI~1\AppData\Local\Temp\ccQoDRn1.s:2992   .text:00000370 $a
+C:\Users\USUARI~1\AppData\Local\Temp\ccQoDRn1.s:3055   .text:000003e8 $d
+C:\Users\USUARI~1\AppData\Local\Temp\ccQoDRn1.s:3060   .text:000003f0 $a
+C:\Users\USUARI~1\AppData\Local\Temp\ccQoDRn1.s:3163   .text:000004d4 $d
+C:\Users\USUARI~1\AppData\Local\Temp\ccQoDRn1.s:3318   .data:00000000 init.4559
+C:\Users\USUARI~1\AppData\Local\Temp\ccQoDRn1.s:3321   .bss:00000000 state.4564
+C:\Users\USUARI~1\AppData\Local\Temp\ccQoDRn1.s:3170   .rodata:00000000 $d
+C:\Users\USUARI~1\AppData\Local\Temp\ccQoDRn1.s:3183   .text:000004e0 $a
+C:\Users\USUARI~1\AppData\Local\Temp\ccQoDRn1.s:3244   .text:00000568 $d
+C:\Users\USUARI~1\AppData\Local\Temp\ccQoDRn1.s:3261   .text:00000580 $a
+C:\Users\USUARI~1\AppData\Local\Temp\ccQoDRn1.s:3310   .text:000005d8 $d
+C:\Users\USUARI~1\AppData\Local\Temp\ccQoDRn1.s:3322   .bss:00000000 $d
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+sys_init
+segs_init
+timers_init
+keypad_init
+pbs_init
+lcd_init
+iic_init
+uda1341ts_init
+iis_init
+lcd_on
+random_init
+game_init
+scheduler_init
+create_task
+pb_pressed
+credit_update
+lcd_putint
+lcd_clear
+game_launch
+timer0_open_tick
+dispacher
+timer0_close
+game_restart
+scheduler
+player_update
+random_get
+ufo_launch
+ufo_update
+playerShot_update
+swarm_update
+enemyShot_update
+enemyShot_launch
+keypad_scan
+player_left
+player_right
+playerShot_launch
+pb_scan
+lcd_puts_x2
+lcd_puts

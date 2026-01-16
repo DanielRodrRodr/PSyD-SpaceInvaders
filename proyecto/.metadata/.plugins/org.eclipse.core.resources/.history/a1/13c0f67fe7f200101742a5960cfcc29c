@@ -1,0 +1,355 @@
+   1              		.cpu arm7tdmi
+   2              		.fpu softvfp
+   3              		.eabi_attribute 20, 1
+   4              		.eabi_attribute 21, 1
+   5              		.eabi_attribute 23, 3
+   6              		.eabi_attribute 24, 1
+   7              		.eabi_attribute 25, 1
+   8              		.eabi_attribute 26, 1
+   9              		.eabi_attribute 30, 6
+  10              		.eabi_attribute 18, 4
+  11              		.file	"game.c"
+  21              	.Ltext0:
+  22              		.file 1 "../game.c"
+ 2130              		.align	2
+ 2133              	shieldCol:
+ 2134 0000 17       		.byte	23
+ 2135 0001 45       		.byte	69
+ 2136 0002 73       		.byte	115
+ 2137 0003 00       		.text
+ 2138              		.align	2
+ 2139              		.global	game_init
+ 2141              	game_init:
+ 2142              	.LFB0:
+   1:../game.c     **** #include <lcd.h>
+   2:../game.c     **** #include <iis.h>
+   3:../game.c     **** #include <stdlib.h>
+   4:../game.c     **** #include "config.h"
+   5:../game.c     **** #include "pixmaps.h"
+   6:../game.c     **** #include "wavs.h"
+   7:../game.c     **** #include "game.h"
+   8:../game.c     **** 
+   9:../game.c     **** static const uint8 shieldCol[MAX_SHIELDS] = { 23, 69, 115 };
+  10:../game.c     **** 
+  11:../game.c     **** void game_init(Game *self) {
+ 2143              		.loc 1 11 0
+ 2144              		.cfi_startproc
+ 2145              		@ Function supports interworking.
+ 2146              		@ args = 0, pretend = 0, frame = 16
+ 2147              		@ frame_needed = 1, uses_anonymous_args = 0
+ 2148 0000 0DC0A0E1 		mov	ip, sp
+ 2149              	.LCFI0:
+ 2150              		.cfi_def_cfa_register 12
+ 2151 0004 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 2152 0008 04B04CE2 		sub	fp, ip, #4
+ 2153              		.cfi_offset 14, -8
+ 2154              		.cfi_offset 13, -12
+ 2155              		.cfi_offset 11, -16
+ 2156              	.LCFI1:
+ 2157              		.cfi_def_cfa 11, 4
+ 2158 000c 10D04DE2 		sub	sp, sp, #16
+ 2159 0010 18000BE5 		str	r0, [fp, #-24]
+  12:../game.c     **** 	uint8 i;
+  13:../game.c     **** 
+  14:../game.c     **** 	self->state = pause;
+ 2160              		.loc 1 14 0
+ 2161 0014 18301BE5 		ldr	r3, [fp, #-24]
+ 2162 0018 0120A0E3 		mov	r2, #1
+ 2163 001c 0020C3E5 		strb	r2, [r3, #0]
+  15:../game.c     **** 
+  16:../game.c     **** 	for (i = 0; i < MAX_SHIELDS; i++)
+ 2164              		.loc 1 16 0
+ 2165 0020 0030A0E3 		mov	r3, #0
+ 2166 0024 0D304BE5 		strb	r3, [fp, #-13]
+ 2167 0028 100000EA 		b	.L2
+ 2168              	.L3:
+  17:../game.c     **** 		shield_init(&self->shield[i], shieldCol[i]);
+ 2169              		.loc 1 17 0 discriminator 2
+ 2170 002c 18301BE5 		ldr	r3, [fp, #-24]
+ 2171 0030 041083E2 		add	r1, r3, #4
+ 2172 0034 0D205BE5 		ldrb	r2, [fp, #-13]	@ zero_extendqisi2
+ 2173 0038 0230A0E1 		mov	r3, r2
+ 2174 003c 8330A0E1 		mov	r3, r3, asl #1
+ 2175 0040 023083E0 		add	r3, r3, r2
+ 2176 0044 0331A0E1 		mov	r3, r3, asl #2
+ 2177 0048 032081E0 		add	r2, r1, r3
+ 2178 004c 0D305BE5 		ldrb	r3, [fp, #-13]	@ zero_extendqisi2
+ 2179 0050 B0109FE5 		ldr	r1, .L4
+ 2180 0054 0330D1E7 		ldrb	r3, [r1, r3]	@ zero_extendqisi2
+ 2181 0058 0200A0E1 		mov	r0, r2
+ 2182 005c 0310A0E1 		mov	r1, r3
+ 2183 0060 FEFFFFEB 		bl	shield_init
+  16:../game.c     **** 	for (i = 0; i < MAX_SHIELDS; i++)
+ 2184              		.loc 1 16 0 discriminator 2
+ 2185 0064 0D305BE5 		ldrb	r3, [fp, #-13]
+ 2186 0068 013083E2 		add	r3, r3, #1
+ 2187 006c 0D304BE5 		strb	r3, [fp, #-13]
+ 2188              	.L2:
+  16:../game.c     **** 	for (i = 0; i < MAX_SHIELDS; i++)
+ 2189              		.loc 1 16 0 is_stmt 0 discriminator 1
+ 2190 0070 0D305BE5 		ldrb	r3, [fp, #-13]	@ zero_extendqisi2
+ 2191 0074 020053E3 		cmp	r3, #2
+ 2192 0078 EBFFFF9A 		bls	.L3
+  18:../game.c     **** 
+  19:../game.c     **** 	player_init(&self->player);
+ 2193              		.loc 1 19 0 is_stmt 1
+ 2194 007c 18301BE5 		ldr	r3, [fp, #-24]
+ 2195 0080 283083E2 		add	r3, r3, #40
+ 2196 0084 0300A0E1 		mov	r0, r3
+ 2197 0088 FEFFFFEB 		bl	player_init
+  20:../game.c     **** 	playerShot_init(&self->playerShot);
+ 2198              		.loc 1 20 0
+ 2199 008c 18301BE5 		ldr	r3, [fp, #-24]
+ 2200 0090 5C3083E2 		add	r3, r3, #92
+ 2201 0094 0300A0E1 		mov	r0, r3
+ 2202 0098 FEFFFFEB 		bl	playerShot_init
+  21:../game.c     **** 	ufo_init(&self->ufo);
+ 2203              		.loc 1 21 0
+ 2204 009c 18301BE5 		ldr	r3, [fp, #-24]
+ 2205 00a0 4A3E83E2 		add	r3, r3, #1184
+ 2206 00a4 043083E2 		add	r3, r3, #4
+ 2207 00a8 0300A0E1 		mov	r0, r3
+ 2208 00ac FEFFFFEB 		bl	ufo_init
+  22:../game.c     **** 	swarm_init(&self->swarm);
+ 2209              		.loc 1 22 0
+ 2210 00b0 18301BE5 		ldr	r3, [fp, #-24]
+ 2211 00b4 7C3083E2 		add	r3, r3, #124
+ 2212 00b8 0300A0E1 		mov	r0, r3
+ 2213 00bc FEFFFFEB 		bl	swarm_init
+  23:../game.c     **** 	enemyShot_init(&self->enemyShot);
+ 2214              		.loc 1 23 0
+ 2215 00c0 18301BE5 		ldr	r3, [fp, #-24]
+ 2216 00c4 123D83E2 		add	r3, r3, #1152
+ 2217 00c8 0C3083E2 		add	r3, r3, #12
+ 2218 00cc 0300A0E1 		mov	r0, r3
+ 2219 00d0 FEFFFFEB 		bl	enemyShot_init
+  24:../game.c     **** 	hiScore_init(&self->hiScore);
+ 2220              		.loc 1 24 0
+ 2221 00d4 18301BE5 		ldr	r3, [fp, #-24]
+ 2222 00d8 133D83E2 		add	r3, r3, #1216
+ 2223 00dc 043083E2 		add	r3, r3, #4
+ 2224 00e0 0300A0E1 		mov	r0, r3
+ 2225 00e4 FEFFFFEB 		bl	hiScore_init
+  25:../game.c     **** 	credit_init(&self->credit);
+ 2226              		.loc 1 25 0
+ 2227 00e8 18301BE5 		ldr	r3, [fp, #-24]
+ 2228 00ec 133D83E2 		add	r3, r3, #1216
+ 2229 00f0 0A3083E2 		add	r3, r3, #10
+ 2230 00f4 0300A0E1 		mov	r0, r3
+ 2231 00f8 FEFFFFEB 		bl	credit_init
+  26:../game.c     **** 
+  27:../game.c     **** 	//self->music = (Sound ) { INTRO_MUSIC };
+  28:../game.c     **** 	//sound_loop(&self->music);
+  29:../game.c     **** }
+ 2232              		.loc 1 29 0
+ 2233 00fc 0CD04BE2 		sub	sp, fp, #12
+ 2234 0100 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 2235 0104 1EFF2FE1 		bx	lr
+ 2236              	.L5:
+ 2237              		.align	2
+ 2238              	.L4:
+ 2239 0108 00000000 		.word	shieldCol
+ 2240              		.cfi_endproc
+ 2241              	.LFE0:
+ 2243              		.align	2
+ 2244              		.global	game_restart
+ 2246              	game_restart:
+ 2247              	.LFB1:
+  30:../game.c     **** 
+  31:../game.c     **** void game_restart(Game *self) {
+ 2248              		.loc 1 31 0
+ 2249              		.cfi_startproc
+ 2250              		@ Function supports interworking.
+ 2251              		@ args = 0, pretend = 0, frame = 8
+ 2252              		@ frame_needed = 1, uses_anonymous_args = 0
+ 2253 010c 0DC0A0E1 		mov	ip, sp
+ 2254              	.LCFI2:
+ 2255              		.cfi_def_cfa_register 12
+ 2256 0110 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 2257 0114 04B04CE2 		sub	fp, ip, #4
+ 2258              		.cfi_offset 14, -8
+ 2259              		.cfi_offset 13, -12
+ 2260              		.cfi_offset 11, -16
+ 2261              	.LCFI3:
+ 2262              		.cfi_def_cfa 11, 4
+ 2263 0118 08D04DE2 		sub	sp, sp, #8
+ 2264 011c 10000BE5 		str	r0, [fp, #-16]
+  32:../game.c     **** 	self->playerShot.state = noPlayerShot;
+ 2265              		.loc 1 32 0
+ 2266 0120 10301BE5 		ldr	r3, [fp, #-16]
+ 2267 0124 0020A0E3 		mov	r2, #0
+ 2268 0128 5C20C3E5 		strb	r2, [r3, #92]
+  33:../game.c     **** 	self->enemyShot.state = noEnemyShot;
+ 2269              		.loc 1 33 0
+ 2270 012c 10301BE5 		ldr	r3, [fp, #-16]
+ 2271 0130 0020A0E3 		mov	r2, #0
+ 2272 0134 8C24C3E5 		strb	r2, [r3, #1164]
+  34:../game.c     **** 	self->ufo.state = noUfo;
+ 2273              		.loc 1 34 0
+ 2274 0138 10301BE5 		ldr	r3, [fp, #-16]
+ 2275 013c 0020A0E3 		mov	r2, #0
+ 2276 0140 A424C3E5 		strb	r2, [r3, #1188]
+  35:../game.c     **** 
+  36:../game.c     **** 	//self->music = (Sound ) { INTRO_MUSIC };
+  37:../game.c     **** 	//sound_loop(&self->music);
+  38:../game.c     **** 
+  39:../game.c     **** 	self->state = pause;
+ 2277              		.loc 1 39 0
+ 2278 0144 10301BE5 		ldr	r3, [fp, #-16]
+ 2279 0148 0120A0E3 		mov	r2, #1
+ 2280 014c 0020C3E5 		strb	r2, [r3, #0]
+  40:../game.c     **** }
+ 2281              		.loc 1 40 0
+ 2282 0150 0CD04BE2 		sub	sp, fp, #12
+ 2283 0154 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 2284 0158 1EFF2FE1 		bx	lr
+ 2285              		.cfi_endproc
+ 2286              	.LFE1:
+ 2288              		.align	2
+ 2289              		.global	game_launch
+ 2291              	game_launch:
+ 2292              	.LFB2:
+  41:../game.c     **** 
+  42:../game.c     **** void game_launch(Game *self) {
+ 2293              		.loc 1 42 0
+ 2294              		.cfi_startproc
+ 2295              		@ Function supports interworking.
+ 2296              		@ args = 0, pretend = 0, frame = 16
+ 2297              		@ frame_needed = 1, uses_anonymous_args = 0
+ 2298 015c 0DC0A0E1 		mov	ip, sp
+ 2299              	.LCFI4:
+ 2300              		.cfi_def_cfa_register 12
+ 2301 0160 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 2302 0164 04B04CE2 		sub	fp, ip, #4
+ 2303              		.cfi_offset 14, -8
+ 2304              		.cfi_offset 13, -12
+ 2305              		.cfi_offset 11, -16
+ 2306              	.LCFI5:
+ 2307              		.cfi_def_cfa 11, 4
+ 2308 0168 10D04DE2 		sub	sp, sp, #16
+ 2309 016c 18000BE5 		str	r0, [fp, #-24]
+  43:../game.c     **** 	uint8 i;
+  44:../game.c     **** 
+  45:../game.c     **** 	credit_launch(&self->credit);
+ 2310              		.loc 1 45 0
+ 2311 0170 18301BE5 		ldr	r3, [fp, #-24]
+ 2312 0174 133D83E2 		add	r3, r3, #1216
+ 2313 0178 0A3083E2 		add	r3, r3, #10
+ 2314 017c 0300A0E1 		mov	r0, r3
+ 2315 0180 FEFFFFEB 		bl	credit_launch
+  46:../game.c     **** 
+  47:../game.c     **** 	// iis_stop();
+  48:../game.c     **** 
+  49:../game.c     **** 	lcd_clear();
+ 2316              		.loc 1 49 0
+ 2317 0184 FEFFFFEB 		bl	lcd_clear
+  50:../game.c     **** 
+  51:../game.c     **** 	player_launch(&self->player);
+ 2318              		.loc 1 51 0
+ 2319 0188 18301BE5 		ldr	r3, [fp, #-24]
+ 2320 018c 283083E2 		add	r3, r3, #40
+ 2321 0190 0300A0E1 		mov	r0, r3
+ 2322 0194 FEFFFFEB 		bl	player_launch
+  52:../game.c     **** 	swarm_lauch(&self->swarm);
+ 2323              		.loc 1 52 0
+ 2324 0198 18301BE5 		ldr	r3, [fp, #-24]
+ 2325 019c 7C3083E2 		add	r3, r3, #124
+ 2326 01a0 0300A0E1 		mov	r0, r3
+ 2327 01a4 FEFFFFEB 		bl	swarm_lauch
+  53:../game.c     **** 
+  54:../game.c     **** 	self->ufo.state = noUfo;
+ 2328              		.loc 1 54 0
+ 2329 01a8 18301BE5 		ldr	r3, [fp, #-24]
+ 2330 01ac 0020A0E3 		mov	r2, #0
+ 2331 01b0 A424C3E5 		strb	r2, [r3, #1188]
+  55:../game.c     **** 
+  56:../game.c     **** 	for (i = 0; i < MAX_SHIELDS; i++) {
+ 2332              		.loc 1 56 0
+ 2333 01b4 0030A0E3 		mov	r3, #0
+ 2334 01b8 0D304BE5 		strb	r3, [fp, #-13]
+ 2335 01bc 100000EA 		b	.L8
+ 2336              	.L9:
+  57:../game.c     **** 		shield_init(&self->shield[i], shieldCol[i]);
+ 2337              		.loc 1 57 0 discriminator 2
+ 2338 01c0 18301BE5 		ldr	r3, [fp, #-24]
+ 2339 01c4 041083E2 		add	r1, r3, #4
+ 2340 01c8 0D205BE5 		ldrb	r2, [fp, #-13]	@ zero_extendqisi2
+ 2341 01cc 0230A0E1 		mov	r3, r2
+ 2342 01d0 8330A0E1 		mov	r3, r3, asl #1
+ 2343 01d4 023083E0 		add	r3, r3, r2
+ 2344 01d8 0331A0E1 		mov	r3, r3, asl #2
+ 2345 01dc 032081E0 		add	r2, r1, r3
+ 2346 01e0 0D305BE5 		ldrb	r3, [fp, #-13]	@ zero_extendqisi2
+ 2347 01e4 54109FE5 		ldr	r1, .L10
+ 2348 01e8 0330D1E7 		ldrb	r3, [r1, r3]	@ zero_extendqisi2
+ 2349 01ec 0200A0E1 		mov	r0, r2
+ 2350 01f0 0310A0E1 		mov	r1, r3
+ 2351 01f4 FEFFFFEB 		bl	shield_init
+  56:../game.c     **** 	for (i = 0; i < MAX_SHIELDS; i++) {
+ 2352              		.loc 1 56 0 discriminator 2
+ 2353 01f8 0D305BE5 		ldrb	r3, [fp, #-13]
+ 2354 01fc 013083E2 		add	r3, r3, #1
+ 2355 0200 0D304BE5 		strb	r3, [fp, #-13]
+ 2356              	.L8:
+  56:../game.c     **** 	for (i = 0; i < MAX_SHIELDS; i++) {
+ 2357              		.loc 1 56 0 is_stmt 0 discriminator 1
+ 2358 0204 0D305BE5 		ldrb	r3, [fp, #-13]	@ zero_extendqisi2
+ 2359 0208 020053E3 		cmp	r3, #2
+ 2360 020c EBFFFF9A 		bls	.L9
+  58:../game.c     **** 		// shield_draw( &self->shield[i] );
+  59:../game.c     **** 	}
+  60:../game.c     **** 
+  61:../game.c     **** 	self->playerShot.state = noPlayerShot;
+ 2361              		.loc 1 61 0 is_stmt 1
+ 2362 0210 18301BE5 		ldr	r3, [fp, #-24]
+ 2363 0214 0020A0E3 		mov	r2, #0
+ 2364 0218 5C20C3E5 		strb	r2, [r3, #92]
+  62:../game.c     **** 	self->enemyShot.state = noEnemyShot;
+ 2365              		.loc 1 62 0
+ 2366 021c 18301BE5 		ldr	r3, [fp, #-24]
+ 2367 0220 0020A0E3 		mov	r2, #0
+ 2368 0224 8C24C3E5 		strb	r2, [r3, #1164]
+  63:../game.c     **** 
+  64:../game.c     **** 	self->state = run;
+ 2369              		.loc 1 64 0
+ 2370 0228 18301BE5 		ldr	r3, [fp, #-24]
+ 2371 022c 0020A0E3 		mov	r2, #0
+ 2372 0230 0020C3E5 		strb	r2, [r3, #0]
+  65:../game.c     **** }
+ 2373              		.loc 1 65 0
+ 2374 0234 0CD04BE2 		sub	sp, fp, #12
+ 2375 0238 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 2376 023c 1EFF2FE1 		bx	lr
+ 2377              	.L11:
+ 2378              		.align	2
+ 2379              	.L10:
+ 2380 0240 00000000 		.word	shieldCol
+ 2381              		.cfi_endproc
+ 2382              	.LFE2:
+ 2384              	.Letext0:
+DEFINED SYMBOLS
+                            *ABS*:00000000 game.c
+C:\Users\USUARI~1\AppData\Local\Temp\ccF3dYYa.s:2130   .rodata:00000000 $d
+C:\Users\USUARI~1\AppData\Local\Temp\ccF3dYYa.s:2133   .rodata:00000000 shieldCol
+C:\Users\USUARI~1\AppData\Local\Temp\ccF3dYYa.s:2138   .text:00000000 $a
+C:\Users\USUARI~1\AppData\Local\Temp\ccF3dYYa.s:2141   .text:00000000 game_init
+C:\Users\USUARI~1\AppData\Local\Temp\ccF3dYYa.s:2239   .text:00000108 $d
+C:\Users\USUARI~1\AppData\Local\Temp\ccF3dYYa.s:2243   .text:0000010c $a
+C:\Users\USUARI~1\AppData\Local\Temp\ccF3dYYa.s:2246   .text:0000010c game_restart
+C:\Users\USUARI~1\AppData\Local\Temp\ccF3dYYa.s:2291   .text:0000015c game_launch
+C:\Users\USUARI~1\AppData\Local\Temp\ccF3dYYa.s:2380   .text:00000240 $d
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+shield_init
+player_init
+playerShot_init
+ufo_init
+swarm_init
+enemyShot_init
+hiScore_init
+credit_init
+credit_launch
+lcd_clear
+player_launch
+swarm_lauch

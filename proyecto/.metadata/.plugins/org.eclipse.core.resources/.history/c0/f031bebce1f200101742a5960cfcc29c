@@ -1,0 +1,18 @@
+#include "config.h"
+#include "pixmaps.h"
+#include "shield.h"
+#include "sprite.h"
+
+void shield_init(Shield *self, uint16 col) {
+	self->col = col;
+	self->row = SHIELD_ROW;
+	self->sprite = (Sprite ) { SHIELD_WIDTH, SHIELD_HEIGHT, shieldPixMap };
+}
+
+void shield_launch(Shield *self) {
+	sprite_draw(&self->sprite, self->col, self->row);
+}
+
+void shield_hit(Shield *self, uint16 col, uint16 row, uint16 width,
+		uint16 height) {
+}

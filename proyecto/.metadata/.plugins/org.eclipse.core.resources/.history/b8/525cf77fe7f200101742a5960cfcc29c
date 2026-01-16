@@ -1,0 +1,209 @@
+   1              		.cpu arm7tdmi
+   2              		.fpu softvfp
+   3              		.eabi_attribute 20, 1
+   4              		.eabi_attribute 21, 1
+   5              		.eabi_attribute 23, 3
+   6              		.eabi_attribute 24, 1
+   7              		.eabi_attribute 25, 1
+   8              		.eabi_attribute 26, 1
+   9              		.eabi_attribute 30, 6
+  10              		.eabi_attribute 18, 4
+  11              		.file	"lives.c"
+  21              	.Ltext0:
+  22              		.file 1 "../lives.c"
+ 1303              		.align	2
+ 1304              		.global	lives_init
+ 1306              	lives_init:
+ 1307              	.LFB0:
+   1:../lives.c    **** #include <lcd.h>
+   2:../lives.c    **** #include "config.h"
+   3:../lives.c    **** #include "lives.h"
+   4:../lives.c    **** 
+   5:../lives.c    **** static void lives_draw(Lives *self);
+   6:../lives.c    **** 
+   7:../lives.c    **** void lives_init(Lives *self) {
+ 1308              		.loc 1 7 0
+ 1309              		.cfi_startproc
+ 1310              		@ Function supports interworking.
+ 1311              		@ args = 0, pretend = 0, frame = 8
+ 1312              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1313 0000 0DC0A0E1 		mov	ip, sp
+ 1314              	.LCFI0:
+ 1315              		.cfi_def_cfa_register 12
+ 1316 0004 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1317 0008 04B04CE2 		sub	fp, ip, #4
+ 1318              		.cfi_offset 14, -8
+ 1319              		.cfi_offset 13, -12
+ 1320              		.cfi_offset 11, -16
+ 1321              	.LCFI1:
+ 1322              		.cfi_def_cfa 11, 4
+ 1323 000c 08D04DE2 		sub	sp, sp, #8
+ 1324 0010 10000BE5 		str	r0, [fp, #-16]
+   8:../lives.c    **** 	self->value = MAX_LIFES;
+ 1325              		.loc 1 8 0
+ 1326 0014 10301BE5 		ldr	r3, [fp, #-16]
+ 1327 0018 0320A0E3 		mov	r2, #3
+ 1328 001c B020C3E1 		strh	r2, [r3, #0]	@ movhi
+   9:../lives.c    **** 	self->col = (31 + 7) * FONT_WIDTH * 2;
+ 1329              		.loc 1 9 0
+ 1330 0020 10301BE5 		ldr	r3, [fp, #-16]
+ 1331 0024 132EA0E3 		mov	r2, #304
+ 1332 0028 B220C3E1 		strh	r2, [r3, #2]	@ movhi
+  10:../lives.c    **** 	self->row = 0;
+ 1333              		.loc 1 10 0
+ 1334 002c 10301BE5 		ldr	r3, [fp, #-16]
+ 1335 0030 0020A0E3 		mov	r2, #0
+ 1336 0034 B420C3E1 		strh	r2, [r3, #4]	@ movhi
+  11:../lives.c    **** }
+ 1337              		.loc 1 11 0
+ 1338 0038 0CD04BE2 		sub	sp, fp, #12
+ 1339 003c 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1340 0040 1EFF2FE1 		bx	lr
+ 1341              		.cfi_endproc
+ 1342              	.LFE0:
+ 1344              		.align	2
+ 1346              	lives_draw:
+ 1347              	.LFB1:
+  12:../lives.c    **** 
+  13:../lives.c    **** static void lives_draw(Lives *self) {
+ 1348              		.loc 1 13 0
+ 1349              		.cfi_startproc
+ 1350              		@ Function supports interworking.
+ 1351              		@ args = 0, pretend = 0, frame = 8
+ 1352              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1353 0044 0DC0A0E1 		mov	ip, sp
+ 1354              	.LCFI2:
+ 1355              		.cfi_def_cfa_register 12
+ 1356 0048 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1357 004c 04B04CE2 		sub	fp, ip, #4
+ 1358              		.cfi_offset 14, -8
+ 1359              		.cfi_offset 13, -12
+ 1360              		.cfi_offset 11, -16
+ 1361              	.LCFI3:
+ 1362              		.cfi_def_cfa 11, 4
+ 1363 0050 08D04DE2 		sub	sp, sp, #8
+ 1364 0054 10000BE5 		str	r0, [fp, #-16]
+  14:../lives.c    **** 	lcd_putint(self->col, self->row, BLACK, self->value);
+ 1365              		.loc 1 14 0
+ 1366 0058 10301BE5 		ldr	r3, [fp, #-16]
+ 1367 005c B230D3E1 		ldrh	r3, [r3, #2]
+ 1368 0060 0338A0E1 		mov	r3, r3, asl #16
+ 1369 0064 2318A0E1 		mov	r1, r3, lsr #16
+ 1370 0068 10301BE5 		ldr	r3, [fp, #-16]
+ 1371 006c B430D3E1 		ldrh	r3, [r3, #4]
+ 1372 0070 0338A0E1 		mov	r3, r3, asl #16
+ 1373 0074 2328A0E1 		mov	r2, r3, lsr #16
+ 1374 0078 10301BE5 		ldr	r3, [fp, #-16]
+ 1375 007c B030D3E1 		ldrh	r3, [r3, #0]
+ 1376 0080 0338A0E1 		mov	r3, r3, asl #16
+ 1377 0084 4338A0E1 		mov	r3, r3, asr #16
+ 1378 0088 0100A0E1 		mov	r0, r1
+ 1379 008c 0210A0E1 		mov	r1, r2
+ 1380 0090 0F20A0E3 		mov	r2, #15
+ 1381 0094 FEFFFFEB 		bl	lcd_putint
+  15:../lives.c    **** }
+ 1382              		.loc 1 15 0
+ 1383 0098 0CD04BE2 		sub	sp, fp, #12
+ 1384 009c 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1385 00a0 1EFF2FE1 		bx	lr
+ 1386              		.cfi_endproc
+ 1387              	.LFE1:
+ 1389              		.align	2
+ 1390              		.global	lives_launch
+ 1392              	lives_launch:
+ 1393              	.LFB2:
+  16:../lives.c    **** 
+  17:../lives.c    **** void lives_launch(Lives *self) {
+ 1394              		.loc 1 17 0
+ 1395              		.cfi_startproc
+ 1396              		@ Function supports interworking.
+ 1397              		@ args = 0, pretend = 0, frame = 8
+ 1398              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1399 00a4 0DC0A0E1 		mov	ip, sp
+ 1400              	.LCFI4:
+ 1401              		.cfi_def_cfa_register 12
+ 1402 00a8 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1403 00ac 04B04CE2 		sub	fp, ip, #4
+ 1404              		.cfi_offset 14, -8
+ 1405              		.cfi_offset 13, -12
+ 1406              		.cfi_offset 11, -16
+ 1407              	.LCFI5:
+ 1408              		.cfi_def_cfa 11, 4
+ 1409 00b0 08D04DE2 		sub	sp, sp, #8
+ 1410 00b4 10000BE5 		str	r0, [fp, #-16]
+  18:../lives.c    **** 	lives_draw(self);
+ 1411              		.loc 1 18 0
+ 1412 00b8 10001BE5 		ldr	r0, [fp, #-16]
+ 1413 00bc E0FFFFEB 		bl	lives_draw
+  19:../lives.c    **** }
+ 1414              		.loc 1 19 0
+ 1415 00c0 0CD04BE2 		sub	sp, fp, #12
+ 1416 00c4 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1417 00c8 1EFF2FE1 		bx	lr
+ 1418              		.cfi_endproc
+ 1419              	.LFE2:
+ 1421              		.align	2
+ 1422              		.global	lives_update
+ 1424              	lives_update:
+ 1425              	.LFB3:
+  20:../lives.c    **** 
+  21:../lives.c    **** void lives_update(Lives *self) {
+ 1426              		.loc 1 21 0
+ 1427              		.cfi_startproc
+ 1428              		@ Function supports interworking.
+ 1429              		@ args = 0, pretend = 0, frame = 8
+ 1430              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1431 00cc 0DC0A0E1 		mov	ip, sp
+ 1432              	.LCFI6:
+ 1433              		.cfi_def_cfa_register 12
+ 1434 00d0 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1435 00d4 04B04CE2 		sub	fp, ip, #4
+ 1436              		.cfi_offset 14, -8
+ 1437              		.cfi_offset 13, -12
+ 1438              		.cfi_offset 11, -16
+ 1439              	.LCFI7:
+ 1440              		.cfi_def_cfa 11, 4
+ 1441 00d8 08D04DE2 		sub	sp, sp, #8
+ 1442 00dc 10000BE5 		str	r0, [fp, #-16]
+  22:../lives.c    **** 	if (self->value > 0) {
+ 1443              		.loc 1 22 0
+ 1444 00e0 10301BE5 		ldr	r3, [fp, #-16]
+ 1445 00e4 B030D3E1 		ldrh	r3, [r3, #0]
+ 1446 00e8 0338A0E1 		mov	r3, r3, asl #16
+ 1447 00ec 4338A0E1 		mov	r3, r3, asr #16
+ 1448 00f0 000053E3 		cmp	r3, #0
+ 1449 00f4 080000DA 		ble	.L4
+  23:../lives.c    **** 		self->value--;
+ 1450              		.loc 1 23 0
+ 1451 00f8 10301BE5 		ldr	r3, [fp, #-16]
+ 1452 00fc B030D3E1 		ldrh	r3, [r3, #0]
+ 1453 0100 013043E2 		sub	r3, r3, #1
+ 1454 0104 0338A0E1 		mov	r3, r3, asl #16
+ 1455 0108 2328A0E1 		mov	r2, r3, lsr #16
+ 1456 010c 10301BE5 		ldr	r3, [fp, #-16]
+ 1457 0110 B020C3E1 		strh	r2, [r3, #0]	@ movhi
+  24:../lives.c    **** 		lives_draw(self);
+ 1458              		.loc 1 24 0
+ 1459 0114 10001BE5 		ldr	r0, [fp, #-16]
+ 1460 0118 C9FFFFEB 		bl	lives_draw
+ 1461              	.L4:
+  25:../lives.c    **** 	}
+  26:../lives.c    **** }
+ 1462              		.loc 1 26 0
+ 1463 011c 0CD04BE2 		sub	sp, fp, #12
+ 1464 0120 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1465 0124 1EFF2FE1 		bx	lr
+ 1466              		.cfi_endproc
+ 1467              	.LFE3:
+ 1469              	.Letext0:
+DEFINED SYMBOLS
+                            *ABS*:00000000 lives.c
+C:\Users\USUARI~1\AppData\Local\Temp\ccAyRlns.s:1303   .text:00000000 $a
+C:\Users\USUARI~1\AppData\Local\Temp\ccAyRlns.s:1306   .text:00000000 lives_init
+C:\Users\USUARI~1\AppData\Local\Temp\ccAyRlns.s:1346   .text:00000044 lives_draw
+C:\Users\USUARI~1\AppData\Local\Temp\ccAyRlns.s:1392   .text:000000a4 lives_launch
+C:\Users\USUARI~1\AppData\Local\Temp\ccAyRlns.s:1424   .text:000000cc lives_update
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+lcd_putint

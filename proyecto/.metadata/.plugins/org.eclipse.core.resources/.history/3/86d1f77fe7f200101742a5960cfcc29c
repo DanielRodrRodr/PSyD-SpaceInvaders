@@ -1,0 +1,167 @@
+   1              		.cpu arm7tdmi
+   2              		.fpu softvfp
+   3              		.eabi_attribute 20, 1
+   4              		.eabi_attribute 21, 1
+   5              		.eabi_attribute 23, 3
+   6              		.eabi_attribute 24, 1
+   7              		.eabi_attribute 25, 1
+   8              		.eabi_attribute 26, 1
+   9              		.eabi_attribute 30, 6
+  10              		.eabi_attribute 18, 4
+  11              		.file	"sound.c"
+  21              	.Ltext0:
+  22              		.file 1 "../sound.c"
+ 1058              		.align	2
+ 1059              		.global	sound_play
+ 1061              	sound_play:
+ 1062              	.LFB0:
+   1:../sound.c    **** #include <iis.h>
+   2:../sound.c    **** #include "sound.h"
+   3:../sound.c    **** 
+   4:../sound.c    **** void sound_play(Sound *self) {
+ 1063              		.loc 1 4 0
+ 1064              		.cfi_startproc
+ 1065              		@ Function supports interworking.
+ 1066              		@ args = 0, pretend = 0, frame = 8
+ 1067              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1068 0000 0DC0A0E1 		mov	ip, sp
+ 1069              	.LCFI0:
+ 1070              		.cfi_def_cfa_register 12
+ 1071 0004 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1072 0008 04B04CE2 		sub	fp, ip, #4
+ 1073              		.cfi_offset 14, -8
+ 1074              		.cfi_offset 13, -12
+ 1075              		.cfi_offset 11, -16
+ 1076              	.LCFI1:
+ 1077              		.cfi_def_cfa 11, 4
+ 1078 000c 08D04DE2 		sub	sp, sp, #8
+ 1079 0010 10000BE5 		str	r0, [fp, #-16]
+   5:../sound.c    **** 	iis_playWawFile(self->wav, 0);
+ 1080              		.loc 1 5 0
+ 1081 0014 10301BE5 		ldr	r3, [fp, #-16]
+ 1082 0018 003093E5 		ldr	r3, [r3, #0]
+ 1083 001c 0300A0E1 		mov	r0, r3
+ 1084 0020 0010A0E3 		mov	r1, #0
+ 1085 0024 FEFFFFEB 		bl	iis_playWawFile
+   6:../sound.c    **** }
+ 1086              		.loc 1 6 0
+ 1087 0028 0CD04BE2 		sub	sp, fp, #12
+ 1088 002c 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1089 0030 1EFF2FE1 		bx	lr
+ 1090              		.cfi_endproc
+ 1091              	.LFE0:
+ 1093              		.align	2
+ 1094              		.global	sound_loop
+ 1096              	sound_loop:
+ 1097              	.LFB1:
+   7:../sound.c    **** 
+   8:../sound.c    **** void sound_loop(Sound *self) {
+ 1098              		.loc 1 8 0
+ 1099              		.cfi_startproc
+ 1100              		@ Function supports interworking.
+ 1101              		@ args = 0, pretend = 0, frame = 8
+ 1102              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1103 0034 0DC0A0E1 		mov	ip, sp
+ 1104              	.LCFI2:
+ 1105              		.cfi_def_cfa_register 12
+ 1106 0038 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1107 003c 04B04CE2 		sub	fp, ip, #4
+ 1108              		.cfi_offset 14, -8
+ 1109              		.cfi_offset 13, -12
+ 1110              		.cfi_offset 11, -16
+ 1111              	.LCFI3:
+ 1112              		.cfi_def_cfa 11, 4
+ 1113 0040 08D04DE2 		sub	sp, sp, #8
+ 1114 0044 10000BE5 		str	r0, [fp, #-16]
+   9:../sound.c    **** 	iis_playWawFile(self->wav, 1);
+ 1115              		.loc 1 9 0
+ 1116 0048 10301BE5 		ldr	r3, [fp, #-16]
+ 1117 004c 003093E5 		ldr	r3, [r3, #0]
+ 1118 0050 0300A0E1 		mov	r0, r3
+ 1119 0054 0110A0E3 		mov	r1, #1
+ 1120 0058 FEFFFFEB 		bl	iis_playWawFile
+  10:../sound.c    **** }
+ 1121              		.loc 1 10 0
+ 1122 005c 0CD04BE2 		sub	sp, fp, #12
+ 1123 0060 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1124 0064 1EFF2FE1 		bx	lr
+ 1125              		.cfi_endproc
+ 1126              	.LFE1:
+ 1128              		.align	2
+ 1129              		.global	sound_stop
+ 1131              	sound_stop:
+ 1132              	.LFB2:
+  11:../sound.c    **** 
+  12:../sound.c    **** void sound_stop(void) {
+ 1133              		.loc 1 12 0
+ 1134              		.cfi_startproc
+ 1135              		@ Function supports interworking.
+ 1136              		@ args = 0, pretend = 0, frame = 0
+ 1137              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1138 0068 0DC0A0E1 		mov	ip, sp
+ 1139              	.LCFI4:
+ 1140              		.cfi_def_cfa_register 12
+ 1141 006c 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1142 0070 04B04CE2 		sub	fp, ip, #4
+ 1143              		.cfi_offset 14, -8
+ 1144              		.cfi_offset 13, -12
+ 1145              		.cfi_offset 11, -16
+ 1146              	.LCFI5:
+ 1147              		.cfi_def_cfa 11, 4
+  13:../sound.c    **** 	iis_pause();
+ 1148              		.loc 1 13 0
+ 1149 0074 FEFFFFEB 		bl	iis_pause
+  14:../sound.c    **** }
+ 1150              		.loc 1 14 0
+ 1151 0078 0CD04BE2 		sub	sp, fp, #12
+ 1152 007c 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1153 0080 1EFF2FE1 		bx	lr
+ 1154              		.cfi_endproc
+ 1155              	.LFE2:
+ 1157              		.align	2
+ 1158              		.global	sound_isPlaying
+ 1160              	sound_isPlaying:
+ 1161              	.LFB3:
+  15:../sound.c    **** 
+  16:../sound.c    **** boolean sound_isPlaying(void) {
+ 1162              		.loc 1 16 0
+ 1163              		.cfi_startproc
+ 1164              		@ Function supports interworking.
+ 1165              		@ args = 0, pretend = 0, frame = 0
+ 1166              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1167 0084 0DC0A0E1 		mov	ip, sp
+ 1168              	.LCFI6:
+ 1169              		.cfi_def_cfa_register 12
+ 1170 0088 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1171 008c 04B04CE2 		sub	fp, ip, #4
+ 1172              		.cfi_offset 14, -8
+ 1173              		.cfi_offset 13, -12
+ 1174              		.cfi_offset 11, -16
+ 1175              	.LCFI7:
+ 1176              		.cfi_def_cfa 11, 4
+  17:../sound.c    **** 	return (boolean) iis_status();
+ 1177              		.loc 1 17 0
+ 1178 0090 FEFFFFEB 		bl	iis_status
+ 1179 0094 0030A0E1 		mov	r3, r0
+  18:../sound.c    **** }
+ 1180              		.loc 1 18 0
+ 1181 0098 0300A0E1 		mov	r0, r3
+ 1182 009c 0CD04BE2 		sub	sp, fp, #12
+ 1183 00a0 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1184 00a4 1EFF2FE1 		bx	lr
+ 1185              		.cfi_endproc
+ 1186              	.LFE3:
+ 1188              	.Letext0:
+DEFINED SYMBOLS
+                            *ABS*:00000000 sound.c
+C:\Users\USUARI~1\AppData\Local\Temp\cczvg8us.s:1058   .text:00000000 $a
+C:\Users\USUARI~1\AppData\Local\Temp\cczvg8us.s:1061   .text:00000000 sound_play
+C:\Users\USUARI~1\AppData\Local\Temp\cczvg8us.s:1096   .text:00000034 sound_loop
+C:\Users\USUARI~1\AppData\Local\Temp\cczvg8us.s:1131   .text:00000068 sound_stop
+C:\Users\USUARI~1\AppData\Local\Temp\cczvg8us.s:1160   .text:00000084 sound_isPlaying
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+iis_playWawFile
+iis_pause
+iis_status
