@@ -12,6 +12,7 @@ typedef enum { enemyAlive, enemyExploding, enemyDead } enemy_state_t;
 typedef struct {
     enemy_state_t state;
     enemy_type_t  type;
+    uint8  countDown;
     uint8  score;
     int16  col;
     int16  row;
