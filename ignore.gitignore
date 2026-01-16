@@ -1,12 +1,12 @@
 
-!*.o
-!*.obj
-!*.elf
-!*.bin
-!*.hex
-!*.map
-!*.lst
-!*.d
+*.o
+*.obj
+*.elf
+*.bin
+*.hex
+*.map
+*.lst
+*.d
 
 Debug/
 Release/
@@ -22,10 +22,10 @@ bin/
 Thumbs.db
 Desktop.ini
 
-!*.bak
-!*.swp
-!*~
+*.bak
+*.swp
+*~
 
-*.c
-*.h
-*.s
+!*.c
+!*.h
+!*.s
