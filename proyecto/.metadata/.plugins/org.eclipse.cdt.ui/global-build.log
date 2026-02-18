@@ -1,4 +1,131 @@
-15:27:19 **** Clean-only build of configuration Debug for project proyecto ****
-cs-make clean 
-cs-rm -rf  proyecto.siz  ./credit.o ./enemy.o ./enemyshot.o ./game.o ./hiscore.o ./kernelcoop.o ./lives.o ./pixmaps.o ./player.o ./playershot.o ./proyecto.o ./random.o ./score.o ./shield.o ./sound.o ./sprite.o ./swarm.o ./ufo.o  ./credit.d ./enemy.d ./enemyshot.d ./game.d ./hiscore.d ./kernelcoop.d ./lives.d ./pixmaps.d ./player.d ./playershot.d ./proyecto.d ./random.d ./score.d ./shield.d ./sound.d ./sprite.d ./swarm.d ./ufo.d  proyecto.hex  proyecto.lst  proyecto.elf
+18:08:19 **** Build of configuration Debug for project proyecto ****
+cs-make all 
+'Building file: ../credit.c'
+'Invoking: ARM Sourcery Windows GCC C Compiler'
+arm-none-eabi-gcc -I../../BSP/include -O0 -Wall -Wa,-adhlns="credit.o.lst" -c -fmessage-length=0 -mapcs-frame -MMD -MP -MF"credit.d" -MT"credit.d" -mcpu=arm7tdmi -g3 -gdwarf-2 -o "credit.o" "../credit.c"
+'Finished building: ../credit.c'
+' '
+'Building file: ../enemy.c'
+'Invoking: ARM Sourcery Windows GCC C Compiler'
+arm-none-eabi-gcc -I../../BSP/include -O0 -Wall -Wa,-adhlns="enemy.o.lst" -c -fmessage-length=0 -mapcs-frame -MMD -MP -MF"enemy.d" -MT"enemy.d" -mcpu=arm7tdmi -g3 -gdwarf-2 -o "enemy.o" "../enemy.c"
+'Finished building: ../enemy.c'
+' '
+'Building file: ../enemyshot.c'
+'Invoking: ARM Sourcery Windows GCC C Compiler'
+arm-none-eabi-gcc -I../../BSP/include -O0 -Wall -Wa,-adhlns="enemyshot.o.lst" -c -fmessage-length=0 -mapcs-frame -MMD -MP -MF"enemyshot.d" -MT"enemyshot.d" -mcpu=arm7tdmi -g3 -gdwarf-2 -o "enemyshot.o" "../enemyshot.c"
+../enemyshot.c: In function 'enemyShot_onShield':
+../enemyshot.c:115:2: warning: implicit declaration of function 'shield_hit'
+'Finished building: ../enemyshot.c'
+' '
+'Building file: ../game.c'
+'Invoking: ARM Sourcery Windows GCC C Compiler'
+arm-none-eabi-gcc -I../../BSP/include -O0 -Wall -Wa,-adhlns="game.o.lst" -c -fmessage-length=0 -mapcs-frame -MMD -MP -MF"game.d" -MT"game.d" -mcpu=arm7tdmi -g3 -gdwarf-2 -o "game.o" "../game.c"
+'Finished building: ../game.c'
+' '
+'Building file: ../hiscore.c'
+'Invoking: ARM Sourcery Windows GCC C Compiler'
+arm-none-eabi-gcc -I../../BSP/include -O0 -Wall -Wa,-adhlns="hiscore.o.lst" -c -fmessage-length=0 -mapcs-frame -MMD -MP -MF"hiscore.d" -MT"hiscore.d" -mcpu=arm7tdmi -g3 -gdwarf-2 -o "hiscore.o" "../hiscore.c"
+'Finished building: ../hiscore.c'
+' '
+'Building file: ../kernelcoop.c'
+'Invoking: ARM Sourcery Windows GCC C Compiler'
+arm-none-eabi-gcc -I../../BSP/include -O0 -Wall -Wa,-adhlns="kernelcoop.o.lst" -c -fmessage-length=0 -mapcs-frame -MMD -MP -MF"kernelcoop.d" -MT"kernelcoop.d" -mcpu=arm7tdmi -g3 -gdwarf-2 -o "kernelcoop.o" "../kernelcoop.c"
+'Finished building: ../kernelcoop.c'
+' '
+'Building file: ../lives.c'
+'Invoking: ARM Sourcery Windows GCC C Compiler'
+arm-none-eabi-gcc -I../../BSP/include -O0 -Wall -Wa,-adhlns="lives.o.lst" -c -fmessage-length=0 -mapcs-frame -MMD -MP -MF"lives.d" -MT"lives.d" -mcpu=arm7tdmi -g3 -gdwarf-2 -o "lives.o" "../lives.c"
+'Finished building: ../lives.c'
+' '
+'Building file: ../pixmaps.c'
+'Invoking: ARM Sourcery Windows GCC C Compiler'
+arm-none-eabi-gcc -I../../BSP/include -O0 -Wall -Wa,-adhlns="pixmaps.o.lst" -c -fmessage-length=0 -mapcs-frame -MMD -MP -MF"pixmaps.d" -MT"pixmaps.d" -mcpu=arm7tdmi -g3 -gdwarf-2 -o "pixmaps.o" "../pixmaps.c"
+'Finished building: ../pixmaps.c'
+' '
+'Building file: ../player.c'
+'Invoking: ARM Sourcery Windows GCC C Compiler'
+arm-none-eabi-gcc -I../../BSP/include -O0 -Wall -Wa,-adhlns="player.o.lst" -c -fmessage-length=0 -mapcs-frame -MMD -MP -MF"player.d" -MT"player.d" -mcpu=arm7tdmi -g3 -gdwarf-2 -o "player.o" "../player.c"
+'Finished building: ../player.c'
+' '
+'Building file: ../playershot.c'
+'Invoking: ARM Sourcery Windows GCC C Compiler'
+arm-none-eabi-gcc -I../../BSP/include -O0 -Wall -Wa,-adhlns="playershot.o.lst" -c -fmessage-length=0 -mapcs-frame -MMD -MP -MF"playershot.d" -MT"playershot.d" -mcpu=arm7tdmi -g3 -gdwarf-2 -o "playershot.o" "../playershot.c"
+../playershot.c: In function 'playerShot_onShield':
+../playershot.c:126:2: warning: implicit declaration of function 'shield_hit'
+'Finished building: ../playershot.c'
+' '
+'Building file: ../proyecto.c'
+'Invoking: ARM Sourcery Windows GCC C Compiler'
+arm-none-eabi-gcc -I../../BSP/include -O0 -Wall -Wa,-adhlns="proyecto.o.lst" -c -fmessage-length=0 -mapcs-frame -MMD -MP -MF"proyecto.d" -MT"proyecto.d" -mcpu=arm7tdmi -g3 -gdwarf-2 -o "proyecto.o" "../proyecto.c"
+../proyecto.c:50:6: warning: return type of 'main' is not 'int'
+'Finished building: ../proyecto.c'
+' '
+'Building file: ../random.c'
+'Invoking: ARM Sourcery Windows GCC C Compiler'
+arm-none-eabi-gcc -I../../BSP/include -O0 -Wall -Wa,-adhlns="random.o.lst" -c -fmessage-length=0 -mapcs-frame -MMD -MP -MF"random.d" -MT"random.d" -mcpu=arm7tdmi -g3 -gdwarf-2 -o "random.o" "../random.c"
+'Finished building: ../random.c'
+' '
+'Building file: ../score.c'
+'Invoking: ARM Sourcery Windows GCC C Compiler'
+arm-none-eabi-gcc -I../../BSP/include -O0 -Wall -Wa,-adhlns="score.o.lst" -c -fmessage-length=0 -mapcs-frame -MMD -MP -MF"score.d" -MT"score.d" -mcpu=arm7tdmi -g3 -gdwarf-2 -o "score.o" "../score.c"
+'Finished building: ../score.c'
+' '
+'Building file: ../shield.c'
+'Invoking: ARM Sourcery Windows GCC C Compiler'
+arm-none-eabi-gcc -I../../BSP/include -O0 -Wall -Wa,-adhlns="shield.o.lst" -c -fmessage-length=0 -mapcs-frame -MMD -MP -MF"shield.d" -MT"shield.d" -mcpu=arm7tdmi -g3 -gdwarf-2 -o "shield.o" "../shield.c"
+'Finished building: ../shield.c'
+' '
+'Building file: ../sound.c'
+'Invoking: ARM Sourcery Windows GCC C Compiler'
+arm-none-eabi-gcc -I../../BSP/include -O0 -Wall -Wa,-adhlns="sound.o.lst" -c -fmessage-length=0 -mapcs-frame -MMD -MP -MF"sound.d" -MT"sound.d" -mcpu=arm7tdmi -g3 -gdwarf-2 -o "sound.o" "../sound.c"
+'Finished building: ../sound.c'
+' '
+'Building file: ../sprite.c'
+'Invoking: ARM Sourcery Windows GCC C Compiler'
+arm-none-eabi-gcc -I../../BSP/include -O0 -Wall -Wa,-adhlns="sprite.o.lst" -c -fmessage-length=0 -mapcs-frame -MMD -MP -MF"sprite.d" -MT"sprite.d" -mcpu=arm7tdmi -g3 -gdwarf-2 -o "sprite.o" "../sprite.c"
+'Finished building: ../sprite.c'
+' '
+'Building file: ../swarm.c'
+'Invoking: ARM Sourcery Windows GCC C Compiler'
+arm-none-eabi-gcc -I../../BSP/include -O0 -Wall -Wa,-adhlns="swarm.o.lst" -c -fmessage-length=0 -mapcs-frame -MMD -MP -MF"swarm.d" -MT"swarm.d" -mcpu=arm7tdmi -g3 -gdwarf-2 -o "swarm.o" "../swarm.c"
+../swarm.c: In function 'swarm_update':
+../swarm.c:70:5: warning: enumeration value 'oneEnemyExploding' not handled in switch
+../swarm.c:70:5: warning: enumeration value 'swarmDead' not handled in switch
+../swarm.c:102:6: warning: enumeration value 'oneEnemyExploding' not handled in switch
+../swarm.c:102:6: warning: enumeration value 'swarmDead' not handled in switch
+../swarm.c: At top level:
+../swarm.c:181:13: warning: 'swarm_moveSound' defined but not used
+'Finished building: ../swarm.c'
+' '
+'Building file: ../ufo.c'
+'Invoking: ARM Sourcery Windows GCC C Compiler'
+arm-none-eabi-gcc -I../../BSP/include -O0 -Wall -Wa,-adhlns="ufo.o.lst" -c -fmessage-length=0 -mapcs-frame -MMD -MP -MF"ufo.d" -MT"ufo.d" -mcpu=arm7tdmi -g3 -gdwarf-2 -o "ufo.o" "../ufo.c"
+'Finished building: ../ufo.c'
+' '
+'Building target: proyecto.elf'
+'Invoking: ARM Sourcery Windows GCC C Linker'
+arm-none-eabi-gcc -T"../proyecto.ld" -nostartfiles -L../../BSP/Debug -Wl,-Map,proyecto.map -mcpu=arm7tdmi -g3 -gdwarf-2 -o "proyecto.elf"  ./credit.o ./enemy.o ./enemyshot.o ./game.o ./hiscore.o ./kernelcoop.o ./lives.o ./pixmaps.o ./player.o ./playershot.o ./proyecto.o ./random.o ./score.o ./shield.o ./sound.o ./sprite.o ./swarm.o ./ufo.o   -lBSP
+'Finished building target: proyecto.elf'
+' '
+'Invoking: ARM Sourcery Windows GNU Create Flash Image'
+arm-none-eabi-objcopy -O binary proyecto.elf  "proyecto.hex"
+'Finished building: proyecto.hex'
+' '
+'Invoking: ARM Sourcery Windows GNU Create Listing'
+arm-none-eabi-objdump -h -S proyecto.elf > "proyecto.lst"
+'Finished building: proyecto.lst'
+' '
+'Invoking: ARM Sourcery Windows GNU Print Size'
+arm-none-eabi-size  --format=berkeley proyecto.elf
+   text	   data	    bss	    dec	    hex	filename
+  48768	  43400	   1472	  93640	  16dc8	proyecto.elf
+'Finished building: proyecto.siz'
+' '
+18:08:25 **** Incremental Build of configuration Debug for project proyecto ****
+cs-make all 
+'Invoking: ARM Sourcery Windows GNU Print Size'
+arm-none-eabi-size  --format=berkeley proyecto.elf
+   text	   data	    bss	    dec	    hex	filename
+  48768	  43400	   1472	  93640	  16dc8	proyecto.elf
+'Finished building: proyecto.siz'
 ' '

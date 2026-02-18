@@ -1,0 +1,26 @@
+#include <iis.h>
+#include "sound.h"
+
+void sound_play( Sound *self )
+{
+    if ( self->wav != NULL ) {
+        iis_play( self->wav, 0 );
+    }
+}
+
+void sound_loop( Sound *self )
+{
+    if ( self->wav != NULL ) {
+        iis_play( self->wav, 1 );
+    }
+}
+
+void sound_stop( void )
+{
+    iis_stop();
+}
+
+boolean sound_isPlaying( void )
+{
+    return (boolean)iis_status();
+}

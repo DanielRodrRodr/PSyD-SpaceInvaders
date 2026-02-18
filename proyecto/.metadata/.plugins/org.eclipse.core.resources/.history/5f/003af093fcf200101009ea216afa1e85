@@ -1,0 +1,143 @@
+#include "playerShot.h"
+#include "config.h"
+#include "pixmaps.h"
+#include "wavs.h"
+
+static void playerShot_draw(PlayerShot *self);
+static void playerShot_clear(PlayerShot *self);
+
+void playerShot_init(PlayerShot *self) {
+  self->state = noPlayerShot;
+  self->sprite =
+      (Sprite){PLAYERSHOT_WIDTH, PLAYERSHOT_HEIGHT, playerShotPixMap};
+  self->explosionSprite =
+      (Sprite){PLAYERSHOT_EXPLOSION_WIDTH, PLAYERSHOT_EXPLOSION_HEIGHT,
+               playerShotExplosionPixMap};
+  self->launchSound = (Sound){PLAYERSHOOT_LAUNCH};
+  self->shooter = NULL;
+}
+
+static void playerShot_draw(PlayerShot *self) {
+  if (self->state == playerShotMovingUp) {
+    sprite_draw(&self->sprite, &self->col, &self->row);
+  } else if (self->state != noPlayerShot) {
+    sprite_draw(&self->explosionSprite, &self->col, &self->row);
+  }
+}
+
+static void playerShot_clear(PlayerShot *self) {
+  if (self->state == playerShotMovingUp) {
+    sprite_clear(&self->sprite, &self->col, &self->row);
+  } else if (self->state != noPlayerShot) {
+    sprite_clear(&self->explosionSprite, &self->col, &self->row);
+  }
+}
+
+void playerShot_launch(PlayerShot *self, Player *player) {
+  if (self->state == noPlayerShot) {
+    self->state = playerShotMovingUp;
+    // el disparo sale del centro del juagdor
+    self->col = player->col + (PLAYER_WIDTH / 2) - (PLAYERSHOT_WIDTH / 2);
+    self->row = player->row - PLAYERSHOT_HEIGHT;
+    self->shooter = player;
+
+    sound_play(&self->launchSound);
+    playerShot_draw(self);
+  }
+}
+
+void playerShot_update(PlayerShot *self, Shield *shield, Swarm *swarm,
+                       EnemyShot *enemyShot, Ufo *ufo) {
+  int i, j;
+  Enemy *enemy;
+
+  if (self->state == noPlayerShot)
+    return;
+
+  playerShot_clear(self);
+
+  if (self->state == playerShotMovingUp) {
+    self->row -= PLAYERSHOT_ADVANCE_ROW;
+
+    // techo
+    if (self->row <= PLAYERSHOT_MIN_ROW) {
+      self->state = playerShotExplodingCeiling;
+      self->countDown =
+          PLAYERSHOT_EXPLODING_TIME /
+          PLAYERSHOT_UPDATE_PERIOD; // Asumiendo TICKS_PER_SEC o similar para la
+                                    // base de tiempos
+    }
+    // ufo
+    else if (ufo->state != noUfo && OVERLAP(self->col, ufo->col, UFO_WIDTH) &&
+             OVERLAP(self->row, ufo->row, UFO_HEIGHT)) {
+      playerShot_onUfo(self, ufo);
+    }
+    // disparo enemigo
+    else if (enemyShot->state == enemyShotMovingDown &&
+             OVERLAP(self->col, enemyShot->col, ENEMYSHOT_WIDTH) &&
+             OVERLAP(self->row, enemyShot->row, ENEMYSHOT_HEIGHT)) {
+      playerShot_onEnemyShot(self, enemyShot);
+    }
+    // escudos
+    else {
+      boolean hitShield = FALSE;
+      i = 0;
+      while (i < MAX_SHIELDS &&
+             OVERLAP(self->col, shield[i].col, SHIELD_WIDTH) &&
+             OVERLAP(self->row, shield[i].row, SHIELD_HEIGHT)) {
+        playerShot_onShield(self, &shield[i]);
+        hitShield = TRUE;
+        i++;
+      }
+
+      // swarm
+      if (!hitShield) {
+        for (j = 0; j < SWARM_YLEN; j++) {
+          for (i = 0; i < SWARM_XLEN; i++) {
+            enemy = &swarm->enemies[j][i];
+            if (enemy->state == enemyAlive &&
+                OVERLAP(self->col, enemy->col, ENEMY_WIDTH) &&
+                OVERLAP(self->row, enemy->row, ENEMY_HEIGHT)) {
+              playerShot_onSwarm(self, swarm);
+              swarm_hit(swarm, enemy);
+              self->shooter->score.value += enemy->score;
+              return; // Salir tras impacto
+            }
+          }
+        }
+      }
+    }
+  } else {
+    if (self->countDown > 0) {
+      self->countDown--;
+    } else {
+      self->state = noPlayerShot;
+      return; 
+    }
+  }
+
+  playerShot_draw(self);
+}
+
+void playerShot_onUfo(PlayerShot *self, Ufo *ufo) {
+  self->state = playerShotExplodingCeiling; 
+  self->countDown = PLAYERSHOT_EXPLODING_TIME / PLAYERSHOT_UPDATE_PERIOD;
+  ufo_hit(ufo);
+  if (self->shooter)
+    self->shooter->score.value += ufo->score;
+}
+
+void playerShot_onSwarm(PlayerShot *self, Swarm *swarm) {
+  self->state = noPlayerShot; 
+}
+
+void playerShot_onShield(PlayerShot *self, Shield *shield) {
+  self->state = playerShotExplodingShield;
+  self->countDown = PLAYERSHOT_EXPLODING_TIME / PLAYERSHOT_UPDATE_PERIOD;
+}
+
+void playerShot_onEnemyShot(PlayerShot *self, EnemyShot *enemyShot) {
+  self->state = playerShotExplodingCeiling; 
+  self->countDown = PLAYERSHOT_EXPLODING_TIME / PLAYERSHOT_UPDATE_PERIOD;
+  enemyShot_hit(enemyShot); 
+}

@@ -1,0 +1,205 @@
+#include <s3c44b0x.h>
+#include <s3cev40.h>
+#include <common_types.h>
+#include <system.h>
+#include <segs.h>
+#include <pbs.h>
+#include <keypad.h>
+#include <timers.h>
+#include <lcd.h>
+#include <iic.h>
+#include <uda1341ts.h>
+#include <iis.h>
+
+#include "config.h"
+#include "enemyShot.h"
+#include "random.h"
+#include "pixmaps.h"
+#include "game.h"
+#include "player.h"
+#include "playerShot.h"
+
+#include "kernelcoop.h"
+
+// Declaración de tareas
+void player_update_task( void );
+void playerShot_update_task( void );
+void swarm_update_task( void );
+void enemyShot_launch_task( void );
+void enemyShot_update_task( void );
+void ufo_launch_task( void );
+void ufo_update_task( void );
+void keys_read_task( void );
+void pbs_read_task( void );
+
+// Otras funciones
+void wellcomeScreen_draw( void );
+void gameOverScreen_draw( void );
+
+Game game;
+
+void main( void )
+{
+    sys_init();
+    segs_init();
+    timers_init();
+    keypad_init(); 
+    pbs_init();
+    lcd_init();
+    iic_init();
+    uda1341ts_init();
+    iis_init( IIS_DMA );
+    
+    lcd_on();
+
+    random_init( (BCDSEC << 16) | (BCDMIN << 8) | BCDHOUR );
+    game_init( &game );
+
+    scheduler_init();
+
+    // CORRECCIÓN IMPORTANTE: Se pasan los punteros a función (sin paréntesis)
+    create_task( pbs_read_task, PBS_READ_PERIOD/TICK_PERIOD );
+    create_task( player_update_task, PLAYER_UPDATE_PERIOD/TICK_PERIOD );
+    create_task( playerShot_update_task, PLAYERSHOT_UPDATE_PERIOD/TICK_PERIOD );
+    create_task( swarm_update_task, SWARM_UPDATE_PERIOD/TICK_PERIOD );
+    create_task( enemyShot_launch_task, ENEMYSHOT_LAUNCH_PERIOD/TICK_PERIOD );
+    create_task( enemyShot_update_task, ENEMYSHOT_UPDATE_PERIOD/TICK_PERIOD );
+    create_task( ufo_launch_task, UFO_LAUNCH_PERIOD/TICK_PERIOD );
+    create_task( ufo_update_task, UFO_UPDATE_PERIOD/TICK_PERIOD );
+    create_task( keys_read_task, KEYS_READ_PERIOD/TICK_PERIOD );
+
+    while( 1 )
+    {
+        wellcomeScreen_draw();
+        game_launch( &game );
+
+        timer0_open_tick( scheduler, TICKS_PER_SEC );
+
+        // Bucle del juego
+        while( game.credit.value > 0 ) // Corregido: juega mientras haya créditos o vidas
+        {
+            // sleep(); // Descomentar en hardware real
+            dispacher();
+
+            // Verificación simple de fin de juego por vidas (game over logic)
+            if( game.player.lives.value == 0 && game.player.state == playerDead )
+            {
+                 // Forzamos salida si el jugador murió definitivamente
+                 game.credit.value = 0;
+            }
+        }
+
+        timer0_close();
+        gameOverScreen_draw();
+        game_restart( &game );
+    }  
+}
+
+void player_update_task( void )
+{
+    player_update(&game.player);
+}
+
+void ufo_launch_task( void )
+{   
+    if( random_get() & 0x1 )
+        ufo_launch( &game.ufo );
+}
+
+void ufo_update_task( void )
+{
+    ufo_update( &game.ufo );
+}
+
+void playerShot_update_task( void )
+{   
+    playerShot_update(&game.playerShot, &game.shield, &game.swarm, &game.enemyShot, &game.ufo);
+}
+
+void swarm_update_task( void )
+{
+    swarm_update(&game.swarm, &game.player);
+}
+
+void enemyShot_update_task( void )
+{
+    enemyShot_update(&game.enemyShot, &game.shield, &game.player);
+}
+
+void enemyShot_launch_task( void )
+{
+    // Lógica básica de disparo enemigo: el enjambre decide quién dispara
+    Enemy *shooter;
+    shooter = swarm_getShooter( &game.swarm );
+    if( shooter != NULL )
+    {
+        enemyShot_launch( &game.enemyShot, shooter->col + (ENEMY_WIDTH/2), shooter->row + ENEMY_HEIGHT );
+    }
+}
+
+void keys_read_task( void )
+{
+    // Lectura de keypad si fuera necesario para debug o controles extra
+}
+
+void pbs_read_task( void )
+{
+    static boolean init = TRUE;
+    // Mapeo simple de estados para evitar structs complejos en static
+    static uint8 state = 0; // 0: wait_keydown, 1: scan, 2: wait_keyup
+
+    if( init )
+    {
+        init  = FALSE;
+        state = 0;
+    }
+    else
+    {
+        if( state == 0 ) // wait_keydown
+        {
+            if( pb_pressed() )
+                state = 1;
+        }
+        else if( state == 1 ) // scan
+        {
+            if( (pb_scan() & PB_LEFT) )
+            {
+                player_left( &game.player );
+            }
+            else if( (pb_scan() & PB_RIGHT) )
+            {
+                player_right( &game.player );
+            }
+            // Disparo con ambos o lógica separada
+            // Aquí usamos simple pulsación para mover, Keypad para disparar o viceversa
+            // Añadimos disparo con pulsación simultanea o keypad 'A' en keys_read_task
+            state = 0; // Volver a escuchar continuamente para movimiento fluido
+        }
+    }
+
+    // Lectura separada para disparo (Keypad A o B)
+    if( keypad_pressed() )
+    {
+        if( keypad_scan() == KEYPAD_KEYA ) // Suponemos tecla A para disparo
+            playerShot_launch( &game.playerShot, &game.player );
+    }
+}
+
+void wellcomeScreen_draw( void )
+{
+    lcd_clear();
+    lcd_puts_x2( 48, 16, BLACK, "SPACE INVADERS" );
+    lcd_puts( 48, 64, BLACK, "Insert Coin (PB)" );
+
+    // Espera activa simple para el ejemplo
+    while( !pb_pressed() );
+    credit_update( &game.credit, 3 ); // Damos créditos al pulsar
+    lcd_clear();
+}
+
+void gameOverScreen_draw( void )
+{
+    lcd_clear();
+    lcd_puts_x2( 80, 100, BLACK, "GAME OVER" );
+    sw_delay_s(2);
+}

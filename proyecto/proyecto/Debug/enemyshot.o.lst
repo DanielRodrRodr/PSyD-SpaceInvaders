@@ -1,0 +1,873 @@
+   1              		.cpu arm7tdmi
+   2              		.fpu softvfp
+   3              		.eabi_attribute 20, 1
+   4              		.eabi_attribute 21, 1
+   5              		.eabi_attribute 23, 3
+   6              		.eabi_attribute 24, 1
+   7              		.eabi_attribute 25, 1
+   8              		.eabi_attribute 26, 1
+   9              		.eabi_attribute 30, 6
+  10              		.eabi_attribute 18, 4
+  11              		.file	"enemyshot.c"
+  21              	.Ltext0:
+  22              		.file 1 "../enemyshot.c"
+ 1351              		.align	2
+ 1352              		.global	enemyShot_init
+ 1354              	enemyShot_init:
+ 1355              	.LFB0:
+   1:../enemyshot.c **** #include "config.h"
+   2:../enemyshot.c **** #include "pixmaps.h"
+   3:../enemyshot.c **** #include "enemyShot.h"
+   4:../enemyshot.c **** 
+   5:../enemyshot.c **** static void enemyShot_draw(EnemyShot *self);
+   6:../enemyshot.c **** static void enemyShot_clear(EnemyShot *self);
+   7:../enemyshot.c **** 
+   8:../enemyshot.c **** void enemyShot_init(EnemyShot *self) {
+ 1356              		.loc 1 8 0
+ 1357              		.cfi_startproc
+ 1358              		@ Function supports interworking.
+ 1359              		@ args = 0, pretend = 0, frame = 8
+ 1360              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1361 0000 0DC0A0E1 		mov	ip, sp
+ 1362              	.LCFI0:
+ 1363              		.cfi_def_cfa_register 12
+ 1364 0004 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1365 0008 04B04CE2 		sub	fp, ip, #4
+ 1366              		.cfi_offset 14, -8
+ 1367              		.cfi_offset 13, -12
+ 1368              		.cfi_offset 11, -16
+ 1369              	.LCFI1:
+ 1370              		.cfi_def_cfa 11, 4
+ 1371 000c 08D04DE2 		sub	sp, sp, #8
+ 1372 0010 10000BE5 		str	r0, [fp, #-16]
+   9:../enemyshot.c **** 	self->state = noEnemyShot;
+ 1373              		.loc 1 9 0
+ 1374 0014 10301BE5 		ldr	r3, [fp, #-16]
+ 1375 0018 0020A0E3 		mov	r2, #0
+ 1376 001c 0020C3E5 		strb	r2, [r3, #0]
+  10:../enemyshot.c **** 	self->sprite = (Sprite ) { ENEMYSHOT_WIDTH, ENEMYSHOT_HEIGHT,
+ 1377              		.loc 1 10 0
+ 1378 0020 10301BE5 		ldr	r3, [fp, #-16]
+ 1379 0024 28209FE5 		ldr	r2, .L2
+ 1380 0028 083083E2 		add	r3, r3, #8
+ 1381 002c 030092E8 		ldmia	r2, {r0, r1}
+ 1382 0030 030083E8 		stmia	r3, {r0, r1}
+  11:../enemyshot.c **** 					enemyShotPixMap };
+  12:../enemyshot.c **** 	self->explosionSprite = (Sprite ) { ENEMYSHOT_EXPLOSION_WIDTH,
+ 1383              		.loc 1 12 0
+ 1384 0034 10301BE5 		ldr	r3, [fp, #-16]
+ 1385 0038 18209FE5 		ldr	r2, .L2+4
+ 1386 003c 103083E2 		add	r3, r3, #16
+ 1387 0040 030092E8 		ldmia	r2, {r0, r1}
+ 1388 0044 030083E8 		stmia	r3, {r0, r1}
+  13:../enemyshot.c **** 					ENEMYSHOT_EXPLOSION_HEIGHT, enemyShotExplosionPixMap };
+  14:../enemyshot.c **** }
+ 1389              		.loc 1 14 0
+ 1390 0048 0CD04BE2 		sub	sp, fp, #12
+ 1391 004c 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1392 0050 1EFF2FE1 		bx	lr
+ 1393              	.L3:
+ 1394              		.align	2
+ 1395              	.L2:
+ 1396 0054 00000000 		.word	C.7.5150
+ 1397 0058 08000000 		.word	C.8.5151
+ 1398              		.cfi_endproc
+ 1399              	.LFE0:
+ 1401              		.align	2
+ 1403              	enemyShot_draw:
+ 1404              	.LFB1:
+  15:../enemyshot.c **** 
+  16:../enemyshot.c **** static void enemyShot_draw(EnemyShot *self) {
+ 1405              		.loc 1 16 0
+ 1406              		.cfi_startproc
+ 1407              		@ Function supports interworking.
+ 1408              		@ args = 0, pretend = 0, frame = 8
+ 1409              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1410 005c 0DC0A0E1 		mov	ip, sp
+ 1411              	.LCFI2:
+ 1412              		.cfi_def_cfa_register 12
+ 1413 0060 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1414 0064 04B04CE2 		sub	fp, ip, #4
+ 1415              		.cfi_offset 14, -8
+ 1416              		.cfi_offset 13, -12
+ 1417              		.cfi_offset 11, -16
+ 1418              	.LCFI3:
+ 1419              		.cfi_def_cfa 11, 4
+ 1420 0068 08D04DE2 		sub	sp, sp, #8
+ 1421 006c 10000BE5 		str	r0, [fp, #-16]
+  17:../enemyshot.c **** 	switch (self->state) {
+ 1422              		.loc 1 17 0
+ 1423 0070 10301BE5 		ldr	r3, [fp, #-16]
+ 1424 0074 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 1425 0078 010053E3 		cmp	r3, #1
+ 1426 007c 0400000A 		beq	.L6
+ 1427 0080 010053E3 		cmp	r3, #1
+ 1428 0084 200000BA 		blt	.L10
+ 1429 0088 040053E3 		cmp	r3, #4
+ 1430 008c 200000CA 		bgt	.L11
+ 1431 0090 0E0000EA 		b	.L9
+ 1432              	.L6:
+  18:../enemyshot.c **** 	case enemyShotMovingDown:
+  19:../enemyshot.c **** 		sprite_draw(&self->sprite, self->col, self->row);
+ 1433              		.loc 1 19 0
+ 1434 0094 10301BE5 		ldr	r3, [fp, #-16]
+ 1435 0098 081083E2 		add	r1, r3, #8
+ 1436 009c 10301BE5 		ldr	r3, [fp, #-16]
+ 1437 00a0 B230D3E1 		ldrh	r3, [r3, #2]
+ 1438 00a4 0338A0E1 		mov	r3, r3, asl #16
+ 1439 00a8 2328A0E1 		mov	r2, r3, lsr #16
+ 1440 00ac 10301BE5 		ldr	r3, [fp, #-16]
+ 1441 00b0 B430D3E1 		ldrh	r3, [r3, #4]
+ 1442 00b4 0338A0E1 		mov	r3, r3, asl #16
+ 1443 00b8 2338A0E1 		mov	r3, r3, lsr #16
+ 1444 00bc 0100A0E1 		mov	r0, r1
+ 1445 00c0 0210A0E1 		mov	r1, r2
+ 1446 00c4 0320A0E1 		mov	r2, r3
+ 1447 00c8 FEFFFFEB 		bl	sprite_draw
+  20:../enemyshot.c **** 		break;
+ 1448              		.loc 1 20 0
+ 1449 00cc 110000EA 		b	.L4
+ 1450              	.L9:
+  21:../enemyshot.c **** 	case enemyShotExplodingFloor:
+  22:../enemyshot.c **** 	case enemyShotExplodingShield:
+  23:../enemyshot.c **** 	case enemyShotExploding:
+  24:../enemyshot.c **** 		sprite_draw(&self->explosionSprite, self->col, self->row);
+ 1451              		.loc 1 24 0
+ 1452 00d0 10301BE5 		ldr	r3, [fp, #-16]
+ 1453 00d4 101083E2 		add	r1, r3, #16
+ 1454 00d8 10301BE5 		ldr	r3, [fp, #-16]
+ 1455 00dc B230D3E1 		ldrh	r3, [r3, #2]
+ 1456 00e0 0338A0E1 		mov	r3, r3, asl #16
+ 1457 00e4 2328A0E1 		mov	r2, r3, lsr #16
+ 1458 00e8 10301BE5 		ldr	r3, [fp, #-16]
+ 1459 00ec B430D3E1 		ldrh	r3, [r3, #4]
+ 1460 00f0 0338A0E1 		mov	r3, r3, asl #16
+ 1461 00f4 2338A0E1 		mov	r3, r3, lsr #16
+ 1462 00f8 0100A0E1 		mov	r0, r1
+ 1463 00fc 0210A0E1 		mov	r1, r2
+ 1464 0100 0320A0E1 		mov	r2, r3
+ 1465 0104 FEFFFFEB 		bl	sprite_draw
+  25:../enemyshot.c **** 		break;
+ 1466              		.loc 1 25 0
+ 1467 0108 020000EA 		b	.L4
+ 1468              	.L10:
+  26:../enemyshot.c **** 	default:
+  27:../enemyshot.c **** 		break;
+ 1469              		.loc 1 27 0
+ 1470 010c 0000A0E1 		mov	r0, r0	@ nop
+ 1471 0110 000000EA 		b	.L4
+ 1472              	.L11:
+ 1473 0114 0000A0E1 		mov	r0, r0	@ nop
+ 1474              	.L4:
+  28:../enemyshot.c **** 	}
+  29:../enemyshot.c **** }
+ 1475              		.loc 1 29 0
+ 1476 0118 0CD04BE2 		sub	sp, fp, #12
+ 1477 011c 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1478 0120 1EFF2FE1 		bx	lr
+ 1479              		.cfi_endproc
+ 1480              	.LFE1:
+ 1482              		.align	2
+ 1484              	enemyShot_clear:
+ 1485              	.LFB2:
+  30:../enemyshot.c **** 
+  31:../enemyshot.c **** static void enemyShot_clear(EnemyShot *self) {
+ 1486              		.loc 1 31 0
+ 1487              		.cfi_startproc
+ 1488              		@ Function supports interworking.
+ 1489              		@ args = 0, pretend = 0, frame = 8
+ 1490              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1491 0124 0DC0A0E1 		mov	ip, sp
+ 1492              	.LCFI4:
+ 1493              		.cfi_def_cfa_register 12
+ 1494 0128 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1495 012c 04B04CE2 		sub	fp, ip, #4
+ 1496              		.cfi_offset 14, -8
+ 1497              		.cfi_offset 13, -12
+ 1498              		.cfi_offset 11, -16
+ 1499              	.LCFI5:
+ 1500              		.cfi_def_cfa 11, 4
+ 1501 0130 08D04DE2 		sub	sp, sp, #8
+ 1502 0134 10000BE5 		str	r0, [fp, #-16]
+  32:../enemyshot.c **** 	switch (self->state) {
+ 1503              		.loc 1 32 0
+ 1504 0138 10301BE5 		ldr	r3, [fp, #-16]
+ 1505 013c 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 1506 0140 010053E3 		cmp	r3, #1
+ 1507 0144 0400000A 		beq	.L14
+ 1508 0148 010053E3 		cmp	r3, #1
+ 1509 014c 200000BA 		blt	.L18
+ 1510 0150 040053E3 		cmp	r3, #4
+ 1511 0154 200000CA 		bgt	.L19
+ 1512 0158 0E0000EA 		b	.L17
+ 1513              	.L14:
+  33:../enemyshot.c **** 	case enemyShotMovingDown:
+  34:../enemyshot.c **** 		sprite_clear(&self->sprite, self->col, self->row);
+ 1514              		.loc 1 34 0
+ 1515 015c 10301BE5 		ldr	r3, [fp, #-16]
+ 1516 0160 081083E2 		add	r1, r3, #8
+ 1517 0164 10301BE5 		ldr	r3, [fp, #-16]
+ 1518 0168 B230D3E1 		ldrh	r3, [r3, #2]
+ 1519 016c 0338A0E1 		mov	r3, r3, asl #16
+ 1520 0170 2328A0E1 		mov	r2, r3, lsr #16
+ 1521 0174 10301BE5 		ldr	r3, [fp, #-16]
+ 1522 0178 B430D3E1 		ldrh	r3, [r3, #4]
+ 1523 017c 0338A0E1 		mov	r3, r3, asl #16
+ 1524 0180 2338A0E1 		mov	r3, r3, lsr #16
+ 1525 0184 0100A0E1 		mov	r0, r1
+ 1526 0188 0210A0E1 		mov	r1, r2
+ 1527 018c 0320A0E1 		mov	r2, r3
+ 1528 0190 FEFFFFEB 		bl	sprite_clear
+  35:../enemyshot.c **** 		break;
+ 1529              		.loc 1 35 0
+ 1530 0194 110000EA 		b	.L12
+ 1531              	.L17:
+  36:../enemyshot.c **** 	case enemyShotExplodingFloor:
+  37:../enemyshot.c **** 	case enemyShotExplodingShield:
+  38:../enemyshot.c **** 	case enemyShotExploding:
+  39:../enemyshot.c **** 		sprite_clear(&self->explosionSprite, self->col, self->row);
+ 1532              		.loc 1 39 0
+ 1533 0198 10301BE5 		ldr	r3, [fp, #-16]
+ 1534 019c 101083E2 		add	r1, r3, #16
+ 1535 01a0 10301BE5 		ldr	r3, [fp, #-16]
+ 1536 01a4 B230D3E1 		ldrh	r3, [r3, #2]
+ 1537 01a8 0338A0E1 		mov	r3, r3, asl #16
+ 1538 01ac 2328A0E1 		mov	r2, r3, lsr #16
+ 1539 01b0 10301BE5 		ldr	r3, [fp, #-16]
+ 1540 01b4 B430D3E1 		ldrh	r3, [r3, #4]
+ 1541 01b8 0338A0E1 		mov	r3, r3, asl #16
+ 1542 01bc 2338A0E1 		mov	r3, r3, lsr #16
+ 1543 01c0 0100A0E1 		mov	r0, r1
+ 1544 01c4 0210A0E1 		mov	r1, r2
+ 1545 01c8 0320A0E1 		mov	r2, r3
+ 1546 01cc FEFFFFEB 		bl	sprite_clear
+  40:../enemyshot.c **** 		break;
+ 1547              		.loc 1 40 0
+ 1548 01d0 020000EA 		b	.L12
+ 1549              	.L18:
+  41:../enemyshot.c **** 	default:
+  42:../enemyshot.c **** 		break;
+ 1550              		.loc 1 42 0
+ 1551 01d4 0000A0E1 		mov	r0, r0	@ nop
+ 1552 01d8 000000EA 		b	.L12
+ 1553              	.L19:
+ 1554 01dc 0000A0E1 		mov	r0, r0	@ nop
+ 1555              	.L12:
+  43:../enemyshot.c **** 	}
+  44:../enemyshot.c **** }
+ 1556              		.loc 1 44 0
+ 1557 01e0 0CD04BE2 		sub	sp, fp, #12
+ 1558 01e4 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1559 01e8 1EFF2FE1 		bx	lr
+ 1560              		.cfi_endproc
+ 1561              	.LFE2:
+ 1563              		.align	2
+ 1564              		.global	enemyShot_launch
+ 1566              	enemyShot_launch:
+ 1567              	.LFB3:
+  45:../enemyshot.c **** 
+  46:../enemyshot.c **** void enemyShot_launch(EnemyShot *self, uint16 col, uint16 row) {
+ 1568              		.loc 1 46 0
+ 1569              		.cfi_startproc
+ 1570              		@ Function supports interworking.
+ 1571              		@ args = 0, pretend = 0, frame = 8
+ 1572              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1573 01ec 0DC0A0E1 		mov	ip, sp
+ 1574              	.LCFI6:
+ 1575              		.cfi_def_cfa_register 12
+ 1576 01f0 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1577 01f4 04B04CE2 		sub	fp, ip, #4
+ 1578              		.cfi_offset 14, -8
+ 1579              		.cfi_offset 13, -12
+ 1580              		.cfi_offset 11, -16
+ 1581              	.LCFI7:
+ 1582              		.cfi_def_cfa 11, 4
+ 1583 01f8 08D04DE2 		sub	sp, sp, #8
+ 1584 01fc 10000BE5 		str	r0, [fp, #-16]
+ 1585 0200 0230A0E1 		mov	r3, r2
+ 1586 0204 B2114BE1 		strh	r1, [fp, #-18]	@ movhi
+ 1587 0208 B4314BE1 		strh	r3, [fp, #-20]	@ movhi
+  47:../enemyshot.c **** 	if (self->state == noEnemyShot) {
+ 1588              		.loc 1 47 0
+ 1589 020c 10301BE5 		ldr	r3, [fp, #-16]
+ 1590 0210 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 1591 0214 000053E3 		cmp	r3, #0
+ 1592 0218 0A00001A 		bne	.L20
+  48:../enemyshot.c **** 		self->state = enemyShotMovingDown;
+ 1593              		.loc 1 48 0
+ 1594 021c 10301BE5 		ldr	r3, [fp, #-16]
+ 1595 0220 0120A0E3 		mov	r2, #1
+ 1596 0224 0020C3E5 		strb	r2, [r3, #0]
+  49:../enemyshot.c **** 		self->col = col;
+ 1597              		.loc 1 49 0
+ 1598 0228 B2215BE1 		ldrh	r2, [fp, #-18]
+ 1599 022c 10301BE5 		ldr	r3, [fp, #-16]
+ 1600 0230 B220C3E1 		strh	r2, [r3, #2]	@ movhi
+  50:../enemyshot.c **** 		self->row = row;
+ 1601              		.loc 1 50 0
+ 1602 0234 B4215BE1 		ldrh	r2, [fp, #-20]
+ 1603 0238 10301BE5 		ldr	r3, [fp, #-16]
+ 1604 023c B420C3E1 		strh	r2, [r3, #4]	@ movhi
+  51:../enemyshot.c **** 		enemyShot_draw(self);
+ 1605              		.loc 1 51 0
+ 1606 0240 10001BE5 		ldr	r0, [fp, #-16]
+ 1607 0244 84FFFFEB 		bl	enemyShot_draw
+ 1608              	.L20:
+  52:../enemyshot.c **** 	}
+  53:../enemyshot.c **** }
+ 1609              		.loc 1 53 0
+ 1610 0248 0CD04BE2 		sub	sp, fp, #12
+ 1611 024c 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1612 0250 1EFF2FE1 		bx	lr
+ 1613              		.cfi_endproc
+ 1614              	.LFE3:
+ 1616              		.align	2
+ 1617              		.global	enemyShot_update
+ 1619              	enemyShot_update:
+ 1620              	.LFB4:
+  54:../enemyshot.c **** 
+  55:../enemyshot.c **** void enemyShot_update(EnemyShot *self, Shield *shield, Player *player) {
+ 1621              		.loc 1 55 0
+ 1622              		.cfi_startproc
+ 1623              		@ Function supports interworking.
+ 1624              		@ args = 0, pretend = 0, frame = 24
+ 1625              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1626 0254 0DC0A0E1 		mov	ip, sp
+ 1627              	.LCFI8:
+ 1628              		.cfi_def_cfa_register 12
+ 1629 0258 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1630 025c 04B04CE2 		sub	fp, ip, #4
+ 1631              		.cfi_offset 14, -8
+ 1632              		.cfi_offset 13, -12
+ 1633              		.cfi_offset 11, -16
+ 1634              	.LCFI9:
+ 1635              		.cfi_def_cfa 11, 4
+ 1636 0260 18D04DE2 		sub	sp, sp, #24
+ 1637 0264 18000BE5 		str	r0, [fp, #-24]
+ 1638 0268 1C100BE5 		str	r1, [fp, #-28]
+ 1639 026c 20200BE5 		str	r2, [fp, #-32]
+  56:../enemyshot.c ****     int i;
+  57:../enemyshot.c **** 
+  58:../enemyshot.c ****     // Si el disparo ya está explotando, actualizamos la animación
+  59:../enemyshot.c ****     if (self->state == enemyShotExplodingFloor
+ 1640              		.loc 1 59 0
+ 1641 0270 18301BE5 		ldr	r3, [fp, #-24]
+ 1642 0274 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 1643 0278 020053E3 		cmp	r3, #2
+ 1644 027c 0700000A 		beq	.L23
+  60:../enemyshot.c ****             || self->state == enemyShotExplodingShield
+ 1645              		.loc 1 60 0
+ 1646 0280 18301BE5 		ldr	r3, [fp, #-24]
+ 1647 0284 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 1648 0288 030053E3 		cmp	r3, #3
+ 1649 028c 0300000A 		beq	.L23
+  61:../enemyshot.c ****             || self->state == enemyShotExploding) {
+ 1650              		.loc 1 61 0
+ 1651 0290 18301BE5 		ldr	r3, [fp, #-24]
+ 1652 0294 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 1653 0298 040053E3 		cmp	r3, #4
+ 1654 029c 1400001A 		bne	.L24
+ 1655              	.L23:
+  62:../enemyshot.c ****         enemyShot_clear(self);
+ 1656              		.loc 1 62 0
+ 1657 02a0 18001BE5 		ldr	r0, [fp, #-24]
+ 1658 02a4 9EFFFFEB 		bl	enemyShot_clear
+  63:../enemyshot.c ****         if (self->countDown > 0) {
+ 1659              		.loc 1 63 0
+ 1660 02a8 18301BE5 		ldr	r3, [fp, #-24]
+ 1661 02ac 0130D3E5 		ldrb	r3, [r3, #1]	@ zero_extendqisi2
+ 1662 02b0 033CA0E1 		mov	r3, r3, asl #24
+ 1663 02b4 433CA0E1 		mov	r3, r3, asr #24
+ 1664 02b8 000053E3 		cmp	r3, #0
+ 1665 02bc 080000DA 		ble	.L25
+  64:../enemyshot.c ****             self->countDown--;
+ 1666              		.loc 1 64 0
+ 1667 02c0 18301BE5 		ldr	r3, [fp, #-24]
+ 1668 02c4 0130D3E5 		ldrb	r3, [r3, #1]	@ zero_extendqisi2
+ 1669 02c8 013043E2 		sub	r3, r3, #1
+ 1670 02cc FF2003E2 		and	r2, r3, #255
+ 1671 02d0 18301BE5 		ldr	r3, [fp, #-24]
+ 1672 02d4 0120C3E5 		strb	r2, [r3, #1]
+  65:../enemyshot.c ****             enemyShot_draw(self);
+ 1673              		.loc 1 65 0
+ 1674 02d8 18001BE5 		ldr	r0, [fp, #-24]
+ 1675 02dc 5EFFFFEB 		bl	enemyShot_draw
+  63:../enemyshot.c ****         if (self->countDown > 0) {
+ 1676              		.loc 1 63 0
+ 1677 02e0 BB0000EA 		b	.L22
+ 1678              	.L25:
+  66:../enemyshot.c ****         } else
+  67:../enemyshot.c ****             self->state = noEnemyShot;
+ 1679              		.loc 1 67 0
+ 1680 02e4 18301BE5 		ldr	r3, [fp, #-24]
+ 1681 02e8 0020A0E3 		mov	r2, #0
+ 1682 02ec 0020C3E5 		strb	r2, [r3, #0]
+  63:../enemyshot.c ****         if (self->countDown > 0) {
+ 1683              		.loc 1 63 0
+ 1684 02f0 B70000EA 		b	.L22
+ 1685              	.L24:
+  68:../enemyshot.c **** 
+  69:../enemyshot.c ****     } else if (self->state == enemyShotMovingDown) {
+ 1686              		.loc 1 69 0
+ 1687 02f4 18301BE5 		ldr	r3, [fp, #-24]
+ 1688 02f8 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 1689 02fc 010053E3 		cmp	r3, #1
+ 1690 0300 B300001A 		bne	.L22
+  70:../enemyshot.c **** 
+  71:../enemyshot.c ****         // Movemos el disparo
+  72:../enemyshot.c ****         enemyShot_clear(self);
+ 1691              		.loc 1 72 0
+ 1692 0304 18001BE5 		ldr	r0, [fp, #-24]
+ 1693 0308 85FFFFEB 		bl	enemyShot_clear
+  73:../enemyshot.c ****         self->row += ENEMYSHOT_ADVANCE_ROW;
+ 1694              		.loc 1 73 0
+ 1695 030c 18301BE5 		ldr	r3, [fp, #-24]
+ 1696 0310 B430D3E1 		ldrh	r3, [r3, #4]
+ 1697 0314 0338A0E1 		mov	r3, r3, asl #16
+ 1698 0318 2338A0E1 		mov	r3, r3, lsr #16
+ 1699 031c 013083E2 		add	r3, r3, #1
+ 1700 0320 0338A0E1 		mov	r3, r3, asl #16
+ 1701 0324 2338A0E1 		mov	r3, r3, lsr #16
+ 1702 0328 0338A0E1 		mov	r3, r3, asl #16
+ 1703 032c 2328A0E1 		mov	r2, r3, lsr #16
+ 1704 0330 18301BE5 		ldr	r3, [fp, #-24]
+ 1705 0334 B420C3E1 		strh	r2, [r3, #4]	@ movhi
+  74:../enemyshot.c **** 
+  75:../enemyshot.c ****         // Comprobaciones de colisión en ORDEN
+  76:../enemyshot.c **** 
+  77:../enemyshot.c ****         // Jugador
+  78:../enemyshot.c ****         if (player->state != playerDead &&
+ 1706              		.loc 1 78 0
+ 1707 0338 20301BE5 		ldr	r3, [fp, #-32]
+ 1708 033c 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 1709 0340 040053E3 		cmp	r3, #4
+ 1710 0344 2F00000A 		beq	.L28
+  79:../enemyshot.c ****             self->col < (player->col + PLAYER_WIDTH) &&
+ 1711              		.loc 1 79 0 discriminator 1
+ 1712 0348 18301BE5 		ldr	r3, [fp, #-24]
+ 1713 034c B230D3E1 		ldrh	r3, [r3, #2]
+ 1714 0350 0338A0E1 		mov	r3, r3, asl #16
+ 1715 0354 4328A0E1 		mov	r2, r3, asr #16
+ 1716 0358 20301BE5 		ldr	r3, [fp, #-32]
+ 1717 035c B430D3E1 		ldrh	r3, [r3, #4]
+ 1718 0360 0338A0E1 		mov	r3, r3, asl #16
+ 1719 0364 4338A0E1 		mov	r3, r3, asr #16
+ 1720 0368 103083E2 		add	r3, r3, #16
+  78:../enemyshot.c ****         if (player->state != playerDead &&
+ 1721              		.loc 1 78 0 discriminator 1
+ 1722 036c 030052E1 		cmp	r2, r3
+ 1723 0370 240000AA 		bge	.L28
+  80:../enemyshot.c ****             (self->col + ENEMYSHOT_WIDTH) > player->col &&
+ 1724              		.loc 1 80 0
+ 1725 0374 18301BE5 		ldr	r3, [fp, #-24]
+ 1726 0378 B230D3E1 		ldrh	r3, [r3, #2]
+ 1727 037c 0338A0E1 		mov	r3, r3, asl #16
+ 1728 0380 4338A0E1 		mov	r3, r3, asr #16
+ 1729 0384 032083E2 		add	r2, r3, #3
+ 1730 0388 20301BE5 		ldr	r3, [fp, #-32]
+ 1731 038c B430D3E1 		ldrh	r3, [r3, #4]
+ 1732 0390 0338A0E1 		mov	r3, r3, asl #16
+ 1733 0394 4338A0E1 		mov	r3, r3, asr #16
+  79:../enemyshot.c ****             self->col < (player->col + PLAYER_WIDTH) &&
+ 1734              		.loc 1 79 0
+ 1735 0398 030052E1 		cmp	r2, r3
+ 1736 039c 190000DA 		ble	.L28
+  81:../enemyshot.c ****             self->row < (player->row + PLAYER_HEIGHT) &&
+ 1737              		.loc 1 81 0
+ 1738 03a0 18301BE5 		ldr	r3, [fp, #-24]
+ 1739 03a4 B430D3E1 		ldrh	r3, [r3, #4]
+ 1740 03a8 0338A0E1 		mov	r3, r3, asl #16
+ 1741 03ac 4328A0E1 		mov	r2, r3, asr #16
+ 1742 03b0 20301BE5 		ldr	r3, [fp, #-32]
+ 1743 03b4 B630D3E1 		ldrh	r3, [r3, #6]
+ 1744 03b8 0338A0E1 		mov	r3, r3, asl #16
+ 1745 03bc 4338A0E1 		mov	r3, r3, asr #16
+ 1746 03c0 083083E2 		add	r3, r3, #8
+  80:../enemyshot.c ****             (self->col + ENEMYSHOT_WIDTH) > player->col &&
+ 1747              		.loc 1 80 0
+ 1748 03c4 030052E1 		cmp	r2, r3
+ 1749 03c8 0E0000AA 		bge	.L28
+  82:../enemyshot.c ****             (self->row + ENEMYSHOT_HEIGHT) > player->row) {
+ 1750              		.loc 1 82 0
+ 1751 03cc 18301BE5 		ldr	r3, [fp, #-24]
+ 1752 03d0 B430D3E1 		ldrh	r3, [r3, #4]
+ 1753 03d4 0338A0E1 		mov	r3, r3, asl #16
+ 1754 03d8 4338A0E1 		mov	r3, r3, asr #16
+ 1755 03dc 072083E2 		add	r2, r3, #7
+ 1756 03e0 20301BE5 		ldr	r3, [fp, #-32]
+ 1757 03e4 B630D3E1 		ldrh	r3, [r3, #6]
+ 1758 03e8 0338A0E1 		mov	r3, r3, asl #16
+ 1759 03ec 4338A0E1 		mov	r3, r3, asr #16
+  81:../enemyshot.c ****             self->row < (player->row + PLAYER_HEIGHT) &&
+ 1760              		.loc 1 81 0
+ 1761 03f0 030052E1 		cmp	r2, r3
+ 1762 03f4 030000DA 		ble	.L28
+  83:../enemyshot.c **** 
+  84:../enemyshot.c ****             enemyShot_onPlayer(self, player);
+ 1763              		.loc 1 84 0
+ 1764 03f8 18001BE5 		ldr	r0, [fp, #-24]
+ 1765 03fc 20101BE5 		ldr	r1, [fp, #-32]
+ 1766 0400 FEFFFFEB 		bl	enemyShot_onPlayer
+ 1767 0404 720000EA 		b	.L22
+ 1768              	.L28:
+ 1769              	.LBB2:
+  85:../enemyshot.c **** 
+  86:../enemyshot.c ****         } else {
+  87:../enemyshot.c ****             // Escudos
+  88:../enemyshot.c ****             boolean hitShield = FALSE;
+ 1770              		.loc 1 88 0
+ 1771 0408 0030A0E3 		mov	r3, #0
+ 1772 040c 11304BE5 		strb	r3, [fp, #-17]
+  89:../enemyshot.c ****             for (i = 0; i < MAX_SHIELDS && !hitShield; i++) { // TU CORRECCIÓN AQUÍ ES CORRECTA
+ 1773              		.loc 1 89 0
+ 1774 0410 0030A0E3 		mov	r3, #0
+ 1775 0414 10300BE5 		str	r3, [fp, #-16]
+ 1776 0418 520000EA 		b	.L29
+ 1777              	.L32:
+  90:../enemyshot.c ****                 if (self->col < (shield[i].col + SHIELD_WIDTH) &&
+ 1778              		.loc 1 90 0
+ 1779 041c 18301BE5 		ldr	r3, [fp, #-24]
+ 1780 0420 B230D3E1 		ldrh	r3, [r3, #2]
+ 1781 0424 0338A0E1 		mov	r3, r3, asl #16
+ 1782 0428 4318A0E1 		mov	r1, r3, asr #16
+ 1783 042c 10201BE5 		ldr	r2, [fp, #-16]
+ 1784 0430 0230A0E1 		mov	r3, r2
+ 1785 0434 8330A0E1 		mov	r3, r3, asl #1
+ 1786 0438 023083E0 		add	r3, r3, r2
+ 1787 043c 0331A0E1 		mov	r3, r3, asl #2
+ 1788 0440 1C201BE5 		ldr	r2, [fp, #-28]
+ 1789 0444 033082E0 		add	r3, r2, r3
+ 1790 0448 B030D3E1 		ldrh	r3, [r3, #0]
+ 1791 044c 0338A0E1 		mov	r3, r3, asl #16
+ 1792 0450 4338A0E1 		mov	r3, r3, asr #16
+ 1793 0454 163083E2 		add	r3, r3, #22
+ 1794 0458 030051E1 		cmp	r1, r3
+ 1795 045c 3E0000AA 		bge	.L30
+  91:../enemyshot.c ****                     (self->col + ENEMYSHOT_WIDTH) > shield[i].col &&
+ 1796              		.loc 1 91 0 discriminator 1
+ 1797 0460 18301BE5 		ldr	r3, [fp, #-24]
+ 1798 0464 B230D3E1 		ldrh	r3, [r3, #2]
+ 1799 0468 0338A0E1 		mov	r3, r3, asl #16
+ 1800 046c 4338A0E1 		mov	r3, r3, asr #16
+ 1801 0470 031083E2 		add	r1, r3, #3
+ 1802 0474 10201BE5 		ldr	r2, [fp, #-16]
+ 1803 0478 0230A0E1 		mov	r3, r2
+ 1804 047c 8330A0E1 		mov	r3, r3, asl #1
+ 1805 0480 023083E0 		add	r3, r3, r2
+ 1806 0484 0331A0E1 		mov	r3, r3, asl #2
+ 1807 0488 1C201BE5 		ldr	r2, [fp, #-28]
+ 1808 048c 033082E0 		add	r3, r2, r3
+ 1809 0490 B030D3E1 		ldrh	r3, [r3, #0]
+ 1810 0494 0338A0E1 		mov	r3, r3, asl #16
+ 1811 0498 4338A0E1 		mov	r3, r3, asr #16
+  90:../enemyshot.c ****                 if (self->col < (shield[i].col + SHIELD_WIDTH) &&
+ 1812              		.loc 1 90 0 discriminator 1
+ 1813 049c 030051E1 		cmp	r1, r3
+ 1814 04a0 2D0000DA 		ble	.L30
+  92:../enemyshot.c ****                     self->row < (shield[i].row + SHIELD_HEIGHT) &&
+ 1815              		.loc 1 92 0
+ 1816 04a4 18301BE5 		ldr	r3, [fp, #-24]
+ 1817 04a8 B430D3E1 		ldrh	r3, [r3, #4]
+ 1818 04ac 0338A0E1 		mov	r3, r3, asl #16
+ 1819 04b0 4318A0E1 		mov	r1, r3, asr #16
+ 1820 04b4 10201BE5 		ldr	r2, [fp, #-16]
+ 1821 04b8 0230A0E1 		mov	r3, r2
+ 1822 04bc 8330A0E1 		mov	r3, r3, asl #1
+ 1823 04c0 023083E0 		add	r3, r3, r2
+ 1824 04c4 0331A0E1 		mov	r3, r3, asl #2
+ 1825 04c8 1C201BE5 		ldr	r2, [fp, #-28]
+ 1826 04cc 033082E0 		add	r3, r2, r3
+ 1827 04d0 B230D3E1 		ldrh	r3, [r3, #2]
+ 1828 04d4 0338A0E1 		mov	r3, r3, asl #16
+ 1829 04d8 4338A0E1 		mov	r3, r3, asr #16
+ 1830 04dc 103083E2 		add	r3, r3, #16
+  91:../enemyshot.c ****                     (self->col + ENEMYSHOT_WIDTH) > shield[i].col &&
+ 1831              		.loc 1 91 0
+ 1832 04e0 030051E1 		cmp	r1, r3
+ 1833 04e4 1C0000AA 		bge	.L30
+  93:../enemyshot.c ****                     (self->row + ENEMYSHOT_HEIGHT) > shield[i].row) {
+ 1834              		.loc 1 93 0
+ 1835 04e8 18301BE5 		ldr	r3, [fp, #-24]
+ 1836 04ec B430D3E1 		ldrh	r3, [r3, #4]
+ 1837 04f0 0338A0E1 		mov	r3, r3, asl #16
+ 1838 04f4 4338A0E1 		mov	r3, r3, asr #16
+ 1839 04f8 071083E2 		add	r1, r3, #7
+ 1840 04fc 10201BE5 		ldr	r2, [fp, #-16]
+ 1841 0500 0230A0E1 		mov	r3, r2
+ 1842 0504 8330A0E1 		mov	r3, r3, asl #1
+ 1843 0508 023083E0 		add	r3, r3, r2
+ 1844 050c 0331A0E1 		mov	r3, r3, asl #2
+ 1845 0510 1C201BE5 		ldr	r2, [fp, #-28]
+ 1846 0514 033082E0 		add	r3, r2, r3
+ 1847 0518 B230D3E1 		ldrh	r3, [r3, #2]
+ 1848 051c 0338A0E1 		mov	r3, r3, asl #16
+ 1849 0520 4338A0E1 		mov	r3, r3, asr #16
+  92:../enemyshot.c ****                     self->row < (shield[i].row + SHIELD_HEIGHT) &&
+ 1850              		.loc 1 92 0
+ 1851 0524 030051E1 		cmp	r1, r3
+ 1852 0528 0B0000DA 		ble	.L30
+  94:../enemyshot.c **** 
+  95:../enemyshot.c ****                     enemyShot_onShield(self, &shield[i]);
+ 1853              		.loc 1 95 0
+ 1854 052c 10201BE5 		ldr	r2, [fp, #-16]
+ 1855 0530 0230A0E1 		mov	r3, r2
+ 1856 0534 8330A0E1 		mov	r3, r3, asl #1
+ 1857 0538 023083E0 		add	r3, r3, r2
+ 1858 053c 0331A0E1 		mov	r3, r3, asl #2
+ 1859 0540 1C201BE5 		ldr	r2, [fp, #-28]
+ 1860 0544 033082E0 		add	r3, r2, r3
+ 1861 0548 18001BE5 		ldr	r0, [fp, #-24]
+ 1862 054c 0310A0E1 		mov	r1, r3
+ 1863 0550 FEFFFFEB 		bl	enemyShot_onShield
+  96:../enemyshot.c ****                     hitShield = TRUE;
+ 1864              		.loc 1 96 0
+ 1865 0554 0130A0E3 		mov	r3, #1
+ 1866 0558 11304BE5 		strb	r3, [fp, #-17]
+ 1867              	.L30:
+  89:../enemyshot.c ****             for (i = 0; i < MAX_SHIELDS && !hitShield; i++) { // TU CORRECCIÓN AQUÍ ES CORRECTA
+ 1868              		.loc 1 89 0
+ 1869 055c 10301BE5 		ldr	r3, [fp, #-16]
+ 1870 0560 013083E2 		add	r3, r3, #1
+ 1871 0564 10300BE5 		str	r3, [fp, #-16]
+ 1872              	.L29:
+  89:../enemyshot.c ****             for (i = 0; i < MAX_SHIELDS && !hitShield; i++) { // TU CORRECCIÓN AQUÍ ES CORRECTA
+ 1873              		.loc 1 89 0 is_stmt 0 discriminator 1
+ 1874 0568 10301BE5 		ldr	r3, [fp, #-16]
+ 1875 056c 020053E3 		cmp	r3, #2
+ 1876 0570 020000CA 		bgt	.L31
+  89:../enemyshot.c ****             for (i = 0; i < MAX_SHIELDS && !hitShield; i++) { // TU CORRECCIÓN AQUÍ ES CORRECTA
+ 1877              		.loc 1 89 0 discriminator 2
+ 1878 0574 11305BE5 		ldrb	r3, [fp, #-17]	@ zero_extendqisi2
+ 1879 0578 000053E3 		cmp	r3, #0
+ 1880 057c A6FFFF0A 		beq	.L32
+ 1881              	.L31:
+  97:../enemyshot.c ****                 }
+  98:../enemyshot.c ****             }
+  99:../enemyshot.c **** 
+ 100:../enemyshot.c ****             // Suelo
+ 101:../enemyshot.c ****             if (!hitShield) {
+ 1882              		.loc 1 101 0 is_stmt 1
+ 1883 0580 11305BE5 		ldrb	r3, [fp, #-17]	@ zero_extendqisi2
+ 1884 0584 000053E3 		cmp	r3, #0
+ 1885 0588 1100001A 		bne	.L22
+ 102:../enemyshot.c ****                 if (self->row + ENEMYSHOT_HEIGHT >= GAME_HEIGHT) {
+ 1886              		.loc 1 102 0
+ 1887 058c 18301BE5 		ldr	r3, [fp, #-24]
+ 1888 0590 B430D3E1 		ldrh	r3, [r3, #4]
+ 1889 0594 0338A0E1 		mov	r3, r3, asl #16
+ 1890 0598 4338A0E1 		mov	r3, r3, asr #16
+ 1891 059c 073083E2 		add	r3, r3, #7
+ 1892 05a0 770053E3 		cmp	r3, #119
+ 1893 05a4 080000DA 		ble	.L33
+ 103:../enemyshot.c ****                     self->state = enemyShotExplodingFloor;
+ 1894              		.loc 1 103 0
+ 1895 05a8 18301BE5 		ldr	r3, [fp, #-24]
+ 1896 05ac 0220A0E3 		mov	r2, #2
+ 1897 05b0 0020C3E5 		strb	r2, [r3, #0]
+ 104:../enemyshot.c ****                     self->row = ENEMYSHOT_EXPLOSION_MIN_ROW;
+ 1898              		.loc 1 104 0
+ 1899 05b4 18301BE5 		ldr	r3, [fp, #-24]
+ 1900 05b8 7020A0E3 		mov	r2, #112
+ 1901 05bc B420C3E1 		strh	r2, [r3, #4]	@ movhi
+ 105:../enemyshot.c ****                     enemyShot_hit(self);
+ 1902              		.loc 1 105 0
+ 1903 05c0 18001BE5 		ldr	r0, [fp, #-24]
+ 1904 05c4 FEFFFFEB 		bl	enemyShot_hit
+ 1905 05c8 010000EA 		b	.L22
+ 1906              	.L33:
+ 106:../enemyshot.c ****                 } else {
+ 107:../enemyshot.c ****                     // D) Si no ha chocado con nada, lo dibujamos
+ 108:../enemyshot.c ****                     enemyShot_draw(self);
+ 1907              		.loc 1 108 0
+ 1908 05cc 18001BE5 		ldr	r0, [fp, #-24]
+ 1909 05d0 A1FEFFEB 		bl	enemyShot_draw
+ 1910              	.L22:
+ 1911              	.LBE2:
+ 109:../enemyshot.c ****                 }
+ 110:../enemyshot.c ****             }
+ 111:../enemyshot.c ****         }
+ 112:../enemyshot.c ****     }
+ 113:../enemyshot.c **** }
+ 1912              		.loc 1 113 0
+ 1913 05d4 0CD04BE2 		sub	sp, fp, #12
+ 1914 05d8 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1915 05dc 1EFF2FE1 		bx	lr
+ 1916              		.cfi_endproc
+ 1917              	.LFE4:
+ 1919              		.align	2
+ 1920              		.global	enemyShot_onShield
+ 1922              	enemyShot_onShield:
+ 1923              	.LFB5:
+ 114:../enemyshot.c **** void enemyShot_onShield(EnemyShot *self, Shield *shield) {
+ 1924              		.loc 1 114 0
+ 1925              		.cfi_startproc
+ 1926              		@ Function supports interworking.
+ 1927              		@ args = 0, pretend = 0, frame = 8
+ 1928              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1929 05e0 0DC0A0E1 		mov	ip, sp
+ 1930              	.LCFI10:
+ 1931              		.cfi_def_cfa_register 12
+ 1932 05e4 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1933 05e8 04B04CE2 		sub	fp, ip, #4
+ 1934              		.cfi_offset 14, -8
+ 1935              		.cfi_offset 13, -12
+ 1936              		.cfi_offset 11, -16
+ 1937              	.LCFI11:
+ 1938              		.cfi_def_cfa 11, 4
+ 1939 05ec 10D04DE2 		sub	sp, sp, #16
+ 1940 05f0 10000BE5 		str	r0, [fp, #-16]
+ 1941 05f4 14100BE5 		str	r1, [fp, #-20]
+ 115:../enemyshot.c **** 	shield_hit(shield, self->col, self->row, ENEMYSHOT_WIDTH, ENEMYSHOT_HEIGHT);
+ 1942              		.loc 1 115 0
+ 1943 05f8 10301BE5 		ldr	r3, [fp, #-16]
+ 1944 05fc B230D3E1 		ldrh	r3, [r3, #2]
+ 1945 0600 0338A0E1 		mov	r3, r3, asl #16
+ 1946 0604 4328A0E1 		mov	r2, r3, asr #16
+ 1947 0608 10301BE5 		ldr	r3, [fp, #-16]
+ 1948 060c B430D3E1 		ldrh	r3, [r3, #4]
+ 1949 0610 0338A0E1 		mov	r3, r3, asl #16
+ 1950 0614 4338A0E1 		mov	r3, r3, asr #16
+ 1951 0618 0710A0E3 		mov	r1, #7
+ 1952 061c 00108DE5 		str	r1, [sp, #0]
+ 1953 0620 14001BE5 		ldr	r0, [fp, #-20]
+ 1954 0624 0210A0E1 		mov	r1, r2
+ 1955 0628 0320A0E1 		mov	r2, r3
+ 1956 062c 0330A0E3 		mov	r3, #3
+ 1957 0630 FEFFFFEB 		bl	shield_hit
+ 116:../enemyshot.c **** 	self->state = enemyShotExplodingShield;
+ 1958              		.loc 1 116 0
+ 1959 0634 10301BE5 		ldr	r3, [fp, #-16]
+ 1960 0638 0320A0E3 		mov	r2, #3
+ 1961 063c 0020C3E5 		strb	r2, [r3, #0]
+ 117:../enemyshot.c **** 	enemyShot_hit(self);
+ 1962              		.loc 1 117 0
+ 1963 0640 10001BE5 		ldr	r0, [fp, #-16]
+ 1964 0644 FEFFFFEB 		bl	enemyShot_hit
+ 118:../enemyshot.c **** }
+ 1965              		.loc 1 118 0
+ 1966 0648 0CD04BE2 		sub	sp, fp, #12
+ 1967 064c 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1968 0650 1EFF2FE1 		bx	lr
+ 1969              		.cfi_endproc
+ 1970              	.LFE5:
+ 1972              		.align	2
+ 1973              		.global	enemyShot_onPlayer
+ 1975              	enemyShot_onPlayer:
+ 1976              	.LFB6:
+ 119:../enemyshot.c **** 
+ 120:../enemyshot.c **** void enemyShot_onPlayer(EnemyShot *self, Player *player) {
+ 1977              		.loc 1 120 0
+ 1978              		.cfi_startproc
+ 1979              		@ Function supports interworking.
+ 1980              		@ args = 0, pretend = 0, frame = 8
+ 1981              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1982 0654 0DC0A0E1 		mov	ip, sp
+ 1983              	.LCFI12:
+ 1984              		.cfi_def_cfa_register 12
+ 1985 0658 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1986 065c 04B04CE2 		sub	fp, ip, #4
+ 1987              		.cfi_offset 14, -8
+ 1988              		.cfi_offset 13, -12
+ 1989              		.cfi_offset 11, -16
+ 1990              	.LCFI13:
+ 1991              		.cfi_def_cfa 11, 4
+ 1992 0660 08D04DE2 		sub	sp, sp, #8
+ 1993 0664 10000BE5 		str	r0, [fp, #-16]
+ 1994 0668 14100BE5 		str	r1, [fp, #-20]
+ 121:../enemyshot.c **** 	player_hit(player);
+ 1995              		.loc 1 121 0
+ 1996 066c 14001BE5 		ldr	r0, [fp, #-20]
+ 1997 0670 FEFFFFEB 		bl	player_hit
+ 122:../enemyshot.c **** 	self->state = enemyShotExploding;
+ 1998              		.loc 1 122 0
+ 1999 0674 10301BE5 		ldr	r3, [fp, #-16]
+ 2000 0678 0420A0E3 		mov	r2, #4
+ 2001 067c 0020C3E5 		strb	r2, [r3, #0]
+ 123:../enemyshot.c **** 	enemyShot_hit(self);
+ 2002              		.loc 1 123 0
+ 2003 0680 10001BE5 		ldr	r0, [fp, #-16]
+ 2004 0684 FEFFFFEB 		bl	enemyShot_hit
+ 124:../enemyshot.c **** }
+ 2005              		.loc 1 124 0
+ 2006 0688 0CD04BE2 		sub	sp, fp, #12
+ 2007 068c 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 2008 0690 1EFF2FE1 		bx	lr
+ 2009              		.cfi_endproc
+ 2010              	.LFE6:
+ 2012              		.align	2
+ 2013              		.global	enemyShot_hit
+ 2015              	enemyShot_hit:
+ 2016              	.LFB7:
+ 125:../enemyshot.c **** 
+ 126:../enemyshot.c **** void enemyShot_hit(EnemyShot *self) {
+ 2017              		.loc 1 126 0
+ 2018              		.cfi_startproc
+ 2019              		@ Function supports interworking.
+ 2020              		@ args = 0, pretend = 0, frame = 8
+ 2021              		@ frame_needed = 1, uses_anonymous_args = 0
+ 2022 0694 0DC0A0E1 		mov	ip, sp
+ 2023              	.LCFI14:
+ 2024              		.cfi_def_cfa_register 12
+ 2025 0698 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 2026 069c 04B04CE2 		sub	fp, ip, #4
+ 2027              		.cfi_offset 14, -8
+ 2028              		.cfi_offset 13, -12
+ 2029              		.cfi_offset 11, -16
+ 2030              	.LCFI15:
+ 2031              		.cfi_def_cfa 11, 4
+ 2032 06a0 08D04DE2 		sub	sp, sp, #8
+ 2033 06a4 10000BE5 		str	r0, [fp, #-16]
+ 127:../enemyshot.c **** 	self->countDown = ENEMYSHOT_EXPLODING_TIME / ENEMYSHOT_UPDATE_PERIOD;
+ 2034              		.loc 1 127 0
+ 2035 06a8 10301BE5 		ldr	r3, [fp, #-16]
+ 2036 06ac 0A20A0E3 		mov	r2, #10
+ 2037 06b0 0120C3E5 		strb	r2, [r3, #1]
+ 128:../enemyshot.c **** 	enemyShot_draw(self);
+ 2038              		.loc 1 128 0
+ 2039 06b4 10001BE5 		ldr	r0, [fp, #-16]
+ 2040 06b8 67FEFFEB 		bl	enemyShot_draw
+ 129:../enemyshot.c **** }
+ 2041              		.loc 1 129 0
+ 2042 06bc 0CD04BE2 		sub	sp, fp, #12
+ 2043 06c0 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 2044 06c4 1EFF2FE1 		bx	lr
+ 2045              		.cfi_endproc
+ 2046              	.LFE7:
+ 2048              		.section	.rodata
+ 2049              		.align	2
+ 2052              	C.7.5150:
+ 2053 0000 0300     		.short	3
+ 2054 0002 0700     		.short	7
+ 2055 0004 00000000 		.word	enemyShotPixMap
+ 2056              		.align	2
+ 2059              	C.8.5151:
+ 2060 0008 0600     		.short	6
+ 2061 000a 0800     		.short	8
+ 2062 000c 00000000 		.word	enemyShotExplosionPixMap
+ 2063              		.text
+ 2064              	.Letext0:
+DEFINED SYMBOLS
+                            *ABS*:00000000 enemyshot.c
+C:\Users\alber\AppData\Local\Temp\ccFks0YU.s:1351   .text:00000000 $a
+C:\Users\alber\AppData\Local\Temp\ccFks0YU.s:1354   .text:00000000 enemyShot_init
+C:\Users\alber\AppData\Local\Temp\ccFks0YU.s:1396   .text:00000054 $d
+C:\Users\alber\AppData\Local\Temp\ccFks0YU.s:2052   .rodata:00000000 C.7.5150
+C:\Users\alber\AppData\Local\Temp\ccFks0YU.s:2059   .rodata:00000008 C.8.5151
+C:\Users\alber\AppData\Local\Temp\ccFks0YU.s:1401   .text:0000005c $a
+C:\Users\alber\AppData\Local\Temp\ccFks0YU.s:1403   .text:0000005c enemyShot_draw
+C:\Users\alber\AppData\Local\Temp\ccFks0YU.s:1484   .text:00000124 enemyShot_clear
+C:\Users\alber\AppData\Local\Temp\ccFks0YU.s:1566   .text:000001ec enemyShot_launch
+C:\Users\alber\AppData\Local\Temp\ccFks0YU.s:1619   .text:00000254 enemyShot_update
+C:\Users\alber\AppData\Local\Temp\ccFks0YU.s:1975   .text:00000654 enemyShot_onPlayer
+C:\Users\alber\AppData\Local\Temp\ccFks0YU.s:1922   .text:000005e0 enemyShot_onShield
+C:\Users\alber\AppData\Local\Temp\ccFks0YU.s:2015   .text:00000694 enemyShot_hit
+C:\Users\alber\AppData\Local\Temp\ccFks0YU.s:2049   .rodata:00000000 $d
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+sprite_draw
+sprite_clear
+shield_hit
+player_hit
+enemyShotPixMap
+enemyShotExplosionPixMap

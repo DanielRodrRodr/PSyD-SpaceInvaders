@@ -29,14 +29,33 @@ void game_init(Game *self) {
 }
 
 void game_restart(Game *self) {
-	self->playerShot.state = noPlayerShot;
+/*	self->playerShot.state = noPlayerShot;
 	self->enemyShot.state = noEnemyShot;
 	self->ufo.state = noUfo;
 
 	//self->music = (Sound ) { INTRO_MUSIC };
 	//sound_loop(&self->music);
 
-	self->state = pause;
+	self->state = pause;*/
+	uint8 i;
+
+	    // 1. Limpiar estados de disparos y UFO (lo que ya tenías)
+	    self->playerShot.state = noPlayerShot;
+	    self->enemyShot.state = noEnemyShot;
+	    self->ufo.state = noUfo;
+
+	    // 2. IMPORTANTE: Reiniciar al jugador (Vidas = 3, Estado = Stopped, Score = 0)
+	    player_init(&self->player);
+
+	    // 3. IMPORTANTE: Reiniciar el enjambre (Reponer todos los enemigos)
+	    swarm_init(&self->swarm);
+
+	    // 4. Reiniciar los escudos (Repararlos)
+	    for (i = 0; i < MAX_SHIELDS; i++) {
+	        shield_init(&self->shield[i], shieldCol[i]);
+	    }
+
+	    self->state = pause;
 }
 
 void game_launch(Game *self) {
@@ -62,4 +81,9 @@ void game_launch(Game *self) {
 	self->enemyShot.state = noEnemyShot;
 
 	self->state = run;
+
+	lcd_puts(150, 0, BLACK, "SCORE");
+	lcd_puts(250, 0, BLACK, "LIVES");
+	score_launch(&self->player.score);
+	lives_launch(&self->player.lives);
 }

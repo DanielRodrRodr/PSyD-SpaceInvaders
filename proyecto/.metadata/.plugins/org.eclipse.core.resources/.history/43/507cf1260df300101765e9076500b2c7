@@ -1,0 +1,128 @@
+#include "config.h"
+#include "pixmaps.h"
+#include "enemyShot.h"
+
+static void enemyShot_draw(EnemyShot *self);
+static void enemyShot_clear(EnemyShot *self);
+
+void enemyShot_init(EnemyShot *self) {
+	self->state = noEnemyShot;
+	self->sprite = (Sprite ) { ENEMYSHOT_WIDTH, ENEMYSHOT_HEIGHT,
+					enemyShotPixMap };
+	self->explosionSprite = (Sprite ) { ENEMYSHOT_EXPLOSION_WIDTH,
+					ENEMYSHOT_EXPLOSION_HEIGHT, enemyShotExplosionPixMap };
+}
+
+static void enemyShot_draw(EnemyShot *self) {
+	switch (self->state) {
+	case enemyShotMovingDown:
+		sprite_draw(&self->sprite, self->col, self->row);
+		break;
+	case enemyShotExplodingFloor:
+	case enemyShotExplodingShield:
+	case enemyShotExploding:
+		sprite_draw(&self->explosionSprite, self->col, self->row);
+		break;
+	default:
+		break;
+	}
+}
+
+static void enemyShot_clear(EnemyShot *self) {
+	switch (self->state) {
+	case enemyShotMovingDown:
+		sprite_clear(&self->sprite, self->col, self->row);
+		break;
+	case enemyShotExplodingFloor:
+	case enemyShotExplodingShield:
+	case enemyShotExploding:
+		sprite_clear(&self->explosionSprite, self->col, self->row);
+		break;
+	default:
+		break;
+	}
+}
+
+void enemyShot_launch(EnemyShot *self, uint16 col, uint16 row) {
+	if (self->state == noEnemyShot) {
+		self->state = enemyShotMovingDown;
+		self->col = col;
+		self->row = row;
+		enemyShot_draw(self);
+	}
+}
+
+void enemyShot_update(EnemyShot *self, Shield *shield, Player *player) {
+    int i;
+
+    // 1. Si el disparo ya está explotando, actualizamos la animación
+    if (self->state == enemyShotExplodingFloor
+            || self->state == enemyShotExplodingShield
+            || self->state == enemyShotExploding) {
+        enemyShot_clear(self);
+        if (self->countDown > 0) {
+            self->countDown--;
+            enemyShot_draw(self);
+        } else
+            self->state = noEnemyShot;
+
+    } else if (self->state == enemyShotMovingDown) {
+
+        // 2. Movemos el disparo
+        enemyShot_clear(self);
+        self->row += ENEMYSHOT_ADVANCE_ROW;
+
+        // 3. Comprobaciones de colisión en ORDEN DE PRIORIDAD:
+
+        // A) Primero: ¿Ha dado al JUGADOR?
+        if (player->state != playerDead &&
+            self->col < (player->col + PLAYER_WIDTH) &&
+            (self->col + ENEMYSHOT_WIDTH) > player->col &&
+            self->row < (player->row + PLAYER_HEIGHT) &&
+            (self->row + ENEMYSHOT_HEIGHT) > player->row) {
+
+            enemyShot_onPlayer(self, player);
+
+        } else {
+            // B) Si no dio al jugador, comprobamos ESCUDOS
+            boolean hitShield = FALSE;
+            for (i = 0; i < MAX_SHIELDS && !hitShield; i++) { // TU CORRECCIÓN AQUÍ ES CORRECTA
+                if (self->col < (shield[i].col + SHIELD_WIDTH) &&
+                    (self->col + ENEMYSHOT_WIDTH) > shield[i].col &&
+                    self->row < (shield[i].row + SHIELD_HEIGHT) &&
+                    (self->row + ENEMYSHOT_HEIGHT) > shield[i].row) {
+
+                    enemyShot_onShield(self, &shield[i]);
+                    hitShield = TRUE;
+                }
+            }
+
+            // C) Si no dio a escudos, comprobamos SUELO
+            if (!hitShield) {
+                if (self->row + ENEMYSHOT_HEIGHT >= GAME_HEIGHT) {
+                    self->state = enemyShotExplodingFloor;
+                    enemyShot_hit(self);
+                } else {
+                    // D) Si no ha chocado con nada, lo dibujamos
+                    enemyShot_draw(self);
+                }
+            }
+        }
+    }
+}
+void enemyShot_onShield(EnemyShot *self, Shield *shield) {
+	shield_hit(shield, self->col, self->row, ENEMYSHOT_WIDTH, ENEMYSHOT_HEIGHT);
+	self->state = enemyShotExplodingShield;
+	enemyShot_hit(self);
+}
+
+void enemyShot_onPlayer(EnemyShot *self, Player *player) {
+	player_hit(player);
+	self->state = enemyShotExploding;
+	enemyShot_hit(self);
+}
+
+void enemyShot_hit(EnemyShot *self) {
+	self->countDown = ENEMYSHOT_EXPLODING_TIME / ENEMYSHOT_UPDATE_PERIOD;
+	enemyShot_draw(self);
+}

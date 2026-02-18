@@ -1,0 +1,97 @@
+#include "config.h"
+#include "pixmaps.h"
+#include "enemyshot.h"
+
+static void enemyShot_draw(EnemyShot *self);
+static void enemyShot_clear(EnemyShot *self);
+
+void enemyShot_init(EnemyShot *self) {
+    self->state = noEnemyShot;
+    self->sprite = (Sprite){ENEMYSHOT_WIDTH, ENEMYSHOT_HEIGHT, enemyShotPixMap};
+    self->explosionSprite = (Sprite){ENEMYSHOT_EXPLOSION_WIDTH, ENEMYSHOT_EXPLOSION_HEIGHT, enemyShotExplosionPixMap};
+}
+
+static void enemyShot_draw(EnemyShot *self) {
+    if (self->state == enemyShotMovingDown) {
+        sprite_draw(&self->sprite, &self->col, &self->row);
+    } else if (self->state == enemyShotExploding || 
+               self->state == enemyShotExplodingFloor || 
+               self->state == enemyShotExplodingShield) {
+        sprite_draw(&self->explosionSprite, &self->col, &self->row);
+    }
+}
+
+static void enemyShot_clear(EnemyShot *self) {
+    if (self->state == enemyShotMovingDown) {
+        sprite_clear(&self->sprite, &self->col, &self->row);
+    } else if (self->state != noEnemyShot) {
+        sprite_clear(&self->explosionSprite, &self->col, &self->row);
+    }
+}
+
+void enemyShot_launch(EnemyShot *self, uint16 col, uint16 row) {
+    if (self->state == noEnemyShot) {
+        self->state = enemyShotMovingDown;
+        self->col = col;
+        self->row = row;
+        enemyShot_draw(self);
+    }
+}
+
+void enemyShot_update(EnemyShot *self, Shield *shield, Player *player) {
+    int i;
+    
+    if (self->state == noEnemyShot) return;
+
+    enemyShot_clear(self);
+
+    if (self->state == enemyShotMovingDown) {
+        self->row += ENEMYSHOT_ADVANCE_ROW;
+
+        // suelo
+        if (self->row >= ENEMYSHOT_MAX_ROW) {
+            self->state = enemyShotExplodingFloor;
+            self->countDown = ENEMYSHOT_EXPLODING_TIME / ENEMYSHOT_UPDATE_PERIOD;
+        }
+        // player
+        else if (OVERLAP(self->col, player->col, PLAYER_WIDTH) && 
+                 OVERLAP(self->row + ENEMYSHOT_HEIGHT, player->row, PLAYER_HEIGHT)) {
+            enemyShot_onPlayer(self, player);
+        }
+        // escudos
+        else {
+            i = 0;
+            while(i < MAX_SHIELDS && OVERLAP(self->col, shield[i].col, SHIELD_WIDTH) && 
+                    OVERLAP(self->row + ENEMYSHOT_HEIGHT, shield[i].row, SHIELD_HEIGHT)){
+                        enemyShot_onShield(self, &shield[i]);
+                        i++;
+            }
+        }
+    } 
+    else {
+        if (self->countDown > 0) {
+            self->countDown--;
+        } else {
+            self->state = noEnemyShot;
+            return; 
+        }
+    }
+
+    enemyShot_draw(self);
+}
+
+void enemyShot_onShield(EnemyShot *self, Shield *shield) {
+    self->state = enemyShotExplodingShield;
+    self->countDown = ENEMYSHOT_EXPLODING_TIME / ENEMYSHOT_UPDATE_PERIOD;
+}
+
+void enemyShot_onPlayer(EnemyShot *self, Player *player) {
+    self->state = enemyShotExploding;
+    self->countDown = ENEMYSHOT_EXPLODING_TIME / ENEMYSHOT_UPDATE_PERIOD;
+    player_hit(player);
+}
+
+void enemyShot_hit(EnemyShot *self) {
+    self->state = noEnemyShot;
+    enemyShot_clear(self);
+}

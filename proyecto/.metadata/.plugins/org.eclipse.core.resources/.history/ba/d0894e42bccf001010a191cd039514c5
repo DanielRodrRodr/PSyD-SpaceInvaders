@@ -1,0 +1,186 @@
+   1              		.cpu arm7tdmi
+   2              		.fpu softvfp
+   3              		.eabi_attribute 20, 1
+   4              		.eabi_attribute 21, 1
+   5              		.eabi_attribute 23, 3
+   6              		.eabi_attribute 24, 1
+   7              		.eabi_attribute 25, 1
+   8              		.eabi_attribute 26, 1
+   9              		.eabi_attribute 30, 6
+  10              		.eabi_attribute 18, 4
+  11              		.file	"credit.c"
+  21              	.Ltext0:
+  22              		.file 1 "../credit.c"
+ 1311              		.align	2
+ 1312              		.global	credit_init
+ 1314              	credit_init:
+ 1315              	.LFB0:
+   1:../credit.c   **** 
+   2:../credit.c   **** #include <segs.h>
+   3:../credit.c   **** #include "config.h"
+   4:../credit.c   **** #include "credit.h"
+   5:../credit.c   **** 
+   6:../credit.c   **** static void credit_draw( Credit *self );
+   7:../credit.c   **** 
+   8:../credit.c   **** void credit_init( Credit *self )
+   9:../credit.c   **** {
+ 1316              		.loc 1 9 0
+ 1317              		.cfi_startproc
+ 1318              		@ Function supports interworking.
+ 1319              		@ args = 0, pretend = 0, frame = 8
+ 1320              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1321 0000 0DC0A0E1 		mov	ip, sp
+ 1322              	.LCFI0:
+ 1323              		.cfi_def_cfa_register 12
+ 1324 0004 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1325 0008 04B04CE2 		sub	fp, ip, #4
+ 1326              		.cfi_offset 14, -8
+ 1327              		.cfi_offset 13, -12
+ 1328              		.cfi_offset 11, -16
+ 1329              	.LCFI1:
+ 1330              		.cfi_def_cfa 11, 4
+ 1331 000c 08D04DE2 		sub	sp, sp, #8
+ 1332 0010 10000BE5 		str	r0, [fp, #-16]
+  10:../credit.c   ****     self->value = 0;
+ 1333              		.loc 1 10 0
+ 1334 0014 10301BE5 		ldr	r3, [fp, #-16]
+ 1335 0018 0020A0E3 		mov	r2, #0
+ 1336 001c B020C3E1 		strh	r2, [r3, #0]	@ movhi
+  11:../credit.c   **** }
+ 1337              		.loc 1 11 0
+ 1338 0020 0CD04BE2 		sub	sp, fp, #12
+ 1339 0024 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1340 0028 1EFF2FE1 		bx	lr
+ 1341              		.cfi_endproc
+ 1342              	.LFE0:
+ 1344              		.align	2
+ 1346              	credit_draw:
+ 1347              	.LFB1:
+  12:../credit.c   **** 
+  13:../credit.c   **** void credit_draw( Credit *self )
+  14:../credit.c   **** {
+ 1348              		.loc 1 14 0
+ 1349              		.cfi_startproc
+ 1350              		@ Function supports interworking.
+ 1351              		@ args = 0, pretend = 0, frame = 8
+ 1352              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1353 002c 0DC0A0E1 		mov	ip, sp
+ 1354              	.LCFI2:
+ 1355              		.cfi_def_cfa_register 12
+ 1356 0030 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1357 0034 04B04CE2 		sub	fp, ip, #4
+ 1358              		.cfi_offset 14, -8
+ 1359              		.cfi_offset 13, -12
+ 1360              		.cfi_offset 11, -16
+ 1361              	.LCFI3:
+ 1362              		.cfi_def_cfa 11, 4
+ 1363 0038 08D04DE2 		sub	sp, sp, #8
+ 1364 003c 10000BE5 		str	r0, [fp, #-16]
+  15:../credit.c   ****     segs_putchar( self->value );
+ 1365              		.loc 1 15 0
+ 1366 0040 10301BE5 		ldr	r3, [fp, #-16]
+ 1367 0044 B030D3E1 		ldrh	r3, [r3, #0]
+ 1368 0048 FF3003E2 		and	r3, r3, #255
+ 1369 004c 0300A0E1 		mov	r0, r3
+ 1370 0050 FEFFFFEB 		bl	segs_putchar
+  16:../credit.c   **** }
+ 1371              		.loc 1 16 0
+ 1372 0054 0CD04BE2 		sub	sp, fp, #12
+ 1373 0058 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1374 005c 1EFF2FE1 		bx	lr
+ 1375              		.cfi_endproc
+ 1376              	.LFE1:
+ 1378              		.align	2
+ 1379              		.global	credit_launch
+ 1381              	credit_launch:
+ 1382              	.LFB2:
+  17:../credit.c   **** 
+  18:../credit.c   **** void credit_launch( Credit *self )
+  19:../credit.c   **** {
+ 1383              		.loc 1 19 0
+ 1384              		.cfi_startproc
+ 1385              		@ Function supports interworking.
+ 1386              		@ args = 0, pretend = 0, frame = 8
+ 1387              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1388 0060 0DC0A0E1 		mov	ip, sp
+ 1389              	.LCFI4:
+ 1390              		.cfi_def_cfa_register 12
+ 1391 0064 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1392 0068 04B04CE2 		sub	fp, ip, #4
+ 1393              		.cfi_offset 14, -8
+ 1394              		.cfi_offset 13, -12
+ 1395              		.cfi_offset 11, -16
+ 1396              	.LCFI5:
+ 1397              		.cfi_def_cfa 11, 4
+ 1398 006c 08D04DE2 		sub	sp, sp, #8
+ 1399 0070 10000BE5 		str	r0, [fp, #-16]
+  20:../credit.c   ****     credit_draw( self );
+ 1400              		.loc 1 20 0
+ 1401 0074 10001BE5 		ldr	r0, [fp, #-16]
+ 1402 0078 EBFFFFEB 		bl	credit_draw
+  21:../credit.c   **** }
+ 1403              		.loc 1 21 0
+ 1404 007c 0CD04BE2 		sub	sp, fp, #12
+ 1405 0080 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1406 0084 1EFF2FE1 		bx	lr
+ 1407              		.cfi_endproc
+ 1408              	.LFE2:
+ 1410              		.align	2
+ 1411              		.global	credit_update
+ 1413              	credit_update:
+ 1414              	.LFB3:
+  22:../credit.c   **** 
+  23:../credit.c   **** void credit_update( Credit *self, uint16 num )
+  24:../credit.c   **** {
+ 1415              		.loc 1 24 0
+ 1416              		.cfi_startproc
+ 1417              		@ Function supports interworking.
+ 1418              		@ args = 0, pretend = 0, frame = 8
+ 1419              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1420 0088 0DC0A0E1 		mov	ip, sp
+ 1421              	.LCFI6:
+ 1422              		.cfi_def_cfa_register 12
+ 1423 008c 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1424 0090 04B04CE2 		sub	fp, ip, #4
+ 1425              		.cfi_offset 14, -8
+ 1426              		.cfi_offset 13, -12
+ 1427              		.cfi_offset 11, -16
+ 1428              	.LCFI7:
+ 1429              		.cfi_def_cfa 11, 4
+ 1430 0094 08D04DE2 		sub	sp, sp, #8
+ 1431 0098 10000BE5 		str	r0, [fp, #-16]
+ 1432 009c 0130A0E1 		mov	r3, r1
+ 1433 00a0 B2314BE1 		strh	r3, [fp, #-18]	@ movhi
+  25:../credit.c   ****     self->value += num;
+ 1434              		.loc 1 25 0
+ 1435 00a4 10301BE5 		ldr	r3, [fp, #-16]
+ 1436 00a8 B020D3E1 		ldrh	r2, [r3, #0]
+ 1437 00ac B2315BE1 		ldrh	r3, [fp, #-18]	@ movhi
+ 1438 00b0 033082E0 		add	r3, r2, r3
+ 1439 00b4 0338A0E1 		mov	r3, r3, asl #16
+ 1440 00b8 2328A0E1 		mov	r2, r3, lsr #16
+ 1441 00bc 10301BE5 		ldr	r3, [fp, #-16]
+ 1442 00c0 B020C3E1 		strh	r2, [r3, #0]	@ movhi
+  26:../credit.c   ****     credit_draw( self );
+ 1443              		.loc 1 26 0
+ 1444 00c4 10001BE5 		ldr	r0, [fp, #-16]
+ 1445 00c8 D7FFFFEB 		bl	credit_draw
+  27:../credit.c   **** }
+ 1446              		.loc 1 27 0
+ 1447 00cc 0CD04BE2 		sub	sp, fp, #12
+ 1448 00d0 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1449 00d4 1EFF2FE1 		bx	lr
+ 1450              		.cfi_endproc
+ 1451              	.LFE3:
+ 1453              	.Letext0:
+DEFINED SYMBOLS
+                            *ABS*:00000000 credit.c
+C:\Users\Mendi\AppData\Local\Temp\ccFrnA8M.s:1311   .text:00000000 $a
+C:\Users\Mendi\AppData\Local\Temp\ccFrnA8M.s:1314   .text:00000000 credit_init
+C:\Users\Mendi\AppData\Local\Temp\ccFrnA8M.s:1346   .text:0000002c credit_draw
+C:\Users\Mendi\AppData\Local\Temp\ccFrnA8M.s:1381   .text:00000060 credit_launch
+C:\Users\Mendi\AppData\Local\Temp\ccFrnA8M.s:1413   .text:00000088 credit_update
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+segs_putchar

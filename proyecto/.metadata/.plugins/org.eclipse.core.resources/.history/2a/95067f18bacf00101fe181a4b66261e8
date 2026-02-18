@@ -1,0 +1,122 @@
+   1              		.cpu arm7tdmi
+   2              		.fpu softvfp
+   3              		.eabi_attribute 20, 1
+   4              		.eabi_attribute 21, 1
+   5              		.eabi_attribute 23, 3
+   6              		.eabi_attribute 24, 1
+   7              		.eabi_attribute 25, 1
+   8              		.eabi_attribute 26, 1
+   9              		.eabi_attribute 30, 6
+  10              		.eabi_attribute 18, 4
+  11              		.file	"shield.c"
+  21              	.Ltext0:
+  22              		.file 1 "../shield.c"
+ 1308              		.align	2
+ 1309              		.global	shield_init
+ 1311              	shield_init:
+ 1312              	.LFB0:
+   1:../shield.c   **** #include "config.h"
+   2:../shield.c   **** #include "pixmaps.h"
+   3:../shield.c   **** #include "shield.h"
+   4:../shield.c   **** 
+   5:../shield.c   **** void shield_init( Shield *self, uint16 col )
+   6:../shield.c   **** {
+ 1313              		.loc 1 6 0
+ 1314              		.cfi_startproc
+ 1315              		@ Function supports interworking.
+ 1316              		@ args = 0, pretend = 0, frame = 8
+ 1317              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1318 0000 0DC0A0E1 		mov	ip, sp
+ 1319              	.LCFI0:
+ 1320              		.cfi_def_cfa_register 12
+ 1321 0004 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1322 0008 04B04CE2 		sub	fp, ip, #4
+ 1323              		.cfi_offset 14, -8
+ 1324              		.cfi_offset 13, -12
+ 1325              		.cfi_offset 11, -16
+ 1326              	.LCFI1:
+ 1327              		.cfi_def_cfa 11, 4
+ 1328 000c 08D04DE2 		sub	sp, sp, #8
+ 1329 0010 10000BE5 		str	r0, [fp, #-16]
+ 1330 0014 0130A0E1 		mov	r3, r1
+ 1331 0018 B2314BE1 		strh	r3, [fp, #-18]	@ movhi
+   7:../shield.c   ****     self->col    = col;
+ 1332              		.loc 1 7 0
+ 1333 001c B2215BE1 		ldrh	r2, [fp, #-18]
+ 1334 0020 10301BE5 		ldr	r3, [fp, #-16]
+ 1335 0024 B020C3E1 		strh	r2, [r3, #0]	@ movhi
+   8:../shield.c   ****     self->row    = SHIELD_ROW;
+ 1336              		.loc 1 8 0
+ 1337 0028 10301BE5 		ldr	r3, [fp, #-16]
+ 1338 002c 5020A0E3 		mov	r2, #80
+ 1339 0030 B220C3E1 		strh	r2, [r3, #2]	@ movhi
+   9:../shield.c   ****     self->sprite = (Sprite){ SHIELD_WIDTH, SHIELD_HEIGHT, shieldPixMap };
+ 1340              		.loc 1 9 0
+ 1341 0034 10301BE5 		ldr	r3, [fp, #-16]
+ 1342 0038 14209FE5 		ldr	r2, .L2
+ 1343 003c 043083E2 		add	r3, r3, #4
+ 1344 0040 030092E8 		ldmia	r2, {r0, r1}
+ 1345 0044 030083E8 		stmia	r3, {r0, r1}
+  10:../shield.c   **** }
+ 1346              		.loc 1 10 0
+ 1347 0048 0CD04BE2 		sub	sp, fp, #12
+ 1348 004c 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1349 0050 1EFF2FE1 		bx	lr
+ 1350              	.L3:
+ 1351              		.align	2
+ 1352              	.L2:
+ 1353 0054 00000000 		.word	C.1.4837
+ 1354              		.cfi_endproc
+ 1355              	.LFE0:
+ 1357              		.align	2
+ 1358              		.global	shield_launch
+ 1360              	shield_launch:
+ 1361              	.LFB1:
+  11:../shield.c   **** 
+  12:../shield.c   **** void shield_launch( Shield *self )
+  13:../shield.c   **** {
+ 1362              		.loc 1 13 0
+ 1363              		.cfi_startproc
+ 1364              		@ Function supports interworking.
+ 1365              		@ args = 0, pretend = 0, frame = 8
+ 1366              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1367 0058 0DC0A0E1 		mov	ip, sp
+ 1368              	.LCFI2:
+ 1369              		.cfi_def_cfa_register 12
+ 1370 005c 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1371 0060 04B04CE2 		sub	fp, ip, #4
+ 1372              		.cfi_offset 14, -8
+ 1373              		.cfi_offset 13, -12
+ 1374              		.cfi_offset 11, -16
+ 1375              	.LCFI3:
+ 1376              		.cfi_def_cfa 11, 4
+ 1377 0064 08D04DE2 		sub	sp, sp, #8
+ 1378 0068 10000BE5 		str	r0, [fp, #-16]
+  14:../shield.c   **** }
+ 1379              		.loc 1 14 0
+ 1380 006c 0CD04BE2 		sub	sp, fp, #12
+ 1381 0070 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1382 0074 1EFF2FE1 		bx	lr
+ 1383              		.cfi_endproc
+ 1384              	.LFE1:
+ 1386              		.section	.rodata
+ 1387              		.align	2
+ 1390              	C.1.4837:
+ 1391 0000 1600     		.short	22
+ 1392 0002 1000     		.short	16
+ 1393 0004 00000000 		.word	shieldPixMap
+ 1394              		.text
+ 1395              	.Letext0:
+DEFINED SYMBOLS
+                            *ABS*:00000000 shield.c
+C:\Users\Mendi\AppData\Local\Temp\ccpQj8fz.s:1308   .text:00000000 $a
+C:\Users\Mendi\AppData\Local\Temp\ccpQj8fz.s:1311   .text:00000000 shield_init
+C:\Users\Mendi\AppData\Local\Temp\ccpQj8fz.s:1353   .text:00000054 $d
+C:\Users\Mendi\AppData\Local\Temp\ccpQj8fz.s:1390   .rodata:00000000 C.1.4837
+C:\Users\Mendi\AppData\Local\Temp\ccpQj8fz.s:1357   .text:00000058 $a
+C:\Users\Mendi\AppData\Local\Temp\ccpQj8fz.s:1360   .text:00000058 shield_launch
+C:\Users\Mendi\AppData\Local\Temp\ccpQj8fz.s:1387   .rodata:00000000 $d
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+shieldPixMap

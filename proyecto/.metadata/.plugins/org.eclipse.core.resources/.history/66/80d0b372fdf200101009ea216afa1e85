@@ -1,0 +1,68 @@
+#include <lcd.h>
+#include <at24c04.h>
+#include "config.h"
+#include "hiscore.h"
+
+static void hiScore_load( HiScore *self );
+static void hiScore_store( HiScore *self );
+static void hiScore_draw( HiScore *self );
+
+void hiScore_init( HiScore *self )
+{
+    hiScore_load( self );
+    self->col = (1+10)*FONT_WIDTH*2;
+    self->row = 0;
+    hiScore_draw( self );
+}
+
+static void hiScore_draw( HiScore *self )
+{
+    lcd_putint( self->col, self->row, WHITE, self->value );
+}
+
+void hiScore_launch( HiScore *self )
+{
+    hiScore_draw( self );
+}
+
+void hiScore_update( HiScore *self, uint16 num )
+{
+    if( num > self->value )
+    {
+        self->value = num;
+        hiScore_draw( self );
+        hiScore_store( self );
+    }
+}
+
+static void hiScore_load( HiScore *self )
+{
+    uint8 data_lsb;
+    uint8 data_msb;
+
+    // Lectura de la EEPROM I2C
+    at24c04_byteread( 0x0000, &data_lsb );
+    at24c04_byteread( 0x0001, &data_msb );
+    
+    self->value = (uint16)data_lsb | ((uint16)data_msb << 8);
+    
+    // Si la memoria está virgen (0xFFFF), poner a 0
+    if( self->value == 0xFFFF )
+    {
+        self->value = 0;
+    }
+}
+
+static void hiScore_store( HiScore *self )
+{
+    uint8 data_lsb;
+    uint8 data_msb;
+
+    data_lsb = (uint8)(self->value & 0xFF);
+    data_msb = (uint8)((self->value >> 8) & 0xFF);
+
+    at24c04_bytewrite( 0x0000, data_lsb );
+    // Pequeña espera por ciclo de escritura (habitual en EEPROM)
+    // aunque la libreria deberia gestionarlo, separamos las llamadas.
+    at24c04_bytewrite( 0x0001, data_msb );
+}

@@ -1,0 +1,139 @@
+#include "config.h"
+#include "random.h"
+#include "pixmaps.h"
+#include "wavs.h"
+#include "ufo.h"
+
+static int16 scoreTable[] = { 100, 50, 50, 100, 150, 100, 100, 50, 300, 100, 100, 100, 50, 150, 100, 50 };
+
+static void ufo_draw( Ufo *self );
+static void ufo_clear( Ufo *self );
+
+void ufo_init( Ufo *self )
+{
+    self->state           = noUfo;
+    self->row             = UFO_ROW;
+    self->sprite          = (Sprite){ UFO_WIDTH, UFO_HEIGHT, ufoPixMap };
+    self->explosionSprite = (Sprite){ UFO_WIDTH, UFO_HEIGHT, ufoExplosionPixMap };
+    self->launchSound     = (Sound){ UFO_LAUNCH };
+    self->explosionSound  = (Sound){ ENEMY_EXPLOSION };
+}
+
+static void ufo_draw( Ufo *self )
+{
+    switch( self->state )
+    {
+        case ufoMovingLeft:
+        case ufoMovingRight:
+            sprite_draw( &self->sprite, self->col, self->row );
+            break;
+        case ufoExploding:
+            sprite_draw( &self->explosionSprite, self->col, self->row );
+            break;
+        case ufoScoring:
+            lcd_putint( self->col, self->row, WHITE, self->score ); // Ajuste de color
+            break;
+        case noUfo:
+            break;
+    }
+}
+
+static void ufo_clear( Ufo *self )
+{
+    switch( self->state )
+    {
+        case ufoMovingLeft:
+        case ufoMovingRight:
+            sprite_clear( &self->sprite, self->col, self->row );
+            break;
+        case ufoExploding:
+            sprite_clear( &self->explosionSprite, self->col, self->row );
+            break;
+        case ufoScoring:
+            // Borrar texto pintando negro. Asumiendo lcd_putint con BLACK funciona.
+            lcd_putint( self->col, self->row, BLACK, self->score );
+            break;
+        case noUfo:
+            break;
+    }
+}
+
+void ufo_launch( Ufo *self )
+{
+    if( self->state == noUfo )
+    {
+        if( random_get() & 0x1 )
+        {
+            self->state = ufoMovingLeft;
+            self->col   = UFO_MAX_COL;
+        }
+        else
+        {
+            self->state = ufoMovingRight;
+            self->col   = UFO_MIN_COL;
+        }
+        self->score = scoreTable[random_get()&0xF];
+        ufo_draw( self );
+        sound_play( &self->launchSound );
+    }
+}
+
+void ufo_update( Ufo *self )
+{
+    switch( self->state )
+    {
+        case ufoMovingLeft:
+            ufo_clear( self );
+            if( (self->col - UFO_ADVANCE_COL) >= UFO_MIN_COL )
+            {
+                self->col -= UFO_ADVANCE_COL;
+                ufo_draw( self );
+            }
+            else
+            {
+                self->state = noUfo;
+            }
+            break;
+        case ufoMovingRight:
+            ufo_clear( self );
+            if( (self->col + UFO_ADVANCE_COL) <= UFO_MAX_COL )
+            {
+                self->col += UFO_ADVANCE_COL;
+                ufo_draw( self );
+            }
+            else
+            {
+                self->state = noUfo;
+            }
+            break;
+        case ufoExploding:
+            self->countDown--;
+            if (self->countDown == 0)
+            {
+                ufo_clear( self );
+                self->state = ufoScoring;
+                self->countDown = UFO_SCORING_TIME / UFO_UPDATE_PERIOD;
+                ufo_draw( self );
+            }
+            break;
+        case ufoScoring:
+            self->countDown--;
+            if (self->countDown == 0)
+            {
+                ufo_clear( self );
+                self->state = noUfo;
+            }
+            break;
+        case noUfo:
+            break;
+    }
+}
+
+void ufo_hit( Ufo *self )
+{
+    ufo_clear( self );
+    self->countDown = UFO_EXPLODING_TIME/UFO_UPDATE_PERIOD;
+    self->state = ufoExploding;
+    ufo_draw( self );
+    sound_play( &self->explosionSound );
+}

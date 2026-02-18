@@ -1,0 +1,170 @@
+   1              		.cpu arm7tdmi
+   2              		.fpu softvfp
+   3              		.eabi_attribute 20, 1
+   4              		.eabi_attribute 21, 1
+   5              		.eabi_attribute 23, 3
+   6              		.eabi_attribute 24, 1
+   7              		.eabi_attribute 25, 1
+   8              		.eabi_attribute 26, 1
+   9              		.eabi_attribute 30, 6
+  10              		.eabi_attribute 18, 4
+  11              		.file	"score.c"
+  21              	.Ltext0:
+  22              		.file 1 "../score.c"
+ 1300              		.align	2
+ 1301              		.global	score_init
+ 1303              	score_init:
+ 1304              	.LFB0:
+   1:../score.c    **** 
+   2:../score.c    **** #include <lcd.h>
+   3:../score.c    **** #include "config.h"
+   4:../score.c    **** #include "score.h"
+   5:../score.c    **** 
+   6:../score.c    **** static void score_draw( Score *self );
+   7:../score.c    **** 
+   8:../score.c    **** void score_init( Score *self )
+   9:../score.c    **** {
+ 1305              		.loc 1 9 0
+ 1306              		.cfi_startproc
+ 1307              		@ Function supports interworking.
+ 1308              		@ args = 0, pretend = 0, frame = 8
+ 1309              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1310 0000 0DC0A0E1 		mov	ip, sp
+ 1311              	.LCFI0:
+ 1312              		.cfi_def_cfa_register 12
+ 1313 0004 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1314 0008 04B04CE2 		sub	fp, ip, #4
+ 1315              		.cfi_offset 14, -8
+ 1316              		.cfi_offset 13, -12
+ 1317              		.cfi_offset 11, -16
+ 1318              	.LCFI1:
+ 1319              		.cfi_def_cfa 11, 4
+ 1320 000c 08D04DE2 		sub	sp, sp, #8
+ 1321 0010 10000BE5 		str	r0, [fp, #-16]
+  10:../score.c    ****     self->value = 0;
+ 1322              		.loc 1 10 0
+ 1323 0014 10301BE5 		ldr	r3, [fp, #-16]
+ 1324 0018 0020A0E3 		mov	r2, #0
+ 1325 001c B020C3E1 		strh	r2, [r3, #0]	@ movhi
+  11:../score.c    ****     self->col   = (18+7)*FONT_WIDTH*2;
+ 1326              		.loc 1 11 0
+ 1327 0020 10301BE5 		ldr	r3, [fp, #-16]
+ 1328 0024 C820A0E3 		mov	r2, #200
+ 1329 0028 B220C3E1 		strh	r2, [r3, #2]	@ movhi
+  12:../score.c    ****     self->row   = 0;
+ 1330              		.loc 1 12 0
+ 1331 002c 10301BE5 		ldr	r3, [fp, #-16]
+ 1332 0030 0020A0E3 		mov	r2, #0
+ 1333 0034 B420C3E1 		strh	r2, [r3, #4]	@ movhi
+  13:../score.c    **** }
+ 1334              		.loc 1 13 0
+ 1335 0038 0CD04BE2 		sub	sp, fp, #12
+ 1336 003c 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1337 0040 1EFF2FE1 		bx	lr
+ 1338              		.cfi_endproc
+ 1339              	.LFE0:
+ 1341              		.align	2
+ 1343              	score_draw:
+ 1344              	.LFB1:
+  14:../score.c    **** 
+  15:../score.c    **** void score_draw( Score *self )
+  16:../score.c    **** {
+ 1345              		.loc 1 16 0
+ 1346              		.cfi_startproc
+ 1347              		@ Function supports interworking.
+ 1348              		@ args = 0, pretend = 0, frame = 8
+ 1349              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1350 0044 0DC0A0E1 		mov	ip, sp
+ 1351              	.LCFI2:
+ 1352              		.cfi_def_cfa_register 12
+ 1353 0048 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1354 004c 04B04CE2 		sub	fp, ip, #4
+ 1355              		.cfi_offset 14, -8
+ 1356              		.cfi_offset 13, -12
+ 1357              		.cfi_offset 11, -16
+ 1358              	.LCFI3:
+ 1359              		.cfi_def_cfa 11, 4
+ 1360 0050 08D04DE2 		sub	sp, sp, #8
+ 1361 0054 10000BE5 		str	r0, [fp, #-16]
+  17:../score.c    **** }
+ 1362              		.loc 1 17 0
+ 1363 0058 0CD04BE2 		sub	sp, fp, #12
+ 1364 005c 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1365 0060 1EFF2FE1 		bx	lr
+ 1366              		.cfi_endproc
+ 1367              	.LFE1:
+ 1369              		.align	2
+ 1370              		.global	score_launch
+ 1372              	score_launch:
+ 1373              	.LFB2:
+  18:../score.c    **** 
+  19:../score.c    **** void score_launch( Score *self )
+  20:../score.c    **** {
+ 1374              		.loc 1 20 0
+ 1375              		.cfi_startproc
+ 1376              		@ Function supports interworking.
+ 1377              		@ args = 0, pretend = 0, frame = 8
+ 1378              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1379 0064 0DC0A0E1 		mov	ip, sp
+ 1380              	.LCFI4:
+ 1381              		.cfi_def_cfa_register 12
+ 1382 0068 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1383 006c 04B04CE2 		sub	fp, ip, #4
+ 1384              		.cfi_offset 14, -8
+ 1385              		.cfi_offset 13, -12
+ 1386              		.cfi_offset 11, -16
+ 1387              	.LCFI5:
+ 1388              		.cfi_def_cfa 11, 4
+ 1389 0070 08D04DE2 		sub	sp, sp, #8
+ 1390 0074 10000BE5 		str	r0, [fp, #-16]
+  21:../score.c    **** }
+ 1391              		.loc 1 21 0
+ 1392 0078 0CD04BE2 		sub	sp, fp, #12
+ 1393 007c 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1394 0080 1EFF2FE1 		bx	lr
+ 1395              		.cfi_endproc
+ 1396              	.LFE2:
+ 1398              		.align	2
+ 1399              		.global	score_update
+ 1401              	score_update:
+ 1402              	.LFB3:
+  22:../score.c    **** 
+  23:../score.c    **** void score_update( Score *self, uint16 num )
+  24:../score.c    **** {
+ 1403              		.loc 1 24 0
+ 1404              		.cfi_startproc
+ 1405              		@ Function supports interworking.
+ 1406              		@ args = 0, pretend = 0, frame = 8
+ 1407              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1408 0084 0DC0A0E1 		mov	ip, sp
+ 1409              	.LCFI6:
+ 1410              		.cfi_def_cfa_register 12
+ 1411 0088 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1412 008c 04B04CE2 		sub	fp, ip, #4
+ 1413              		.cfi_offset 14, -8
+ 1414              		.cfi_offset 13, -12
+ 1415              		.cfi_offset 11, -16
+ 1416              	.LCFI7:
+ 1417              		.cfi_def_cfa 11, 4
+ 1418 0090 08D04DE2 		sub	sp, sp, #8
+ 1419 0094 10000BE5 		str	r0, [fp, #-16]
+ 1420 0098 0130A0E1 		mov	r3, r1
+ 1421 009c B2314BE1 		strh	r3, [fp, #-18]	@ movhi
+  25:../score.c    **** }
+ 1422              		.loc 1 25 0
+ 1423 00a0 0CD04BE2 		sub	sp, fp, #12
+ 1424 00a4 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1425 00a8 1EFF2FE1 		bx	lr
+ 1426              		.cfi_endproc
+ 1427              	.LFE3:
+ 1429              	.Letext0:
+DEFINED SYMBOLS
+                            *ABS*:00000000 score.c
+C:\Users\Mendi\AppData\Local\Temp\ccIO7eXd.s:1300   .text:00000000 $a
+C:\Users\Mendi\AppData\Local\Temp\ccIO7eXd.s:1303   .text:00000000 score_init
+C:\Users\Mendi\AppData\Local\Temp\ccIO7eXd.s:1343   .text:00000044 score_draw
+C:\Users\Mendi\AppData\Local\Temp\ccIO7eXd.s:1372   .text:00000064 score_launch
+C:\Users\Mendi\AppData\Local\Temp\ccIO7eXd.s:1401   .text:00000084 score_update
+                     .debug_frame:00000010 $d
+
+NO UNDEFINED SYMBOLS

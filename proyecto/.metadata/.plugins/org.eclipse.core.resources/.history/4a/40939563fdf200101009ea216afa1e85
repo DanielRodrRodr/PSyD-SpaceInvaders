@@ -1,0 +1,35 @@
+#include <lcd.h>
+#include "config.h"
+#include "lives.h"
+#include "pixmaps.h"
+
+static void lives_draw( Lives *self );
+
+void lives_init( Lives *self )
+{
+    self->value = MAX_LIFES;
+    self->col   = (31+7)*FONT_WIDTH*2;
+    self->row   = 0;
+    lives_draw( self );
+}
+
+static void lives_draw( Lives *self )
+{
+    // Dibuja el número de vidas usando la fuente del sistema
+    lcd_putint( self->col, self->row, WHITE, self->value );
+}
+
+void lives_launch( Lives *self )
+{
+    lives_draw( self );
+}
+
+void lives_update( Lives *self )
+{  
+    self->value--;
+    if( self->value < 0 )
+    {
+        self->value = 0;
+    }
+    lives_draw( self );
+}

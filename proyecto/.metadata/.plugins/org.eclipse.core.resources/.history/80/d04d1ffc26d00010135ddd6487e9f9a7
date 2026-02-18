@@ -1,0 +1,376 @@
+   1              		.cpu arm7tdmi
+   2              		.fpu softvfp
+   3              		.eabi_attribute 20, 1
+   4              		.eabi_attribute 21, 1
+   5              		.eabi_attribute 23, 3
+   6              		.eabi_attribute 24, 1
+   7              		.eabi_attribute 25, 1
+   8              		.eabi_attribute 26, 1
+   9              		.eabi_attribute 30, 6
+  10              		.eabi_attribute 18, 4
+  11              		.file	"playershot.c"
+  21              	.Ltext0:
+  22              		.file 1 "../playershot.c"
+ 1418              		.align	2
+ 1419              		.global	playerShot_init
+ 1421              	playerShot_init:
+ 1422              	.LFB0:
+   1:../playershot.c **** 
+   2:../playershot.c **** // El alcanzado es el que estalla y suena
+   3:../playershot.c **** 
+   4:../playershot.c **** 
+   5:../playershot.c **** 
+   6:../playershot.c **** #include "config.h"
+   7:../playershot.c **** #include "pixmaps.h"
+   8:../playershot.c **** #include "wavs.h"
+   9:../playershot.c **** #include "playerShot.h"
+  10:../playershot.c **** 
+  11:../playershot.c **** static void playerShot_draw( PlayerShot *self );
+  12:../playershot.c **** static void playerShot_clear( PlayerShot *self );
+  13:../playershot.c **** 
+  14:../playershot.c **** void playerShot_init( PlayerShot *self )
+  15:../playershot.c **** {
+ 1423              		.loc 1 15 0
+ 1424              		.cfi_startproc
+ 1425              		@ Function supports interworking.
+ 1426              		@ args = 0, pretend = 0, frame = 8
+ 1427              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1428 0000 0DC0A0E1 		mov	ip, sp
+ 1429              	.LCFI0:
+ 1430              		.cfi_def_cfa_register 12
+ 1431 0004 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1432 0008 04B04CE2 		sub	fp, ip, #4
+ 1433              		.cfi_offset 14, -8
+ 1434              		.cfi_offset 13, -12
+ 1435              		.cfi_offset 11, -16
+ 1436              	.LCFI1:
+ 1437              		.cfi_def_cfa 11, 4
+ 1438 000c 08D04DE2 		sub	sp, sp, #8
+ 1439 0010 10000BE5 		str	r0, [fp, #-16]
+  16:../playershot.c ****     self->state           = noPlayerShot;
+ 1440              		.loc 1 16 0
+ 1441 0014 10301BE5 		ldr	r3, [fp, #-16]
+ 1442 0018 0020A0E3 		mov	r2, #0
+ 1443 001c 0020C3E5 		strb	r2, [r3, #0]
+  17:../playershot.c ****     self->sprite          = (Sprite){ PLAYERSHOT_WIDTH, PLAYERSHOT_HEIGHT, playerShotPixMap };
+ 1444              		.loc 1 17 0
+ 1445 0020 10301BE5 		ldr	r3, [fp, #-16]
+ 1446 0024 34209FE5 		ldr	r2, .L2
+ 1447 0028 083083E2 		add	r3, r3, #8
+ 1448 002c 030092E8 		ldmia	r2, {r0, r1}
+ 1449 0030 030083E8 		stmia	r3, {r0, r1}
+  18:../playershot.c ****     self->explosionSprite = (Sprite){ PLAYERSHOT_EXPLOSION_WIDTH, PLAYERSHOT_EXPLOSION_HEIGHT, play
+ 1450              		.loc 1 18 0
+ 1451 0034 10301BE5 		ldr	r3, [fp, #-16]
+ 1452 0038 24209FE5 		ldr	r2, .L2+4
+ 1453 003c 103083E2 		add	r3, r3, #16
+ 1454 0040 030092E8 		ldmia	r2, {r0, r1}
+ 1455 0044 030083E8 		stmia	r3, {r0, r1}
+  19:../playershot.c ****     self->launchSound     = (Sound){ PLAYERSHOOT_LAUNCH };
+ 1456              		.loc 1 19 0
+ 1457 0048 10301BE5 		ldr	r3, [fp, #-16]
+ 1458 004c 14209FE5 		ldr	r2, .L2+8
+ 1459 0050 182083E5 		str	r2, [r3, #24]
+  20:../playershot.c **** }
+ 1460              		.loc 1 20 0
+ 1461 0054 0CD04BE2 		sub	sp, fp, #12
+ 1462 0058 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1463 005c 1EFF2FE1 		bx	lr
+ 1464              	.L3:
+ 1465              		.align	2
+ 1466              	.L2:
+ 1467 0060 00000000 		.word	C.0.5165
+ 1468 0064 08000000 		.word	C.1.5166
+ 1469 0068 007E510C 		.word	206667264
+ 1470              		.cfi_endproc
+ 1471              	.LFE0:
+ 1473              		.align	2
+ 1475              	playerShot_draw:
+ 1476              	.LFB1:
+  21:../playershot.c **** 
+  22:../playershot.c **** static void playerShot_draw( PlayerShot *self )
+  23:../playershot.c **** {   
+ 1477              		.loc 1 23 0
+ 1478              		.cfi_startproc
+ 1479              		@ Function supports interworking.
+ 1480              		@ args = 0, pretend = 0, frame = 8
+ 1481              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1482 006c 0DC0A0E1 		mov	ip, sp
+ 1483              	.LCFI2:
+ 1484              		.cfi_def_cfa_register 12
+ 1485 0070 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1486 0074 04B04CE2 		sub	fp, ip, #4
+ 1487              		.cfi_offset 14, -8
+ 1488              		.cfi_offset 13, -12
+ 1489              		.cfi_offset 11, -16
+ 1490              	.LCFI3:
+ 1491              		.cfi_def_cfa 11, 4
+ 1492 0078 08D04DE2 		sub	sp, sp, #8
+ 1493 007c 10000BE5 		str	r0, [fp, #-16]
+  24:../playershot.c **** }
+ 1494              		.loc 1 24 0
+ 1495 0080 0CD04BE2 		sub	sp, fp, #12
+ 1496 0084 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1497 0088 1EFF2FE1 		bx	lr
+ 1498              		.cfi_endproc
+ 1499              	.LFE1:
+ 1501              		.align	2
+ 1503              	playerShot_clear:
+ 1504              	.LFB2:
+  25:../playershot.c **** 
+  26:../playershot.c **** static void playerShot_clear( PlayerShot *self )
+  27:../playershot.c **** {   
+ 1505              		.loc 1 27 0
+ 1506              		.cfi_startproc
+ 1507              		@ Function supports interworking.
+ 1508              		@ args = 0, pretend = 0, frame = 8
+ 1509              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1510 008c 0DC0A0E1 		mov	ip, sp
+ 1511              	.LCFI4:
+ 1512              		.cfi_def_cfa_register 12
+ 1513 0090 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1514 0094 04B04CE2 		sub	fp, ip, #4
+ 1515              		.cfi_offset 14, -8
+ 1516              		.cfi_offset 13, -12
+ 1517              		.cfi_offset 11, -16
+ 1518              	.LCFI5:
+ 1519              		.cfi_def_cfa 11, 4
+ 1520 0098 08D04DE2 		sub	sp, sp, #8
+ 1521 009c 10000BE5 		str	r0, [fp, #-16]
+  28:../playershot.c **** }
+ 1522              		.loc 1 28 0
+ 1523 00a0 0CD04BE2 		sub	sp, fp, #12
+ 1524 00a4 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1525 00a8 1EFF2FE1 		bx	lr
+ 1526              		.cfi_endproc
+ 1527              	.LFE2:
+ 1529              		.align	2
+ 1530              		.global	playerShot_launch
+ 1532              	playerShot_launch:
+ 1533              	.LFB3:
+  29:../playershot.c **** 
+  30:../playershot.c **** void playerShot_launch( PlayerShot *self, Player *player )
+  31:../playershot.c **** {
+ 1534              		.loc 1 31 0
+ 1535              		.cfi_startproc
+ 1536              		@ Function supports interworking.
+ 1537              		@ args = 0, pretend = 0, frame = 8
+ 1538              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1539 00ac 0DC0A0E1 		mov	ip, sp
+ 1540              	.LCFI6:
+ 1541              		.cfi_def_cfa_register 12
+ 1542 00b0 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1543 00b4 04B04CE2 		sub	fp, ip, #4
+ 1544              		.cfi_offset 14, -8
+ 1545              		.cfi_offset 13, -12
+ 1546              		.cfi_offset 11, -16
+ 1547              	.LCFI7:
+ 1548              		.cfi_def_cfa 11, 4
+ 1549 00b8 08D04DE2 		sub	sp, sp, #8
+ 1550 00bc 10000BE5 		str	r0, [fp, #-16]
+ 1551 00c0 14100BE5 		str	r1, [fp, #-20]
+  32:../playershot.c **** }
+ 1552              		.loc 1 32 0
+ 1553 00c4 0CD04BE2 		sub	sp, fp, #12
+ 1554 00c8 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1555 00cc 1EFF2FE1 		bx	lr
+ 1556              		.cfi_endproc
+ 1557              	.LFE3:
+ 1559              		.align	2
+ 1560              		.global	playerShot_update
+ 1562              	playerShot_update:
+ 1563              	.LFB4:
+  33:../playershot.c **** 
+  34:../playershot.c **** void playerShot_update( PlayerShot *self, Shield *shield, Swarm *swarm, EnemyShot *enemyShot, Ufo *
+  35:../playershot.c **** {   
+ 1564              		.loc 1 35 0
+ 1565              		.cfi_startproc
+ 1566              		@ Function supports interworking.
+ 1567              		@ args = 4, pretend = 0, frame = 16
+ 1568              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1569 00d0 0DC0A0E1 		mov	ip, sp
+ 1570              	.LCFI8:
+ 1571              		.cfi_def_cfa_register 12
+ 1572 00d4 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1573 00d8 04B04CE2 		sub	fp, ip, #4
+ 1574              		.cfi_offset 14, -8
+ 1575              		.cfi_offset 13, -12
+ 1576              		.cfi_offset 11, -16
+ 1577              	.LCFI9:
+ 1578              		.cfi_def_cfa 11, 4
+ 1579 00dc 10D04DE2 		sub	sp, sp, #16
+ 1580 00e0 10000BE5 		str	r0, [fp, #-16]
+ 1581 00e4 14100BE5 		str	r1, [fp, #-20]
+ 1582 00e8 18200BE5 		str	r2, [fp, #-24]
+ 1583 00ec 1C300BE5 		str	r3, [fp, #-28]
+  36:../playershot.c **** }
+ 1584              		.loc 1 36 0
+ 1585 00f0 0CD04BE2 		sub	sp, fp, #12
+ 1586 00f4 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1587 00f8 1EFF2FE1 		bx	lr
+ 1588              		.cfi_endproc
+ 1589              	.LFE4:
+ 1591              		.align	2
+ 1592              		.global	playerShot_onUfo
+ 1594              	playerShot_onUfo:
+ 1595              	.LFB5:
+  37:../playershot.c **** 
+  38:../playershot.c **** void playerShot_onUfo( PlayerShot *self, Ufo *ufo )
+  39:../playershot.c **** {
+ 1596              		.loc 1 39 0
+ 1597              		.cfi_startproc
+ 1598              		@ Function supports interworking.
+ 1599              		@ args = 0, pretend = 0, frame = 8
+ 1600              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1601 00fc 0DC0A0E1 		mov	ip, sp
+ 1602              	.LCFI10:
+ 1603              		.cfi_def_cfa_register 12
+ 1604 0100 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1605 0104 04B04CE2 		sub	fp, ip, #4
+ 1606              		.cfi_offset 14, -8
+ 1607              		.cfi_offset 13, -12
+ 1608              		.cfi_offset 11, -16
+ 1609              	.LCFI11:
+ 1610              		.cfi_def_cfa 11, 4
+ 1611 0108 08D04DE2 		sub	sp, sp, #8
+ 1612 010c 10000BE5 		str	r0, [fp, #-16]
+ 1613 0110 14100BE5 		str	r1, [fp, #-20]
+  40:../playershot.c **** }
+ 1614              		.loc 1 40 0
+ 1615 0114 0CD04BE2 		sub	sp, fp, #12
+ 1616 0118 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1617 011c 1EFF2FE1 		bx	lr
+ 1618              		.cfi_endproc
+ 1619              	.LFE5:
+ 1621              		.align	2
+ 1622              		.global	playerShot_onSwarm
+ 1624              	playerShot_onSwarm:
+ 1625              	.LFB6:
+  41:../playershot.c **** 
+  42:../playershot.c **** void playerShot_onSwarm( PlayerShot *self, Swarm *swarm )
+  43:../playershot.c **** {
+ 1626              		.loc 1 43 0
+ 1627              		.cfi_startproc
+ 1628              		@ Function supports interworking.
+ 1629              		@ args = 0, pretend = 0, frame = 8
+ 1630              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1631 0120 0DC0A0E1 		mov	ip, sp
+ 1632              	.LCFI12:
+ 1633              		.cfi_def_cfa_register 12
+ 1634 0124 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1635 0128 04B04CE2 		sub	fp, ip, #4
+ 1636              		.cfi_offset 14, -8
+ 1637              		.cfi_offset 13, -12
+ 1638              		.cfi_offset 11, -16
+ 1639              	.LCFI13:
+ 1640              		.cfi_def_cfa 11, 4
+ 1641 012c 08D04DE2 		sub	sp, sp, #8
+ 1642 0130 10000BE5 		str	r0, [fp, #-16]
+ 1643 0134 14100BE5 		str	r1, [fp, #-20]
+  44:../playershot.c **** }
+ 1644              		.loc 1 44 0
+ 1645 0138 0CD04BE2 		sub	sp, fp, #12
+ 1646 013c 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1647 0140 1EFF2FE1 		bx	lr
+ 1648              		.cfi_endproc
+ 1649              	.LFE6:
+ 1651              		.align	2
+ 1652              		.global	playerShot_onShield
+ 1654              	playerShot_onShield:
+ 1655              	.LFB7:
+  45:../playershot.c **** 
+  46:../playershot.c **** 
+  47:../playershot.c **** void playerShot_onShield( PlayerShot *self, Shield *shield )
+  48:../playershot.c **** {
+ 1656              		.loc 1 48 0
+ 1657              		.cfi_startproc
+ 1658              		@ Function supports interworking.
+ 1659              		@ args = 0, pretend = 0, frame = 8
+ 1660              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1661 0144 0DC0A0E1 		mov	ip, sp
+ 1662              	.LCFI14:
+ 1663              		.cfi_def_cfa_register 12
+ 1664 0148 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1665 014c 04B04CE2 		sub	fp, ip, #4
+ 1666              		.cfi_offset 14, -8
+ 1667              		.cfi_offset 13, -12
+ 1668              		.cfi_offset 11, -16
+ 1669              	.LCFI15:
+ 1670              		.cfi_def_cfa 11, 4
+ 1671 0150 08D04DE2 		sub	sp, sp, #8
+ 1672 0154 10000BE5 		str	r0, [fp, #-16]
+ 1673 0158 14100BE5 		str	r1, [fp, #-20]
+  49:../playershot.c **** }
+ 1674              		.loc 1 49 0
+ 1675 015c 0CD04BE2 		sub	sp, fp, #12
+ 1676 0160 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1677 0164 1EFF2FE1 		bx	lr
+ 1678              		.cfi_endproc
+ 1679              	.LFE7:
+ 1681              		.align	2
+ 1682              		.global	playerShot_onEnemyShot
+ 1684              	playerShot_onEnemyShot:
+ 1685              	.LFB8:
+  50:../playershot.c **** 
+  51:../playershot.c **** void playerShot_onEnemyShot( PlayerShot *self, EnemyShot *enemyShot )
+  52:../playershot.c **** {
+ 1686              		.loc 1 52 0
+ 1687              		.cfi_startproc
+ 1688              		@ Function supports interworking.
+ 1689              		@ args = 0, pretend = 0, frame = 8
+ 1690              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1691 0168 0DC0A0E1 		mov	ip, sp
+ 1692              	.LCFI16:
+ 1693              		.cfi_def_cfa_register 12
+ 1694 016c 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1695 0170 04B04CE2 		sub	fp, ip, #4
+ 1696              		.cfi_offset 14, -8
+ 1697              		.cfi_offset 13, -12
+ 1698              		.cfi_offset 11, -16
+ 1699              	.LCFI17:
+ 1700              		.cfi_def_cfa 11, 4
+ 1701 0174 08D04DE2 		sub	sp, sp, #8
+ 1702 0178 10000BE5 		str	r0, [fp, #-16]
+ 1703 017c 14100BE5 		str	r1, [fp, #-20]
+  53:../playershot.c **** }
+ 1704              		.loc 1 53 0
+ 1705 0180 0CD04BE2 		sub	sp, fp, #12
+ 1706 0184 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1707 0188 1EFF2FE1 		bx	lr
+ 1708              		.cfi_endproc
+ 1709              	.LFE8:
+ 1711              		.section	.rodata
+ 1712              		.align	2
+ 1715              	C.0.5165:
+ 1716 0000 0100     		.short	1
+ 1717 0002 0400     		.short	4
+ 1718 0004 00000000 		.word	playerShotPixMap
+ 1719              		.align	2
+ 1722              	C.1.5166:
+ 1723 0008 0800     		.short	8
+ 1724 000a 0800     		.short	8
+ 1725 000c 00000000 		.word	playerShotExplosionPixMap
+ 1726              		.text
+ 1727              	.Letext0:
+DEFINED SYMBOLS
+                            *ABS*:00000000 playershot.c
+C:\Users\Mendi\AppData\Local\Temp\ccCD0z0u.s:1418   .text:00000000 $a
+C:\Users\Mendi\AppData\Local\Temp\ccCD0z0u.s:1421   .text:00000000 playerShot_init
+C:\Users\Mendi\AppData\Local\Temp\ccCD0z0u.s:1467   .text:00000060 $d
+C:\Users\Mendi\AppData\Local\Temp\ccCD0z0u.s:1715   .rodata:00000000 C.0.5165
+C:\Users\Mendi\AppData\Local\Temp\ccCD0z0u.s:1722   .rodata:00000008 C.1.5166
+C:\Users\Mendi\AppData\Local\Temp\ccCD0z0u.s:1473   .text:0000006c $a
+C:\Users\Mendi\AppData\Local\Temp\ccCD0z0u.s:1475   .text:0000006c playerShot_draw
+C:\Users\Mendi\AppData\Local\Temp\ccCD0z0u.s:1503   .text:0000008c playerShot_clear
+C:\Users\Mendi\AppData\Local\Temp\ccCD0z0u.s:1532   .text:000000ac playerShot_launch
+C:\Users\Mendi\AppData\Local\Temp\ccCD0z0u.s:1562   .text:000000d0 playerShot_update
+C:\Users\Mendi\AppData\Local\Temp\ccCD0z0u.s:1594   .text:000000fc playerShot_onUfo
+C:\Users\Mendi\AppData\Local\Temp\ccCD0z0u.s:1624   .text:00000120 playerShot_onSwarm
+C:\Users\Mendi\AppData\Local\Temp\ccCD0z0u.s:1654   .text:00000144 playerShot_onShield
+C:\Users\Mendi\AppData\Local\Temp\ccCD0z0u.s:1684   .text:00000168 playerShot_onEnemyShot
+C:\Users\Mendi\AppData\Local\Temp\ccCD0z0u.s:1712   .rodata:00000000 $d
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+playerShotPixMap
+playerShotExplosionPixMap

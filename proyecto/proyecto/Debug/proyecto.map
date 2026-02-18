@@ -1,0 +1,1113 @@
+Archive member included because of file (symbol)
+
+../../BSP/Debug\libBSP.a(at24C04.o)
+                              ./hiscore.o (at24c04_bytewrite)
+../../BSP/Debug\libBSP.a(iic.o)
+                              ./proyecto.o (iic_init)
+../../BSP/Debug\libBSP.a(keypad.o)
+                              ./proyecto.o (keypad_scan)
+../../BSP/Debug\libBSP.a(lcd.o)
+                              ./shield.o (lcd_buffer)
+../../BSP/Debug\libBSP.a(pbs.o)
+                              ./proyecto.o (pbs_init)
+../../BSP/Debug\libBSP.a(power.o)
+                              ../../BSP/Debug\libBSP.a(iic.o) (power_on)
+../../BSP/Debug\libBSP.a(segs.o)
+                              ./proyecto.o (segs_init)
+../../BSP/Debug\libBSP.a(system.o)
+                              ../../BSP/Debug\libBSP.a(iic.o) (mclk)
+../../BSP/Debug\libBSP.a(timers.o)
+                              ./proyecto.o (timers_init)
+../../BSP/Debug\libBSP.a(uart.o)
+                              ../../BSP/Debug\libBSP.a(system.o) (uart0_init)
+../../BSP/Debug\libBSP.a(uda1341ts.o)
+                              ./proyecto.o (uda1341ts_init)
+../../BSP/Debug\libBSP.a(font8x16.o)
+                              ../../BSP/Debug\libBSP.a(lcd.o) (font)
+../../BSP/Debug\libBSP.a(l3.o)
+                              ../../BSP/Debug\libBSP.a(uda1341ts.o) (L3_init)
+../../BSP/Debug\libBSP.a(leds.o)
+                              ../../BSP/Debug\libBSP.a(l3.o) (led_status)
+c:/eclipsearm/sourcery-g++-lite-arm-2011.03/bin/../lib/gcc/arm-none-eabi/4.5.2\libgcc.a(_udivsi3.o)
+                              ../../BSP/Debug\libBSP.a(timers.o) (__aeabi_uidiv)
+c:/eclipsearm/sourcery-g++-lite-arm-2011.03/bin/../lib/gcc/arm-none-eabi/4.5.2\libgcc.a(_dvmd_tls.o)
+                              c:/eclipsearm/sourcery-g++-lite-arm-2011.03/bin/../lib/gcc/arm-none-eabi/4.5.2\libgcc.a(_udivsi3.o) (__aeabi_idiv0)
+c:/eclipsearm/sourcery-g++-lite-arm-2011.03/bin/../lib/gcc/arm-none-eabi/4.5.2\libgcc.a(_aeabi_uldivmod.o)
+                              ../../BSP/Debug\libBSP.a(timers.o) (__aeabi_uldivmod)
+c:/eclipsearm/sourcery-g++-lite-arm-2011.03/bin/../lib/gcc/arm-none-eabi/4.5.2\libgcc.a(bpabi.o)
+                              c:/eclipsearm/sourcery-g++-lite-arm-2011.03/bin/../lib/gcc/arm-none-eabi/4.5.2\libgcc.a(_aeabi_uldivmod.o) (__gnu_uldivmod_helper)
+c:/eclipsearm/sourcery-g++-lite-arm-2011.03/bin/../lib/gcc/arm-none-eabi/4.5.2\libgcc.a(_divdi3.o)
+                              c:/eclipsearm/sourcery-g++-lite-arm-2011.03/bin/../lib/gcc/arm-none-eabi/4.5.2\libgcc.a(bpabi.o) (__divdi3)
+c:/eclipsearm/sourcery-g++-lite-arm-2011.03/bin/../lib/gcc/arm-none-eabi/4.5.2\libgcc.a(_udivdi3.o)
+                              c:/eclipsearm/sourcery-g++-lite-arm-2011.03/bin/../lib/gcc/arm-none-eabi/4.5.2\libgcc.a(bpabi.o) (__udivdi3)
+c:/eclipsearm/sourcery-g++-lite-arm-2011.03/bin/../lib/gcc/arm-none-eabi/4.5.2\libgcc.a(_clzsi2.o)
+                              c:/eclipsearm/sourcery-g++-lite-arm-2011.03/bin/../lib/gcc/arm-none-eabi/4.5.2\libgcc.a(_divdi3.o) (__clzsi2)
+
+Allocating common symbols
+Common symbol       size              file
+
+game                0x4d0             ./proyecto.o
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+*default*        0x00000000         0xffffffff
+
+Linker script and memory map
+
+LOAD ./credit.o
+LOAD ./enemy.o
+LOAD ./enemyshot.o
+LOAD ./game.o
+LOAD ./hiscore.o
+LOAD ./kernelcoop.o
+LOAD ./lives.o
+LOAD ./pixmaps.o
+LOAD ./player.o
+LOAD ./playershot.o
+LOAD ./proyecto.o
+LOAD ./random.o
+LOAD ./score.o
+LOAD ./shield.o
+LOAD ./sound.o
+LOAD ./sprite.o
+LOAD ./swarm.o
+LOAD ./ufo.o
+LOAD ../../BSP/Debug\libBSP.a
+START GROUP
+LOAD c:/eclipsearm/sourcery-g++-lite-arm-2011.03/bin/../lib/gcc/arm-none-eabi/4.5.2\libgcc.a
+LOAD c:/eclipsearm/sourcery-g++-lite-arm-2011.03/bin/../lib/gcc/arm-none-eabi/4.5.2/../../../../arm-none-eabi/lib\libc.a
+END GROUP
+                0x0c100000                . = 0xc100000
+                0x0c100000                _image_start = .
+                0x0c100000                _code_start = .
+
+.text           0x0c100000     0xa628
+ *(.text)
+ .text          0x0c100000       0xd8 ./credit.o
+                0x0c100000                credit_init
+                0x0c100060                credit_launch
+                0x0c100088                credit_update
+ .text          0x0c1000d8      0x584 ./enemy.o
+                0x0c1000d8                enemy_init
+                0x0c1003e4                enemy_launch
+                0x0c10041c                enemy_left
+                0x0c1004a8                enemy_right
+                0x0c100534                enemy_down
+                0x0c1005c0                enemy_hit
+                0x0c100628                enemy_kill
+ .text          0x0c10065c      0x6c8 ./enemyshot.o
+                0x0c10065c                enemyShot_init
+                0x0c100848                enemyShot_launch
+                0x0c1008b0                enemyShot_update
+                0x0c100c3c                enemyShot_onShield
+                0x0c100cb0                enemyShot_onPlayer
+                0x0c100cf0                enemyShot_hit
+ .text          0x0c100d24      0x314 ./game.o
+                0x0c100d24                game_init
+                0x0c100e30                game_restart
+                0x0c100f00                game_launch
+ .text          0x0c101038      0x1f0 ./hiscore.o
+                0x0c101038                hiScore_init
+                0x0c1010d0                hiScore_launch
+                0x0c1010f8                hiScore_update
+ .text          0x0c101228      0x388 ./kernelcoop.o
+                0x0c101228                delete_task
+                0x0c1012bc                create_task
+                0x0c1013a0                scheduler_init
+                0x0c1013e8                scheduler
+                0x0c101514                dispacher
+ .text          0x0c1015b0      0x128 ./lives.o
+                0x0c1015b0                lives_init
+                0x0c101654                lives_launch
+                0x0c10167c                lives_update
+ .text          0x0c1016d8        0x0 ./pixmaps.o
+ .text          0x0c1016d8      0x648 ./player.o
+                0x0c1016d8                player_init
+                0x0c101948                player_launch
+                0x0c101990                player_update
+                0x0c101b64                player_left
+                0x0c101bb0                player_right
+                0x0c101bfc                player_stop
+                0x0c101c48                player_hit
+                0x0c101cd0                player_invaded
+ .text          0x0c101d20      0x850 ./playershot.o
+                0x0c101d20                playerShot_init
+                0x0c101f1c                playerShot_launch
+                0x0c101fcc                playerShot_update
+                0x0c102450                playerShot_onUfo
+                0x0c102488                playerShot_onSwarm
+                0x0c1024b8                playerShot_onShield
+                0x0c102538                playerShot_onEnemyShot
+ .text          0x0c102570      0x654 ./proyecto.o
+                0x0c102570                main
+                0x0c1027a4                player_update_task
+                0x0c1027c8                ufo_launch_task
+                0x0c102800                ufo_update_task
+                0x0c102824                playerShot_update_task
+                0x0c102870                swarm_update_task
+                0x0c10289c                enemyShot_update_task
+                0x0c1028d0                enemyShot_launch_task
+                0x0c102954                keys_read_task
+                0x0c1029d4                pbs_read_task
+                0x0c102ac4                wellcomeScreen_draw
+                0x0c102b64                gameOverScreen_draw
+ .text          0x0c102bc4      0x130 ./random.o
+                0x0c102bc4                random_init
+                0x0c102c00                random_get
+ .text          0x0c102cf4      0x114 ./score.o
+                0x0c102cf4                score_init
+                0x0c102d90                score_launch
+                0x0c102db8                score_update
+ .text          0x0c102e08      0x210 ./shield.o
+                0x0c102e08                shield_init
+                0x0c102e68                shield_launch
+                0x0c102ec0                shield_hit
+ .text          0x0c103018       0x78 ./sound.o
+                0x0c103018                sound_play
+                0x0c103038                sound_loop
+                0x0c103058                sound_stop
+                0x0c103070                sound_isPlaying
+ .text          0x0c103090      0x254 ./sprite.o
+                0x0c103090                sprite_draw
+                0x0c1031dc                sprite_clear
+ .text          0x0c1032e4      0xe10 ./swarm.o
+                0x0c1032e4                swarm_init
+                0x0c1034c8                swarm_lauch
+                0x0c103580                swarm_update
+                0x0c1037fc                swarm_getShooter
+                0x0c103a38                swarm_hit
+                0x0c103f8c                swarm_checkHit
+ .text          0x0c1040f4      0x45c ./ufo.o
+                0x0c1040f4                ufo_init
+                0x0c104384                ufo_launch
+                0x0c104444                ufo_update
+                0x0c1044f8                ufo_hit
+ .text          0x0c104550      0x3b0 ../../BSP/Debug\libBSP.a(at24C04.o)
+                0x0c104550                at24c04_clear
+                0x0c10461c                at24c04_bytewrite
+                0x0c1046a8                at24c04_byteread
+                0x0c104768                at24c04_load
+                0x0c104814                at24c04_store
+ .text          0x0c104900      0x278 ../../BSP/Debug\libBSP.a(iic.o)
+                0x0c104900                iic_init
+                0x0c1049a8                iic_start
+                0x0c104a2c                iic_putByte
+                0x0c104a90                iic_getByte
+                0x0c104b18                iic_stop
+ .text          0x0c104b78      0x590 ../../BSP/Debug\libBSP.a(keypad.o)
+                0x0c104b78                keypad_scan
+                0x0c104d9c                keypad_pressed
+                0x0c104dd8                keypad_getchartime
+                0x0c104e80                keypad_timeout_getchar
+                0x0c104f70                keypad_open
+                0x0c104fc8                keypad_close
+                0x0c10500c                keypad_init
+                0x0c105094                keypad_getchar
+ .text          0x0c105108     0x13e4 ../../BSP/Debug\libBSP.a(lcd.o)
+                0x0c105108                lcd_init
+                0x0c1052b8                lcd_on
+                0x0c1052f4                lcd_off
+                0x0c105330                lcd_status
+                0x0c105358                lcd_clear
+                0x0c1053b8                lcd_putpixel
+                0x0c1054a4                lcd_getpixel
+                0x0c105540                lcd_draw_hline
+                0x0c105698                lcd_draw_vline
+                0x0c1057f0                lcd_draw_box
+                0x0c1058e8                lcd_putchar
+                0x0c105b64                lcd_puts
+                0x0c105bd8                lcd_putint
+                0x0c105d54                lcd_puthex
+                0x0c105e34                lcd_putchar_x2
+                0x0c1060c0                lcd_puts_x2
+                0x0c106134                lcd_putint_x2
+                0x0c1062b0                lcd_puthex_x2
+                0x0c106390                lcd_putWallpaper
+ .text          0x0c1064ec      0x3dc ../../BSP/Debug\libBSP.a(pbs.o)
+                0x0c1064ec                pbs_init
+                0x0c10655c                pb_scan
+                0x0c1065b8                pb_pressed
+                0x0c106610                pb_getchar
+                0x0c106684                pb_getchartime
+                0x0c10672c                pb_timeout_getchar
+                0x0c10681c                pbs_open
+                0x0c106884                pbs_close
+ .text          0x0c1068c8      0x214 ../../BSP/Debug\libBSP.a(power.o)
+                0x0c1068c8                power_on
+                0x0c1069a8                power_off
+                0x0c106a8c                power_status
+ .text          0x0c106adc       0xf4 ../../BSP/Debug\libBSP.a(segs.o)
+                0x0c106adc                segs_init
+                0x0c106b18                segs_off
+                0x0c106b50                segs_putchar
+                0x0c106ba8                segs_status
+ .text          0x0c106bd0     0x1818 ../../BSP/Debug\libBSP.a(system.o)
+                0x0c106bd0                sys_init
+                0x0c1074ac                isr_SWI_dummy
+                0x0c1074ec                isr_UNDEF_dummy
+                0x0c10752c                isr_IRQ_dummy
+                0x0c107574                isr_FIQ_dummy
+                0x0c1075bc                isr_PABORT_dummy
+                0x0c107604                isr_DABORT_dummy
+                0x0c10764c                isr_ADC_dummy
+                0x0c107694                isr_RTC_dummy
+                0x0c1076dc                isr_UTXD1_dummy
+                0x0c107724                isr_UTXD0_dummy
+                0x0c10776c                isr_SIO_dummy
+                0x0c1077b4                isr_IIC_dummy
+                0x0c1077fc                isr_URXD1_dummy
+                0x0c107844                isr_URXD0_dummy
+                0x0c10788c                isr_TIMER5_dummy
+                0x0c1078d4                isr_TIMER4_dummy
+                0x0c10791c                isr_TIMER3_dummy
+                0x0c107964                isr_TIMER2_dummy
+                0x0c1079ac                isr_TIMER1_dummy
+                0x0c1079f4                isr_TIMER0_dummy
+                0x0c107a3c                isr_UERR01_dummy
+                0x0c107a84                isr_WDT_dummy
+                0x0c107acc                isr_BDMA1_dummy
+                0x0c107b14                isr_BDMA0_dummy
+                0x0c107b5c                isr_ZDMA1_dummy
+                0x0c107ba4                isr_ZDMA0_dummy
+                0x0c107bec                isr_TICK_dummy
+                0x0c107c34                isr_PB_dummy
+                0x0c107c7c                isr_ETHERNET_dummy
+                0x0c107cc4                isr_TS_dummy
+                0x0c107d0c                isr_KEYPAD_dummy
+                0x0c107d54                isr_USB_dummy
+                0x0c108244                getmem
+                0x0c1083a4                sleep
+ .text          0x0c1083e8      0xad4 ../../BSP/Debug\libBSP.a(timers.o)
+                0x0c1083e8                timers_init
+                0x0c1085b0                timer3_delay_ms
+                0x0c1086b0                sw_delay_ms
+                0x0c108708                timer3_delay_s
+                0x0c108804                sw_delay_s
+                0x0c10885c                timer3_start
+                0x0c108938                timer3_stop
+                0x0c10898c                timer3_start_timeout
+                0x0c108a70                timer3_timeout
+                0x0c108aac                timer0_open_tick
+                0x0c108d04                timer0_open_ms
+                0x0c108e28                timer0_close
+ .text          0x0c108ebc      0x5e8 ../../BSP/Debug\libBSP.a(uart.o)
+                0x0c108ebc                uart0_init
+                0x0c108f5c                uart0_putchar
+                0x0c108fac                uart0_getchar
+                0x0c108ffc                uart0_puts
+                0x0c10904c                uart0_putint
+                0x0c1091a0                uart0_puthex
+                0x0c109258                uart0_gets
+                0x0c1092b8                uart0_getint
+                0x0c109390                uart0_gethex
+ .text          0x0c1094a4      0x2b0 ../../BSP/Debug\libBSP.a(uda1341ts.o)
+                0x0c1094a4                uda1341ts_init
+                0x0c109520                uda1341ts_mute
+                0x0c109574                uda1341ts_on
+                0x0c1095e8                uda1341ts_off
+                0x0c10966c                uda1341ts_status
+                0x0c1096c8                uda1341ts_setvol
+                0x0c10972c                uda1341ts_getvol
+ .text          0x0c109754        0x0 ../../BSP/Debug\libBSP.a(font8x16.o)
+ .text          0x0c109754      0x274 ../../BSP/Debug\libBSP.a(l3.o)
+                0x0c109754                L3_init
+                0x0c109814                L3_putByte
+ .text          0x0c1099c8      0x168 ../../BSP/Debug\libBSP.a(leds.o)
+                0x0c1099c8                leds_init
+                0x0c109a10                led_on
+                0x0c109a58                led_off
+                0x0c109a9c                led_toggle
+                0x0c109ae0                led_status
+ .text          0x0c109b30      0x114 c:/eclipsearm/sourcery-g++-lite-arm-2011.03/bin/../lib/gcc/arm-none-eabi/4.5.2\libgcc.a(_udivsi3.o)
+                0x0c109b30                __aeabi_uidiv
+                0x0c109b30                __udivsi3
+                0x0c109c24                __aeabi_uidivmod
+ .text          0x0c109c44        0x4 c:/eclipsearm/sourcery-g++-lite-arm-2011.03/bin/../lib/gcc/arm-none-eabi/4.5.2\libgcc.a(_dvmd_tls.o)
+                0x0c109c44                __aeabi_idiv0
+                0x0c109c44                __aeabi_ldiv0
+ .text          0x0c109c48       0x3c c:/eclipsearm/sourcery-g++-lite-arm-2011.03/bin/../lib/gcc/arm-none-eabi/4.5.2\libgcc.a(_aeabi_uldivmod.o)
+                0x0c109c48                __aeabi_uldivmod
+ .text          0x0c109c84       0x80 c:/eclipsearm/sourcery-g++-lite-arm-2011.03/bin/../lib/gcc/arm-none-eabi/4.5.2\libgcc.a(bpabi.o)
+                0x0c109c84                __gnu_ldivmod_helper
+                0x0c109cc4                __gnu_uldivmod_helper
+ .text          0x0c109d04      0x4a8 c:/eclipsearm/sourcery-g++-lite-arm-2011.03/bin/../lib/gcc/arm-none-eabi/4.5.2\libgcc.a(_divdi3.o)
+                0x0c109d04                __divdi3
+ .text          0x0c10a1ac      0x434 c:/eclipsearm/sourcery-g++-lite-arm-2011.03/bin/../lib/gcc/arm-none-eabi/4.5.2\libgcc.a(_udivdi3.o)
+                0x0c10a1ac                __udivdi3
+ .text          0x0c10a5e0       0x48 c:/eclipsearm/sourcery-g++-lite-arm-2011.03/bin/../lib/gcc/arm-none-eabi/4.5.2\libgcc.a(_clzsi2.o)
+                0x0c10a5e0                __clzsi2
+                0x0c10a628                _code_end = .
+                0x0000a628                _code_size = SIZEOF (.text)
+                0x0c10a628                _data_start = .
+
+.glue_7         0x0c10a628        0x0
+ .glue_7        0x00000000        0x0 linker stubs
+
+.glue_7t        0x0c10a628        0x0
+ .glue_7t       0x00000000        0x0 linker stubs
+
+.vfp11_veneer   0x0c10a628        0x0
+ .vfp11_veneer  0x00000000        0x0 linker stubs
+
+.v4_bx          0x0c10a628        0x0
+ .v4_bx         0x00000000        0x0 linker stubs
+
+.rodata         0x0c10a628     0x1850
+ *(.rodata)
+ .rodata        0x0c10a628       0x38 ./enemy.o
+ .rodata        0x0c10a660       0x10 ./enemyshot.o
+ .rodata        0x0c10a670       0x14 ./game.o
+ .rodata        0x0c10a684        0x8 ./pixmaps.o
+                0x0c10a684                playerShotPixMap
+ .rodata        0x0c10a68c       0x18 ./player.o
+ .rodata        0x0c10a6a4       0x10 ./playershot.o
+ .rodata        0x0c10a6b4       0x7c ./proyecto.o
+ .rodata        0x0c10a730        0x8 ./shield.o
+ .rodata        0x0c10a738       0x38 ./swarm.o
+ .rodata        0x0c10a770       0x10 ./ufo.o
+ .rodata        0x0c10a780       0x10 ../../BSP/Debug\libBSP.a(segs.o)
+ .rodata        0x0c10a790      0x6e8 ../../BSP/Debug\libBSP.a(system.o)
+ .rodata        0x0c10ae78     0x1000 ../../BSP/Debug\libBSP.a(font8x16.o)
+                0x0c10ae78                font
+
+.ARM.extab      0x0c10be78        0x0
+ .ARM.extab     0x0c10be78        0x0 c:/eclipsearm/sourcery-g++-lite-arm-2011.03/bin/../lib/gcc/arm-none-eabi/4.5.2\libgcc.a(_divdi3.o)
+ .ARM.extab     0x0c10be78        0x0 c:/eclipsearm/sourcery-g++-lite-arm-2011.03/bin/../lib/gcc/arm-none-eabi/4.5.2\libgcc.a(_udivdi3.o)
+
+.ARM.exidx      0x0c10be78        0x8
+ .ARM.exidx     0x0c10be78        0x8 c:/eclipsearm/sourcery-g++-lite-arm-2011.03/bin/../lib/gcc/arm-none-eabi/4.5.2\libgcc.a(_divdi3.o)
+ .ARM.exidx     0x0c10be80        0x0 c:/eclipsearm/sourcery-g++-lite-arm-2011.03/bin/../lib/gcc/arm-none-eabi/4.5.2\libgcc.a(_udivdi3.o)
+                                  0x8 (size before relaxing)
+
+.data           0x0c10be80     0x1388
+ *(.data)
+ .data          0x0c10be80        0x0 ./credit.o
+ .data          0x0c10be80        0x0 ./enemy.o
+ .data          0x0c10be80        0x0 ./enemyshot.o
+ .data          0x0c10be80        0x0 ./game.o
+ .data          0x0c10be80        0x0 ./hiscore.o
+ .data          0x0c10be80        0x0 ./kernelcoop.o
+ .data          0x0c10be80        0x0 ./lives.o
+ .data          0x0c10be80     0x1354 ./pixmaps.o
+                0x0c10be80                playerPixMap
+                0x0c10bf80                playerExplosionPixMap_0
+                0x0c10c080                playerExplosionPixMap_1
+                0x0c10c170                playerShotExplosionPixMap
+                0x0c10c1f0                alienPixMap_0
+                0x0c10c330                alienPixMap_1
+                0x0c10c470                metroidPixMap_0
+                0x0c10c5b0                metroidPixMap_1
+                0x0c10c6f0                squidPixMap_0
+                0x0c10c830                squidPixMap_1
+                0x0c10c970                enemyExplosionPixMap
+                0x0c10cab0                enemyShotPixMap
+                0x0c10cadc                enemyShotExplosionPixMap
+                0x0c10cb3c                ufoPixMap
+                0x0c10cd1c                ufoExplosionPixMap
+                0x0c10cf14                shieldPixMap
+ .data          0x0c10d1d4        0x0 ./player.o
+ .data          0x0c10d1d4        0x0 ./playershot.o
+ .data          0x0c10d1d4        0x1 ./proyecto.o
+ .data          0x0c10d1d5        0x0 ./random.o
+ .data          0x0c10d1d5        0x0 ./score.o
+ .data          0x0c10d1d5        0x0 ./shield.o
+ .data          0x0c10d1d5        0x0 ./sound.o
+ .data          0x0c10d1d5        0x0 ./sprite.o
+ .data          0x0c10d1d5        0x0 ./swarm.o
+ *fill*         0x0c10d1d5        0x3 00
+ .data          0x0c10d1d8       0x20 ./ufo.o
+ .data          0x0c10d1f8        0x0 ../../BSP/Debug\libBSP.a(at24C04.o)
+ .data          0x0c10d1f8        0x0 ../../BSP/Debug\libBSP.a(iic.o)
+ .data          0x0c10d1f8        0x0 ../../BSP/Debug\libBSP.a(keypad.o)
+ .data          0x0c10d1f8        0x0 ../../BSP/Debug\libBSP.a(lcd.o)
+ .data          0x0c10d1f8        0x0 ../../BSP/Debug\libBSP.a(pbs.o)
+ .data          0x0c10d1f8        0x0 ../../BSP/Debug\libBSP.a(power.o)
+ .data          0x0c10d1f8        0x0 ../../BSP/Debug\libBSP.a(segs.o)
+ .data          0x0c10d1f8       0x10 ../../BSP/Debug\libBSP.a(system.o)
+                0x0c10d200                mclk
+ .data          0x0c10d208        0x0 ../../BSP/Debug\libBSP.a(timers.o)
+ .data          0x0c10d208        0x0 ../../BSP/Debug\libBSP.a(uart.o)
+ .data          0x0c10d208        0x0 ../../BSP/Debug\libBSP.a(uda1341ts.o)
+ .data          0x0c10d208        0x0 ../../BSP/Debug\libBSP.a(font8x16.o)
+ .data          0x0c10d208        0x0 ../../BSP/Debug\libBSP.a(l3.o)
+ .data          0x0c10d208        0x0 ../../BSP/Debug\libBSP.a(leds.o)
+ .data          0x0c10d208        0x0 c:/eclipsearm/sourcery-g++-lite-arm-2011.03/bin/../lib/gcc/arm-none-eabi/4.5.2\libgcc.a(_udivsi3.o)
+ .data          0x0c10d208        0x0 c:/eclipsearm/sourcery-g++-lite-arm-2011.03/bin/../lib/gcc/arm-none-eabi/4.5.2\libgcc.a(_dvmd_tls.o)
+ .data          0x0c10d208        0x0 c:/eclipsearm/sourcery-g++-lite-arm-2011.03/bin/../lib/gcc/arm-none-eabi/4.5.2\libgcc.a(_aeabi_uldivmod.o)
+ .data          0x0c10d208        0x0 c:/eclipsearm/sourcery-g++-lite-arm-2011.03/bin/../lib/gcc/arm-none-eabi/4.5.2\libgcc.a(bpabi.o)
+ .data          0x0c10d208        0x0 c:/eclipsearm/sourcery-g++-lite-arm-2011.03/bin/../lib/gcc/arm-none-eabi/4.5.2\libgcc.a(_divdi3.o)
+ .data          0x0c10d208        0x0 c:/eclipsearm/sourcery-g++-lite-arm-2011.03/bin/../lib/gcc/arm-none-eabi/4.5.2\libgcc.a(_udivdi3.o)
+ .data          0x0c10d208        0x0 c:/eclipsearm/sourcery-g++-lite-arm-2011.03/bin/../lib/gcc/arm-none-eabi/4.5.2\libgcc.a(_clzsi2.o)
+
+.lcdbuffer      0x0c10d208     0x9600
+ .lcdbuffer     0x0c10d208     0x9600 ../../BSP/Debug\libBSP.a(lcd.o)
+                0x0c10d208                lcd_buffer
+
+.bss            0x0c116808      0x5c0
+ *(.bss)
+ .bss           0x0c116808        0x0 ./credit.o
+ .bss           0x0c116808        0x0 ./enemy.o
+ .bss           0x0c116808        0x0 ./enemyshot.o
+ .bss           0x0c116808        0x0 ./game.o
+ .bss           0x0c116808        0x0 ./hiscore.o
+ .bss           0x0c116808       0xa0 ./kernelcoop.o
+ .bss           0x0c1168a8        0x0 ./lives.o
+ .bss           0x0c1168a8        0x0 ./pixmaps.o
+ .bss           0x0c1168a8        0x0 ./player.o
+ .bss           0x0c1168a8        0x0 ./playershot.o
+ .bss           0x0c1168a8        0x1 ./proyecto.o
+ *fill*         0x0c1168a9        0x3 00
+ .bss           0x0c1168ac        0x4 ./random.o
+ .bss           0x0c1168b0        0x0 ./score.o
+ .bss           0x0c1168b0        0x0 ./shield.o
+ .bss           0x0c1168b0        0x0 ./sound.o
+ .bss           0x0c1168b0        0x0 ./sprite.o
+ .bss           0x0c1168b0        0x1 ./swarm.o
+ .bss           0x0c1168b1        0x0 ./ufo.o
+ .bss           0x0c1168b1        0x0 ../../BSP/Debug\libBSP.a(at24C04.o)
+ .bss           0x0c1168b1        0x0 ../../BSP/Debug\libBSP.a(iic.o)
+ .bss           0x0c1168b1        0x0 ../../BSP/Debug\libBSP.a(keypad.o)
+ *fill*         0x0c1168b1        0x3 00
+ .bss           0x0c1168b4       0x34 ../../BSP/Debug\libBSP.a(lcd.o)
+ .bss           0x0c1168e8        0x0 ../../BSP/Debug\libBSP.a(pbs.o)
+ .bss           0x0c1168e8        0x0 ../../BSP/Debug\libBSP.a(power.o)
+ .bss           0x0c1168e8        0x1 ../../BSP/Debug\libBSP.a(segs.o)
+ .bss           0x0c1168e9        0x0 ../../BSP/Debug\libBSP.a(system.o)
+ *fill*         0x0c1168e9        0x3 00
+ .bss           0x0c1168ec        0x8 ../../BSP/Debug\libBSP.a(timers.o)
+ .bss           0x0c1168f4        0x0 ../../BSP/Debug\libBSP.a(uart.o)
+ .bss           0x0c1168f4        0x2 ../../BSP/Debug\libBSP.a(uda1341ts.o)
+ .bss           0x0c1168f6        0x0 ../../BSP/Debug\libBSP.a(font8x16.o)
+ .bss           0x0c1168f6        0x0 ../../BSP/Debug\libBSP.a(l3.o)
+ .bss           0x0c1168f6        0x0 ../../BSP/Debug\libBSP.a(leds.o)
+ .bss           0x0c1168f6        0x0 c:/eclipsearm/sourcery-g++-lite-arm-2011.03/bin/../lib/gcc/arm-none-eabi/4.5.2\libgcc.a(_udivsi3.o)
+ .bss           0x0c1168f6        0x0 c:/eclipsearm/sourcery-g++-lite-arm-2011.03/bin/../lib/gcc/arm-none-eabi/4.5.2\libgcc.a(_dvmd_tls.o)
+ .bss           0x0c1168f6        0x0 c:/eclipsearm/sourcery-g++-lite-arm-2011.03/bin/../lib/gcc/arm-none-eabi/4.5.2\libgcc.a(_aeabi_uldivmod.o)
+ .bss           0x0c1168f6        0x0 c:/eclipsearm/sourcery-g++-lite-arm-2011.03/bin/../lib/gcc/arm-none-eabi/4.5.2\libgcc.a(bpabi.o)
+ .bss           0x0c1168f6        0x0 c:/eclipsearm/sourcery-g++-lite-arm-2011.03/bin/../lib/gcc/arm-none-eabi/4.5.2\libgcc.a(_divdi3.o)
+ .bss           0x0c1168f6        0x0 c:/eclipsearm/sourcery-g++-lite-arm-2011.03/bin/../lib/gcc/arm-none-eabi/4.5.2\libgcc.a(_udivdi3.o)
+ .bss           0x0c1168f6        0x0 c:/eclipsearm/sourcery-g++-lite-arm-2011.03/bin/../lib/gcc/arm-none-eabi/4.5.2\libgcc.a(_clzsi2.o)
+ *fill*         0x0c1168f6        0x2 00
+ COMMON         0x0c1168f8      0x4d0 ./proyecto.o
+                0x0c1168f8                game
+                0x0c116dc8                _data_end = .
+                0x00003198                _data_size = ((SIZEOF (.rodata) + SIZEOF (.data)) + SIZEOF (.bss))
+                0x0000d7c0                _total_size = (_code_size + _data_size)
+                0x0c116dc8                _image_end = .
+                0x0c116dc8                end = .
+OUTPUT(proyecto.elf elf32-littlearm)
+
+.debug_abbrev   0x00000000     0x1baa
+ .debug_abbrev  0x00000000       0xbd ./credit.o
+ .debug_abbrev  0x000000bd       0xf5 ./enemy.o
+ .debug_abbrev  0x000001b2      0x132 ./enemyshot.o
+ .debug_abbrev  0x000002e4      0x103 ./game.o
+ .debug_abbrev  0x000003e7       0xd9 ./hiscore.o
+ .debug_abbrev  0x000004c0       0xe3 ./kernelcoop.o
+ .debug_abbrev  0x000005a3       0xbd ./lives.o
+ .debug_abbrev  0x00000660       0x7d ./pixmaps.o
+ .debug_abbrev  0x000006dd       0xe6 ./player.o
+ .debug_abbrev  0x000007c3      0x143 ./playershot.o
+ .debug_abbrev  0x00000906      0x124 ./proyecto.o
+ .debug_abbrev  0x00000a2a       0x96 ./random.o
+ .debug_abbrev  0x00000ac0       0xcc ./score.o
+ .debug_abbrev  0x00000b8c       0xdf ./shield.o
+ .debug_abbrev  0x00000c6b       0xb0 ./sound.o
+ .debug_abbrev  0x00000d1b       0xe9 ./sprite.o
+ .debug_abbrev  0x00000e04      0x141 ./swarm.o
+ .debug_abbrev  0x00000f45      0x102 ./ufo.o
+ .debug_abbrev  0x00001047       0x9b ../../BSP/Debug\libBSP.a(at24C04.o)
+ .debug_abbrev  0x000010e2       0xad ../../BSP/Debug\libBSP.a(iic.o)
+ .debug_abbrev  0x0000118f       0xe9 ../../BSP/Debug\libBSP.a(keypad.o)
+ .debug_abbrev  0x00001278      0x16f ../../BSP/Debug\libBSP.a(lcd.o)
+ .debug_abbrev  0x000013e7       0xc3 ../../BSP/Debug\libBSP.a(pbs.o)
+ .debug_abbrev  0x000014aa       0x76 ../../BSP/Debug\libBSP.a(power.o)
+ .debug_abbrev  0x00001520       0xb3 ../../BSP/Debug\libBSP.a(segs.o)
+ .debug_abbrev  0x000015d3      0x186 ../../BSP/Debug\libBSP.a(system.o)
+ .debug_abbrev  0x00001759       0xee ../../BSP/Debug\libBSP.a(timers.o)
+ .debug_abbrev  0x00001847      0x11c ../../BSP/Debug\libBSP.a(uart.o)
+ .debug_abbrev  0x00001963       0xc2 ../../BSP/Debug\libBSP.a(uda1341ts.o)
+ .debug_abbrev  0x00001a25       0x63 ../../BSP/Debug\libBSP.a(font8x16.o)
+ .debug_abbrev  0x00001a88       0x97 ../../BSP/Debug\libBSP.a(l3.o)
+ .debug_abbrev  0x00001b1f       0x8b ../../BSP/Debug\libBSP.a(leds.o)
+
+.debug_info     0x00000000     0x6806
+ .debug_info    0x00000000      0x13e ./credit.o
+ .debug_info    0x0000013e      0x450 ./enemy.o
+ .debug_info    0x0000058e      0x55f ./enemyshot.o
+ .debug_info    0x00000aed      0x8e0 ./game.o
+ .debug_info    0x000013cd      0x1f6 ./hiscore.o
+ .debug_info    0x000015c3      0x1d0 ./kernelcoop.o
+ .debug_info    0x00001793      0x14c ./lives.o
+ .debug_info    0x000018df      0x24d ./pixmaps.o
+ .debug_info    0x00001b2c      0x448 ./player.o
+ .debug_info    0x00001f74      0x937 ./playershot.o
+ .debug_info    0x000028ab      0x9b8 ./proyecto.o
+ .debug_info    0x00003263       0xdd ./random.o
+ .debug_info    0x00003340      0x165 ./score.o
+ .debug_info    0x000034a5      0x253 ./shield.o
+ .debug_info    0x000036f8      0x124 ./sound.o
+ .debug_info    0x0000381c      0x1f4 ./sprite.o
+ .debug_info    0x00003a10      0x81c ./swarm.o
+ .debug_info    0x0000422c      0x307 ./ufo.o
+ .debug_info    0x00004533      0x1a8 ../../BSP/Debug\libBSP.a(at24C04.o)
+ .debug_info    0x000046db      0x163 ../../BSP/Debug\libBSP.a(iic.o)
+ .debug_info    0x0000483e      0x1c2 ../../BSP/Debug\libBSP.a(keypad.o)
+ .debug_info    0x00004a00      0x75d ../../BSP/Debug\libBSP.a(lcd.o)
+ .debug_info    0x0000515d      0x1b3 ../../BSP/Debug\libBSP.a(pbs.o)
+ .debug_info    0x00005310       0xf0 ../../BSP/Debug\libBSP.a(power.o)
+ .debug_info    0x00005400      0x118 ../../BSP/Debug\libBSP.a(segs.o)
+ .debug_info    0x00005518      0x8d5 ../../BSP/Debug\libBSP.a(system.o)
+ .debug_info    0x00005ded      0x2b7 ../../BSP/Debug\libBSP.a(timers.o)
+ .debug_info    0x000060a4      0x2bf ../../BSP/Debug\libBSP.a(uart.o)
+ .debug_info    0x00006363      0x188 ../../BSP/Debug\libBSP.a(uda1341ts.o)
+ .debug_info    0x000064eb       0x95 ../../BSP/Debug\libBSP.a(font8x16.o)
+ .debug_info    0x00006580      0x159 ../../BSP/Debug\libBSP.a(l3.o)
+ .debug_info    0x000066d9      0x12d ../../BSP/Debug\libBSP.a(leds.o)
+
+.debug_line     0x00000000     0x2658
+ .debug_line    0x00000000       0xaa ./credit.o
+ .debug_line    0x000000aa      0x113 ./enemy.o
+ .debug_line    0x000001bd      0x177 ./enemyshot.o
+ .debug_line    0x00000334      0x429 ./game.o
+ .debug_line    0x0000075d       0xc2 ./hiscore.o
+ .debug_line    0x0000081f       0xd3 ./kernelcoop.o
+ .debug_line    0x000008f2       0xa2 ./lives.o
+ .debug_line    0x00000994       0x51 ./pixmaps.o
+ .debug_line    0x000009e5      0x15f ./player.o
+ .debug_line    0x00000b44      0x1e4 ./playershot.o
+ .debug_line    0x00000d28      0x287 ./proyecto.o
+ .debug_line    0x00000faf       0x7a ./random.o
+ .debug_line    0x00001029       0xa1 ./score.o
+ .debug_line    0x000010ca       0xd7 ./shield.o
+ .debug_line    0x000011a1       0x7b ./sound.o
+ .debug_line    0x0000121c       0xc8 ./sprite.o
+ .debug_line    0x000012e4      0x269 ./swarm.o
+ .debug_line    0x0000154d      0x10b ./ufo.o
+ .debug_line    0x00001658       0xfb ../../BSP/Debug\libBSP.a(at24C04.o)
+ .debug_line    0x00001753       0xe0 ../../BSP/Debug\libBSP.a(iic.o)
+ .debug_line    0x00001833      0x153 ../../BSP/Debug\libBSP.a(keypad.o)
+ .debug_line    0x00001986      0x298 ../../BSP/Debug\libBSP.a(lcd.o)
+ .debug_line    0x00001c1e      0x12d ../../BSP/Debug\libBSP.a(pbs.o)
+ .debug_line    0x00001d4b       0x99 ../../BSP/Debug\libBSP.a(power.o)
+ .debug_line    0x00001de4       0xa0 ../../BSP/Debug\libBSP.a(segs.o)
+ .debug_line    0x00001e84      0x280 ../../BSP/Debug\libBSP.a(system.o)
+ .debug_line    0x00002104      0x194 ../../BSP/Debug\libBSP.a(timers.o)
+ .debug_line    0x00002298      0x15a ../../BSP/Debug\libBSP.a(uart.o)
+ .debug_line    0x000023f2       0xba ../../BSP/Debug\libBSP.a(uda1341ts.o)
+ .debug_line    0x000024ac       0x56 ../../BSP/Debug\libBSP.a(font8x16.o)
+ .debug_line    0x00002502       0xc2 ../../BSP/Debug\libBSP.a(l3.o)
+ .debug_line    0x000025c4       0x94 ../../BSP/Debug\libBSP.a(leds.o)
+
+.debug_macinfo  0x00000000    0x740f4
+ .debug_macinfo
+                0x00000000     0x2c26 ./credit.o
+ .debug_macinfo
+                0x00002c26     0x2d81 ./enemy.o
+ .debug_macinfo
+                0x000059a7     0x2c62 ./enemyshot.o
+ .debug_macinfo
+                0x00008609     0x4c8b ./game.o
+ .debug_macinfo
+                0x0000d294     0x2c42 ./hiscore.o
+ .debug_macinfo
+                0x0000fed6     0x4310 ./kernelcoop.o
+ .debug_macinfo
+                0x000141e6     0x2c01 ./lives.o
+ .debug_macinfo
+                0x00016de7     0x2339 ./pixmaps.o
+ .debug_macinfo
+                0x00019120     0x2da0 ./player.o
+ .debug_macinfo
+                0x0001bec0     0x2e02 ./playershot.o
+ .debug_macinfo
+                0x0001ecc2     0x5f0c ./proyecto.o
+ .debug_macinfo
+                0x00024bce     0x2349 ./random.o
+ .debug_macinfo
+                0x00026f17     0x2c01 ./score.o
+ .debug_macinfo
+                0x00029b18     0x2c12 ./shield.o
+ .debug_macinfo
+                0x0002c72a     0x2379 ./sound.o
+ .debug_macinfo
+                0x0002eaa3     0x2c02 ./sprite.o
+ .debug_macinfo
+                0x000316a5     0x2e0c ./swarm.o
+ .debug_macinfo
+                0x000344b1     0x2d8f ./ufo.o
+ .debug_macinfo
+                0x00037240     0x43be ../../BSP/Debug\libBSP.a(at24C04.o)
+ .debug_macinfo
+                0x0003b5fe     0x4f88 ../../BSP/Debug\libBSP.a(iic.o)
+ .debug_macinfo
+                0x00040586     0x50a2 ../../BSP/Debug\libBSP.a(keypad.o)
+ .debug_macinfo
+                0x00045628     0x44c8 ../../BSP/Debug\libBSP.a(lcd.o)
+ .debug_macinfo
+                0x00049af0     0x4e2a ../../BSP/Debug\libBSP.a(pbs.o)
+ .debug_macinfo
+                0x0004e91a     0x4394 ../../BSP/Debug\libBSP.a(power.o)
+ .debug_macinfo
+                0x00052cae     0x4d9a ../../BSP/Debug\libBSP.a(segs.o)
+ .debug_macinfo
+                0x00057a48     0x567c ../../BSP/Debug\libBSP.a(system.o)
+ .debug_macinfo
+                0x0005d0c4     0x4db4 ../../BSP/Debug\libBSP.a(timers.o)
+ .debug_macinfo
+                0x00061e78     0x539e ../../BSP/Debug\libBSP.a(uart.o)
+ .debug_macinfo
+                0x00067216     0x244e ../../BSP/Debug\libBSP.a(uda1341ts.o)
+ .debug_macinfo
+                0x00069664     0x2339 ../../BSP/Debug\libBSP.a(font8x16.o)
+ .debug_macinfo
+                0x0006b99d     0x4392 ../../BSP/Debug\libBSP.a(l3.o)
+ .debug_macinfo
+                0x0006fd2f     0x43c5 ../../BSP/Debug\libBSP.a(leds.o)
+
+.debug_loc      0x00000000     0x2788
+ .debug_loc     0x00000000       0xb0 ./credit.o
+ .debug_loc     0x000000b0      0x18c ./enemy.o
+ .debug_loc     0x0000023c      0x160 ./enemyshot.o
+ .debug_loc     0x0000039c       0x84 ./game.o
+ .debug_loc     0x00000420      0x108 ./hiscore.o
+ .debug_loc     0x00000528       0xdc ./kernelcoop.o
+ .debug_loc     0x00000604       0xb0 ./lives.o
+ .debug_loc     0x000006b4      0x1b8 ./player.o
+ .debug_loc     0x0000086c      0x18c ./playershot.o
+ .debug_loc     0x000009f8      0x210 ./proyecto.o
+ .debug_loc     0x00000c08       0x58 ./random.o
+ .debug_loc     0x00000c60       0xb0 ./score.o
+ .debug_loc     0x00000d10       0x84 ./shield.o
+ .debug_loc     0x00000d94       0xb0 ./sound.o
+ .debug_loc     0x00000e44       0x58 ./sprite.o
+ .debug_loc     0x00000e9c      0x1e4 ./swarm.o
+ .debug_loc     0x00001080      0x108 ./ufo.o
+ .debug_loc     0x00001188       0xdc ../../BSP/Debug\libBSP.a(at24C04.o)
+ .debug_loc     0x00001264       0xdc ../../BSP/Debug\libBSP.a(iic.o)
+ .debug_loc     0x00001340      0x160 ../../BSP/Debug\libBSP.a(keypad.o)
+ .debug_loc     0x000014a0      0x344 ../../BSP/Debug\libBSP.a(lcd.o)
+ .debug_loc     0x000017e4      0x160 ../../BSP/Debug\libBSP.a(pbs.o)
+ .debug_loc     0x00001944       0x84 ../../BSP/Debug\libBSP.a(power.o)
+ .debug_loc     0x000019c8       0xb0 ../../BSP/Debug\libBSP.a(segs.o)
+ .debug_loc     0x00001a78      0x6e0 ../../BSP/Debug\libBSP.a(system.o)
+ .debug_loc     0x00002158      0x23c ../../BSP/Debug\libBSP.a(timers.o)
+ .debug_loc     0x00002394      0x18c ../../BSP/Debug\libBSP.a(uart.o)
+ .debug_loc     0x00002520      0x134 ../../BSP/Debug\libBSP.a(uda1341ts.o)
+ .debug_loc     0x00002654       0x58 ../../BSP/Debug\libBSP.a(l3.o)
+ .debug_loc     0x000026ac       0xdc ../../BSP/Debug\libBSP.a(leds.o)
+
+.debug_pubnames
+                0x00000000     0x11c3
+ .debug_pubnames
+                0x00000000       0x46 ./credit.o
+ .debug_pubnames
+                0x00000046       0x7d ./enemy.o
+ .debug_pubnames
+                0x000000c3       0x8f ./enemyshot.o
+ .debug_pubnames
+                0x00000152       0x41 ./game.o
+ .debug_pubnames
+                0x00000193       0x49 ./hiscore.o
+ .debug_pubnames
+                0x000001dc       0x61 ./kernelcoop.o
+ .debug_pubnames
+                0x0000023d       0x43 ./lives.o
+ .debug_pubnames
+                0x00000280      0x17e ./pixmaps.o
+ .debug_pubnames
+                0x000003fe       0x99 ./player.o
+ .debug_pubnames
+                0x00000497       0xb1 ./playershot.o
+ .debug_pubnames
+                0x00000548      0x11d ./proyecto.o
+ .debug_pubnames
+                0x00000665       0x31 ./random.o
+ .debug_pubnames
+                0x00000696       0x43 ./score.o
+ .debug_pubnames
+                0x000006d9       0x43 ./shield.o
+ .debug_pubnames
+                0x0000071c       0x53 ./sound.o
+ .debug_pubnames
+                0x0000076f       0x33 ./sprite.o
+ .debug_pubnames
+                0x000007a2       0x78 ./swarm.o
+ .debug_pubnames
+                0x0000081a       0x49 ./ufo.o
+ .debug_pubnames
+                0x00000863       0x72 ../../BSP/Debug\libBSP.a(at24C04.o)
+ .debug_pubnames
+                0x000008d5       0x5a ../../BSP/Debug\libBSP.a(iic.o)
+ .debug_pubnames
+                0x0000092f       0xab ../../BSP/Debug\libBSP.a(keypad.o)
+ .debug_pubnames
+                0x000009da      0x152 ../../BSP/Debug\libBSP.a(lcd.o)
+ .debug_pubnames
+                0x00000b2c       0x8e ../../BSP/Debug\libBSP.a(pbs.o)
+ .debug_pubnames
+                0x00000bba       0x3e ../../BSP/Debug\libBSP.a(power.o)
+ .debug_pubnames
+                0x00000bf8       0x4e ../../BSP/Debug\libBSP.a(segs.o)
+ .debug_pubnames
+                0x00000c46      0x2b1 ../../BSP/Debug\libBSP.a(system.o)
+ .debug_pubnames
+                0x00000ef7       0xee ../../BSP/Debug\libBSP.a(timers.o)
+ .debug_pubnames
+                0x00000fe5       0xa7 ../../BSP/Debug\libBSP.a(uart.o)
+ .debug_pubnames
+                0x0000108c       0x9a ../../BSP/Debug\libBSP.a(uda1341ts.o)
+ .debug_pubnames
+                0x00001126       0x1b ../../BSP/Debug\libBSP.a(font8x16.o)
+ .debug_pubnames
+                0x00001141       0x2d ../../BSP/Debug\libBSP.a(l3.o)
+ .debug_pubnames
+                0x0000116e       0x55 ../../BSP/Debug\libBSP.a(leds.o)
+
+.debug_pubtypes
+                0x00000000      0xb6c
+ .debug_pubtypes
+                0x00000000       0x28 ./credit.o
+ .debug_pubtypes
+                0x00000028       0x73 ./enemy.o
+ .debug_pubtypes
+                0x0000009b       0xbd ./enemyshot.o
+ .debug_pubtypes
+                0x00000158      0x16a ./game.o
+ .debug_pubtypes
+                0x000002c2       0x3d ./hiscore.o
+ .debug_pubtypes
+                0x000002ff       0x34 ./kernelcoop.o
+ .debug_pubtypes
+                0x00000333       0x26 ./lives.o
+ .debug_pubtypes
+                0x00000359       0x1c ./pixmaps.o
+ .debug_pubtypes
+                0x00000375       0x78 ./player.o
+ .debug_pubtypes
+                0x000003ed      0x139 ./playershot.o
+ .debug_pubtypes
+                0x00000526      0x181 ./proyecto.o
+ .debug_pubtypes
+                0x000006a7       0x27 ./random.o
+ .debug_pubtypes
+                0x000006ce       0x31 ./score.o
+ .debug_pubtypes
+                0x000006ff       0x52 ./shield.o
+ .debug_pubtypes
+                0x00000751       0x32 ./sound.o
+ .debug_pubtypes
+                0x00000783       0x3e ./sprite.o
+ .debug_pubtypes
+                0x000007c1       0xd6 ./swarm.o
+ .debug_pubtypes
+                0x00000897       0x5e ./ufo.o
+ .debug_pubtypes
+                0x000008f5       0x27 ../../BSP/Debug\libBSP.a(at24C04.o)
+ .debug_pubtypes
+                0x0000091c       0x32 ../../BSP/Debug\libBSP.a(iic.o)
+ .debug_pubtypes
+                0x0000094e       0x32 ../../BSP/Debug\libBSP.a(keypad.o)
+ .debug_pubtypes
+                0x00000980       0x3c ../../BSP/Debug\libBSP.a(lcd.o)
+ .debug_pubtypes
+                0x000009bc       0x32 ../../BSP/Debug\libBSP.a(pbs.o)
+ .debug_pubtypes
+                0x000009ee       0x27 ../../BSP/Debug\libBSP.a(power.o)
+ .debug_pubtypes
+                0x00000a15       0x27 ../../BSP/Debug\libBSP.a(segs.o)
+ .debug_pubtypes
+                0x00000a3c       0x27 ../../BSP/Debug\libBSP.a(system.o)
+ .debug_pubtypes
+                0x00000a63       0x3d ../../BSP/Debug\libBSP.a(timers.o)
+ .debug_pubtypes
+                0x00000aa0       0x3d ../../BSP/Debug\libBSP.a(uart.o)
+ .debug_pubtypes
+                0x00000add       0x1c ../../BSP/Debug\libBSP.a(uda1341ts.o)
+ .debug_pubtypes
+                0x00000af9       0x1c ../../BSP/Debug\libBSP.a(font8x16.o)
+ .debug_pubtypes
+                0x00000b15       0x30 ../../BSP/Debug\libBSP.a(l3.o)
+ .debug_pubtypes
+                0x00000b45       0x27 ../../BSP/Debug\libBSP.a(leds.o)
+
+.debug_aranges  0x00000000      0x3c0
+ .debug_aranges
+                0x00000000       0x20 ./credit.o
+ .debug_aranges
+                0x00000020       0x20 ./enemy.o
+ .debug_aranges
+                0x00000040       0x20 ./enemyshot.o
+ .debug_aranges
+                0x00000060       0x20 ./game.o
+ .debug_aranges
+                0x00000080       0x20 ./hiscore.o
+ .debug_aranges
+                0x000000a0       0x20 ./kernelcoop.o
+ .debug_aranges
+                0x000000c0       0x20 ./lives.o
+ .debug_aranges
+                0x000000e0       0x20 ./player.o
+ .debug_aranges
+                0x00000100       0x20 ./playershot.o
+ .debug_aranges
+                0x00000120       0x20 ./proyecto.o
+ .debug_aranges
+                0x00000140       0x20 ./random.o
+ .debug_aranges
+                0x00000160       0x20 ./score.o
+ .debug_aranges
+                0x00000180       0x20 ./shield.o
+ .debug_aranges
+                0x000001a0       0x20 ./sound.o
+ .debug_aranges
+                0x000001c0       0x20 ./sprite.o
+ .debug_aranges
+                0x000001e0       0x20 ./swarm.o
+ .debug_aranges
+                0x00000200       0x20 ./ufo.o
+ .debug_aranges
+                0x00000220       0x20 ../../BSP/Debug\libBSP.a(at24C04.o)
+ .debug_aranges
+                0x00000240       0x20 ../../BSP/Debug\libBSP.a(iic.o)
+ .debug_aranges
+                0x00000260       0x20 ../../BSP/Debug\libBSP.a(keypad.o)
+ .debug_aranges
+                0x00000280       0x20 ../../BSP/Debug\libBSP.a(lcd.o)
+ .debug_aranges
+                0x000002a0       0x20 ../../BSP/Debug\libBSP.a(pbs.o)
+ .debug_aranges
+                0x000002c0       0x20 ../../BSP/Debug\libBSP.a(power.o)
+ .debug_aranges
+                0x000002e0       0x20 ../../BSP/Debug\libBSP.a(segs.o)
+ .debug_aranges
+                0x00000300       0x20 ../../BSP/Debug\libBSP.a(system.o)
+ .debug_aranges
+                0x00000320       0x20 ../../BSP/Debug\libBSP.a(timers.o)
+ .debug_aranges
+                0x00000340       0x20 ../../BSP/Debug\libBSP.a(uart.o)
+ .debug_aranges
+                0x00000360       0x20 ../../BSP/Debug\libBSP.a(uda1341ts.o)
+ .debug_aranges
+                0x00000380       0x20 ../../BSP/Debug\libBSP.a(l3.o)
+ .debug_aranges
+                0x000003a0       0x20 ../../BSP/Debug\libBSP.a(leds.o)
+
+.debug_str      0x00000000     0x1656
+ .debug_str     0x00000000       0xef ./credit.o
+                                0x108 (size before relaxing)
+ .debug_str     0x000000ef      0x196 ./enemy.o
+                                0x26a (size before relaxing)
+ .debug_str     0x00000285      0x1de ./enemyshot.o
+                                0x32b (size before relaxing)
+ .debug_str     0x00000463      0x238 ./game.o
+                                0x52a (size before relaxing)
+ .debug_str     0x0000069b       0x72 ./hiscore.o
+                                0x147 (size before relaxing)
+ .debug_str     0x0000070d       0x7c ./kernelcoop.o
+                                0x133 (size before relaxing)
+ .debug_str     0x00000789       0x3b ./lives.o
+                                0x101 (size before relaxing)
+ .debug_str     0x000007c4       0x9f ./pixmaps.o
+                                0x1ea (size before relaxing)
+ .debug_str     0x00000863       0x8c ./player.o
+                                0x280 (size before relaxing)
+ .debug_str     0x000008ef       0xbd ./playershot.o
+                                0x57f (size before relaxing)
+ .debug_str     0x000009ac      0x10d ./proyecto.o
+                                0x5f4 (size before relaxing)
+ .debug_str     0x00000ab9       0x2f ./random.o
+                                 0xeb (size before relaxing)
+ .debug_str     0x00000ae8       0x3b ./score.o
+                                0x108 (size before relaxing)
+ .debug_str     0x00000b23       0x3b ./shield.o
+                                0x14a (size before relaxing)
+ .debug_str     0x00000b5e       0x3c ./sound.o
+                                0x104 (size before relaxing)
+ .debug_str     0x00000b9a       0x39 ./sprite.o
+                                0x132 (size before relaxing)
+ .debug_str     0x00000bd3      0x120 ./swarm.o
+                                0x446 (size before relaxing)
+ .debug_str     0x00000cf3       0x4e ./ufo.o
+                                0x1e2 (size before relaxing)
+ .debug_str     0x00000d41       0xc5 ../../BSP/Debug\libBSP.a(at24C04.o)
+                                0x14e (size before relaxing)
+ .debug_str     0x00000e06       0x50 ../../BSP/Debug\libBSP.a(iic.o)
+                                0x132 (size before relaxing)
+ .debug_str     0x00000e56       0x92 ../../BSP/Debug\libBSP.a(keypad.o)
+                                0x174 (size before relaxing)
+ .debug_str     0x00000ee8      0x13a ../../BSP/Debug\libBSP.a(lcd.o)
+                                0x24e (size before relaxing)
+ .debug_str     0x00001022       0x69 ../../BSP/Debug\libBSP.a(pbs.o)
+                                0x154 (size before relaxing)
+ .debug_str     0x0000108b       0x36 ../../BSP/Debug\libBSP.a(power.o)
+                                0x111 (size before relaxing)
+ .debug_str     0x000010c1       0x43 ../../BSP/Debug\libBSP.a(segs.o)
+                                0x124 (size before relaxing)
+ .debug_str     0x00001104      0x2f5 ../../BSP/Debug\libBSP.a(system.o)
+                                0x3e9 (size before relaxing)
+ .debug_str     0x000013f9       0xe0 ../../BSP/Debug\libBSP.a(timers.o)
+                                0x1cc (size before relaxing)
+ .debug_str     0x000014d9       0x7f ../../BSP/Debug\libBSP.a(uart.o)
+                                0x16d (size before relaxing)
+ .debug_str     0x00001558       0x90 ../../BSP/Debug\libBSP.a(uda1341ts.o)
+                                0x16a (size before relaxing)
+ .debug_str     0x000015e8       0x12 ../../BSP/Debug\libBSP.a(font8x16.o)
+                                 0xeb (size before relaxing)
+ .debug_str     0x000015fa       0x1f ../../BSP/Debug\libBSP.a(l3.o)
+                                0x109 (size before relaxing)
+ .debug_str     0x00001619       0x3d ../../BSP/Debug\libBSP.a(leds.o)
+                                0x118 (size before relaxing)
+
+.comment        0x00000000       0x2a
+ .comment       0x00000000       0x2a ./credit.o
+                                 0x2b (size before relaxing)
+ .comment       0x00000000       0x2b ./enemy.o
+ .comment       0x00000000       0x2b ./enemyshot.o
+ .comment       0x00000000       0x2b ./game.o
+ .comment       0x00000000       0x2b ./hiscore.o
+ .comment       0x00000000       0x2b ./kernelcoop.o
+ .comment       0x00000000       0x2b ./lives.o
+ .comment       0x00000000       0x2b ./pixmaps.o
+ .comment       0x00000000       0x2b ./player.o
+ .comment       0x00000000       0x2b ./playershot.o
+ .comment       0x00000000       0x2b ./proyecto.o
+ .comment       0x00000000       0x2b ./random.o
+ .comment       0x00000000       0x2b ./score.o
+ .comment       0x00000000       0x2b ./shield.o
+ .comment       0x00000000       0x2b ./sound.o
+ .comment       0x00000000       0x2b ./sprite.o
+ .comment       0x00000000       0x2b ./swarm.o
+ .comment       0x00000000       0x2b ./ufo.o
+ .comment       0x00000000       0x2b ../../BSP/Debug\libBSP.a(at24C04.o)
+ .comment       0x00000000       0x2b ../../BSP/Debug\libBSP.a(iic.o)
+ .comment       0x00000000       0x2b ../../BSP/Debug\libBSP.a(keypad.o)
+ .comment       0x00000000       0x2b ../../BSP/Debug\libBSP.a(lcd.o)
+ .comment       0x00000000       0x2b ../../BSP/Debug\libBSP.a(pbs.o)
+ .comment       0x00000000       0x2b ../../BSP/Debug\libBSP.a(power.o)
+ .comment       0x00000000       0x2b ../../BSP/Debug\libBSP.a(segs.o)
+ .comment       0x00000000       0x2b ../../BSP/Debug\libBSP.a(system.o)
+ .comment       0x00000000       0x2b ../../BSP/Debug\libBSP.a(timers.o)
+ .comment       0x00000000       0x2b ../../BSP/Debug\libBSP.a(uart.o)
+ .comment       0x00000000       0x2b ../../BSP/Debug\libBSP.a(uda1341ts.o)
+ .comment       0x00000000       0x2b ../../BSP/Debug\libBSP.a(font8x16.o)
+ .comment       0x00000000       0x2b ../../BSP/Debug\libBSP.a(l3.o)
+ .comment       0x00000000       0x2b ../../BSP/Debug\libBSP.a(leds.o)
+
+.ARM.attributes
+                0x00000000       0x32
+ .ARM.attributes
+                0x00000000       0x32 ./credit.o
+ .ARM.attributes
+                0x00000032       0x32 ./enemy.o
+ .ARM.attributes
+                0x00000064       0x32 ./enemyshot.o
+ .ARM.attributes
+                0x00000096       0x32 ./game.o
+ .ARM.attributes
+                0x000000c8       0x32 ./hiscore.o
+ .ARM.attributes
+                0x000000fa       0x32 ./kernelcoop.o
+ .ARM.attributes
+                0x0000012c       0x32 ./lives.o
+ .ARM.attributes
+                0x0000015e       0x32 ./pixmaps.o
+ .ARM.attributes
+                0x00000190       0x32 ./player.o
+ .ARM.attributes
+                0x000001c2       0x32 ./playershot.o
+ .ARM.attributes
+                0x000001f4       0x32 ./proyecto.o
+ .ARM.attributes
+                0x00000226       0x32 ./random.o
+ .ARM.attributes
+                0x00000258       0x32 ./score.o
+ .ARM.attributes
+                0x0000028a       0x32 ./shield.o
+ .ARM.attributes
+                0x000002bc       0x32 ./sound.o
+ .ARM.attributes
+                0x000002ee       0x32 ./sprite.o
+ .ARM.attributes
+                0x00000320       0x32 ./swarm.o
+ .ARM.attributes
+                0x00000352       0x32 ./ufo.o
+ .ARM.attributes
+                0x00000384       0x32 ../../BSP/Debug\libBSP.a(at24C04.o)
+ .ARM.attributes
+                0x000003b6       0x32 ../../BSP/Debug\libBSP.a(iic.o)
+ .ARM.attributes
+                0x000003e8       0x32 ../../BSP/Debug\libBSP.a(keypad.o)
+ .ARM.attributes
+                0x0000041a       0x32 ../../BSP/Debug\libBSP.a(lcd.o)
+ .ARM.attributes
+                0x0000044c       0x32 ../../BSP/Debug\libBSP.a(pbs.o)
+ .ARM.attributes
+                0x0000047e       0x32 ../../BSP/Debug\libBSP.a(power.o)
+ .ARM.attributes
+                0x000004b0       0x32 ../../BSP/Debug\libBSP.a(segs.o)
+ .ARM.attributes
+                0x000004e2       0x32 ../../BSP/Debug\libBSP.a(system.o)
+ .ARM.attributes
+                0x00000514       0x32 ../../BSP/Debug\libBSP.a(timers.o)
+ .ARM.attributes
+                0x00000546       0x32 ../../BSP/Debug\libBSP.a(uart.o)
+ .ARM.attributes
+                0x00000578       0x32 ../../BSP/Debug\libBSP.a(uda1341ts.o)
+ .ARM.attributes
+                0x000005aa       0x32 ../../BSP/Debug\libBSP.a(font8x16.o)
+ .ARM.attributes
+                0x000005dc       0x32 ../../BSP/Debug\libBSP.a(l3.o)
+ .ARM.attributes
+                0x0000060e       0x32 ../../BSP/Debug\libBSP.a(leds.o)
+ .ARM.attributes
+                0x00000640       0x1a c:/eclipsearm/sourcery-g++-lite-arm-2011.03/bin/../lib/gcc/arm-none-eabi/4.5.2\libgcc.a(_udivsi3.o)
+ .ARM.attributes
+                0x0000065a       0x18 c:/eclipsearm/sourcery-g++-lite-arm-2011.03/bin/../lib/gcc/arm-none-eabi/4.5.2\libgcc.a(_dvmd_tls.o)
+ .ARM.attributes
+                0x00000672       0x1a c:/eclipsearm/sourcery-g++-lite-arm-2011.03/bin/../lib/gcc/arm-none-eabi/4.5.2\libgcc.a(_aeabi_uldivmod.o)
+ .ARM.attributes
+                0x0000068c       0x34 c:/eclipsearm/sourcery-g++-lite-arm-2011.03/bin/../lib/gcc/arm-none-eabi/4.5.2\libgcc.a(bpabi.o)
+ .ARM.attributes
+                0x000006c0       0x34 c:/eclipsearm/sourcery-g++-lite-arm-2011.03/bin/../lib/gcc/arm-none-eabi/4.5.2\libgcc.a(_divdi3.o)
+ .ARM.attributes
+                0x000006f4       0x34 c:/eclipsearm/sourcery-g++-lite-arm-2011.03/bin/../lib/gcc/arm-none-eabi/4.5.2\libgcc.a(_udivdi3.o)
+ .ARM.attributes
+                0x00000728       0x1a c:/eclipsearm/sourcery-g++-lite-arm-2011.03/bin/../lib/gcc/arm-none-eabi/4.5.2\libgcc.a(_clzsi2.o)
+
+.debug_frame    0x00000000     0x21a4
+ .debug_frame   0x00000000       0x90 ./credit.o
+ .debug_frame   0x00000090      0x130 ./enemy.o
+ .debug_frame   0x000001c0      0x110 ./enemyshot.o
+ .debug_frame   0x000002d0       0x70 ./game.o
+ .debug_frame   0x00000340       0xd0 ./hiscore.o
+ .debug_frame   0x00000410       0xbc ./kernelcoop.o
+ .debug_frame   0x000004cc       0x90 ./lives.o
+ .debug_frame   0x0000055c      0x150 ./player.o
+ .debug_frame   0x000006ac      0x130 ./playershot.o
+ .debug_frame   0x000007dc      0x190 ./proyecto.o
+ .debug_frame   0x0000096c       0x50 ./random.o
+ .debug_frame   0x000009bc       0x90 ./score.o
+ .debug_frame   0x00000a4c       0x70 ./shield.o
+ .debug_frame   0x00000abc       0x90 ./sound.o
+ .debug_frame   0x00000b4c       0x50 ./sprite.o
+ .debug_frame   0x00000b9c      0x170 ./swarm.o
+ .debug_frame   0x00000d0c       0xd0 ./ufo.o
+ .debug_frame   0x00000ddc       0xb4 ../../BSP/Debug\libBSP.a(at24C04.o)
+ .debug_frame   0x00000e90       0xb0 ../../BSP/Debug\libBSP.a(iic.o)
+ .debug_frame   0x00000f40      0x110 ../../BSP/Debug\libBSP.a(keypad.o)
+ .debug_frame   0x00001050      0x270 ../../BSP/Debug\libBSP.a(lcd.o)
+ .debug_frame   0x000012c0      0x110 ../../BSP/Debug\libBSP.a(pbs.o)
+ .debug_frame   0x000013d0       0x70 ../../BSP/Debug\libBSP.a(power.o)
+ .debug_frame   0x00001440       0x90 ../../BSP/Debug\libBSP.a(segs.o)
+ .debug_frame   0x000014d0      0x714 ../../BSP/Debug\libBSP.a(system.o)
+ .debug_frame   0x00001be4      0x1b8 ../../BSP/Debug\libBSP.a(timers.o)
+ .debug_frame   0x00001d9c      0x130 ../../BSP/Debug\libBSP.a(uart.o)
+ .debug_frame   0x00001ecc       0xf0 ../../BSP/Debug\libBSP.a(uda1341ts.o)
+ .debug_frame   0x00001fbc       0x50 ../../BSP/Debug\libBSP.a(l3.o)
+ .debug_frame   0x0000200c       0xb0 ../../BSP/Debug\libBSP.a(leds.o)
+ .debug_frame   0x000020bc       0x20 c:/eclipsearm/sourcery-g++-lite-arm-2011.03/bin/../lib/gcc/arm-none-eabi/4.5.2\libgcc.a(_udivsi3.o)
+ .debug_frame   0x000020dc       0x50 c:/eclipsearm/sourcery-g++-lite-arm-2011.03/bin/../lib/gcc/arm-none-eabi/4.5.2\libgcc.a(bpabi.o)
+ .debug_frame   0x0000212c       0x3c c:/eclipsearm/sourcery-g++-lite-arm-2011.03/bin/../lib/gcc/arm-none-eabi/4.5.2\libgcc.a(_divdi3.o)
+ .debug_frame   0x00002168       0x3c c:/eclipsearm/sourcery-g++-lite-arm-2011.03/bin/../lib/gcc/arm-none-eabi/4.5.2\libgcc.a(_udivdi3.o)

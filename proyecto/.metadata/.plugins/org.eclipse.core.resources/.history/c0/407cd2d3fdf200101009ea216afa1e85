@@ -1,0 +1,188 @@
+#include "config.h"
+#include "pixmaps.h"
+#include "wavs.h"
+#include "playerShot.h"
+
+static void playerShot_draw( PlayerShot *self );
+static void playerShot_clear( PlayerShot *self );
+
+void playerShot_init( PlayerShot *self )
+{
+    self->state           = noPlayerShot;
+    self->sprite          = (Sprite){ PLAYERSHOT_WIDTH, PLAYERSHOT_HEIGHT, playerShotPixMap };
+    self->explosionSprite = (Sprite){ PLAYERSHOT_EXPLOSION_WIDTH, PLAYERSHOT_EXPLOSION_HEIGHT, playerShotExplosionPixMap };
+    self->launchSound     = (Sound){ PLAYERSHOOT_LAUNCH };
+}
+
+static void playerShot_draw( PlayerShot *self )
+{
+    if( self->state == playerShotMovingUp )
+        sprite_draw( &self->sprite, self->col, self->row );
+    else if( self->state == playerShotExplodingCeiling || self->state == playerShotExplodingShield )
+        sprite_draw( &self->explosionSprite, self->col, self->row );
+}
+
+static void playerShot_clear( PlayerShot *self )
+{
+    if( self->state == playerShotMovingUp )
+        sprite_clear( &self->sprite, self->col, self->row );
+    else if( self->state == playerShotExplodingCeiling || self->state == playerShotExplodingShield )
+        sprite_clear( &self->explosionSprite, self->col, self->row );
+}
+
+void playerShot_launch( PlayerShot *self, Player *player )
+{
+    if( self->state == noPlayerShot )
+    {
+        self->state = playerShotMovingUp;
+        self->col = player->col + (PLAYER_WIDTH/2);
+        self->row = player->row - PLAYERSHOT_HEIGHT;
+        self->shooter = player;
+        sound_play( &self->launchSound );
+        playerShot_draw( self );
+    }
+}
+
+void playerShot_update( PlayerShot *self, Shield *shield, Swarm *swarm, EnemyShot *enemyShot, Ufo *ufo )
+{
+    uint8 collision = FALSE;
+    uint8 i;
+
+    if( self->state == playerShotMovingUp )
+    {
+        playerShot_clear( self );
+        self->row -= PLAYERSHOT_ADVANCE_ROW;
+
+        if( self->row <= UFO_ROW )
+        {
+            self->state = playerShotExplodingCeiling;
+            self->countDown = PLAYERSHOT_EXPLODING_TIME / PLAYERSHOT_UPDATE_PERIOD;
+            playerShot_draw( self );
+            collision = TRUE;
+        }
+
+        if( !collision && ufo->state != noUfo && ufo->state != ufoExploding )
+        {
+            if( OVERLAP(self->col, ufo->col, UFO_WIDTH) && OVERLAP(self->row, ufo->row, UFO_HEIGHT) )
+            {
+                playerShot_onUfo( self, ufo );
+                collision = TRUE;
+            }
+        }
+
+        if( !collision && enemyShot->state == enemyShotMovingDown )
+        {
+            if( OVERLAP(self->col, enemyShot->col, ENEMYSHOT_WIDTH) && OVERLAP(self->row, enemyShot->row, ENEMYSHOT_HEIGHT) )
+            {
+                playerShot_onEnemyShot( self, enemyShot );
+                collision = TRUE;
+            }
+        }
+
+        if( !collision )
+        {
+            for( i = 0; i < MAX_SHIELDS; i++ )
+            {
+                if( !collision )
+                {
+                    if( OVERLAP(self->col, shield[i].col, SHIELD_WIDTH) && OVERLAP(self->row, shield[i].row, SHIELD_HEIGHT) )
+                    {
+                        if( sprite_draw( &self->sprite, self->col, self->row ) )
+                        {
+                            playerShot_onShield( self, &shield[i] );
+                            collision = TRUE;
+                        }
+                    }
+                }
+            }
+        }
+
+        if( !collision )
+        {
+            playerShot_onSwarm( self, swarm );
+            if( self->state == noPlayerShot )
+            {
+                collision = TRUE;
+            }
+        }
+
+        if( !collision )
+        {
+            playerShot_draw( self );
+        }
+    }
+    else if( self->state == playerShotExplodingCeiling || self->state == playerShotExplodingShield )
+    {
+        if( self->countDown > 0 )
+        {
+            self->countDown--;
+        }
+        else
+        {
+            playerShot_clear( self );
+            self->state = noPlayerShot;
+        }
+    }
+}
+
+void playerShot_onUfo( PlayerShot *self, Ufo *ufo )
+{
+    playerShot_clear( self );
+    self->state = noPlayerShot;
+    ufo_hit( ufo );
+    score_update( &self->shooter->score, ufo->score );
+}
+
+void playerShot_onSwarm( PlayerShot *self, Swarm *swarm )
+{
+    uint8 x;
+    uint8 y;
+    uint8 found = FALSE;
+    Enemy *hitEnemy = NULL;
+
+    for( y = 0; y < SWARM_YLEN; y++ )
+    {
+        for( x = 0; x < SWARM_XLEN; x++ )
+        {
+            if( !found )
+            {
+                if( swarm->enemies[y][x].state == enemyAlive )
+                {
+                    if( OVERLAP(self->col, swarm->enemies[y][x].col, ENEMY_WIDTH) &&
+                        OVERLAP(self->row, swarm->enemies[y][x].row, ENEMY_HEIGHT) )
+                    {
+                        if( sprite_draw( &self->sprite, self->col, self->row ) )
+                        {
+                            hitEnemy = &swarm->enemies[y][x];
+                            found = TRUE;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    if( found )
+    {
+        playerShot_clear( self );
+        self->state = noPlayerShot;
+        swarm_hit( swarm, hitEnemy );
+        score_update( &self->shooter->score, hitEnemy->score );
+    }
+}
+
+void playerShot_onShield( PlayerShot *self, Shield *shield )
+{
+    sprite_clear( &self->sprite, self->col, self->row );
+    self->row -= PLAYERSHOT_EXPLOSION_DEEP;
+    self->state = playerShotExplodingShield;
+    self->countDown = PLAYERSHOT_EXPLOSION_TIME / PLAYERSHOT_UPDATE_PERIOD;
+    sprite_draw( &self->explosionSprite, self->col, self->row );
+}
+
+void playerShot_onEnemyShot( PlayerShot *self, EnemyShot *enemyShot )
+{
+    playerShot_clear( self );
+    self->state = noPlayerShot;
+    enemyShot_hit( enemyShot );
+}

@@ -1,0 +1,1723 @@
+   1              		.cpu arm7tdmi
+   2              		.fpu softvfp
+   3              		.eabi_attribute 20, 1
+   4              		.eabi_attribute 21, 1
+   5              		.eabi_attribute 23, 3
+   6              		.eabi_attribute 24, 1
+   7              		.eabi_attribute 25, 1
+   8              		.eabi_attribute 26, 1
+   9              		.eabi_attribute 30, 6
+  10              		.eabi_attribute 18, 4
+  11              		.file	"swarm.c"
+  21              	.Ltext0:
+  22              		.file 1 "../swarm.c"
+ 1408              		.align	2
+ 1411              	formation:
+ 1412 0000 02       		.byte	2
+ 1413 0001 02       		.byte	2
+ 1414 0002 02       		.byte	2
+ 1415 0003 02       		.byte	2
+ 1416 0004 02       		.byte	2
+ 1417 0005 00       		.byte	0
+ 1418 0006 00       		.byte	0
+ 1419 0007 00       		.byte	0
+ 1420 0008 00       		.byte	0
+ 1421 0009 00       		.byte	0
+ 1422 000a 00       		.byte	0
+ 1423 000b 00       		.byte	0
+ 1424 000c 00       		.byte	0
+ 1425 000d 00       		.byte	0
+ 1426 000e 00       		.byte	0
+ 1427 000f 01       		.byte	1
+ 1428 0010 01       		.byte	1
+ 1429 0011 01       		.byte	1
+ 1430 0012 01       		.byte	1
+ 1431 0013 01       		.byte	1
+ 1432 0014 01       		.byte	1
+ 1433 0015 01       		.byte	1
+ 1434 0016 01       		.byte	1
+ 1435 0017 01       		.byte	1
+ 1436 0018 01       		.byte	1
+ 1437 0019 000000   		.align	2
+ 1440              	formationSpriteSet:
+ 1441 001c 01       		.byte	1
+ 1442 001d 00       		.byte	0
+ 1443 001e 01       		.byte	1
+ 1444 001f 00       		.byte	0
+ 1445 0020 01       		.byte	1
+ 1446 0021 01       		.byte	1
+ 1447 0022 00       		.byte	0
+ 1448 0023 01       		.byte	1
+ 1449 0024 00       		.byte	0
+ 1450 0025 01       		.byte	1
+ 1451 0026 01       		.byte	1
+ 1452 0027 00       		.byte	0
+ 1453 0028 01       		.byte	1
+ 1454 0029 00       		.byte	0
+ 1455 002a 01       		.byte	1
+ 1456 002b 01       		.byte	1
+ 1457 002c 00       		.byte	0
+ 1458 002d 01       		.byte	1
+ 1459 002e 00       		.byte	0
+ 1460 002f 01       		.byte	1
+ 1461 0030 01       		.byte	1
+ 1462 0031 00       		.byte	0
+ 1463 0032 01       		.byte	1
+ 1464 0033 00       		.byte	0
+ 1465 0034 01       		.byte	1
+ 1466 0035 000000   		.text
+ 1467              		.align	2
+ 1468              		.global	swarm_init
+ 1470              	swarm_init:
+ 1471              	.LFB0:
+   1:../swarm.c    **** #include <timers.h>
+   2:../swarm.c    **** #include "config.h"
+   3:../swarm.c    **** #include "random.h"
+   4:../swarm.c    **** #include "pixmaps.h"
+   5:../swarm.c    **** #include "wavs.h"
+   6:../swarm.c    **** #include "swarm.h"
+   7:../swarm.c    **** 
+   8:../swarm.c    **** static const enemy_type_t formation[SWARM_YLEN][SWARM_XLEN] = { { squid, squid,
+   9:../swarm.c    **** 		squid, squid, squid }, { alien, alien, alien, alien, alien }, { alien,
+  10:../swarm.c    **** 		alien, alien, alien, alien }, { metroid, metroid, metroid, metroid,
+  11:../swarm.c    **** 		metroid }, { metroid, metroid, metroid, metroid, metroid } };
+  12:../swarm.c    **** 
+  13:../swarm.c    **** static const uint8 formationSpriteSet[SWARM_YLEN][SWARM_XLEN] = { { 1, 0, 1, 0,
+  14:../swarm.c    **** 		1 }, { 1, 0, 1, 0, 1 }, { 1, 0, 1, 0, 1 }, { 1, 0, 1, 0, 1 }, { 1, 0, 1,
+  15:../swarm.c    **** 		0, 1 } };
+  16:../swarm.c    **** 
+  17:../swarm.c    **** static boolean swarm_findNextAlive(Swarm *self);
+  18:../swarm.c    **** static void swarm_moveSound(Swarm *self);
+  19:../swarm.c    **** static void swarm_updateLeftFront(Swarm *self);
+  20:../swarm.c    **** static void swarm_updateRightFront(Swarm *self);
+  21:../swarm.c    **** static void swarm_updateDownFront(Swarm *self);
+  22:../swarm.c    **** 
+  23:../swarm.c    **** void swarm_init(Swarm *self) {
+ 1472              		.loc 1 23 0
+ 1473              		.cfi_startproc
+ 1474              		@ Function supports interworking.
+ 1475              		@ args = 0, pretend = 0, frame = 16
+ 1476              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1477 0000 0DC0A0E1 		mov	ip, sp
+ 1478              	.LCFI0:
+ 1479              		.cfi_def_cfa_register 12
+ 1480 0004 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1481 0008 04B04CE2 		sub	fp, ip, #4
+ 1482              		.cfi_offset 14, -8
+ 1483              		.cfi_offset 13, -12
+ 1484              		.cfi_offset 11, -16
+ 1485              	.LCFI1:
+ 1486              		.cfi_def_cfa 11, 4
+ 1487 000c 18D04DE2 		sub	sp, sp, #24
+ 1488 0010 18000BE5 		str	r0, [fp, #-24]
+  24:../swarm.c    **** 	uint8 x, y;
+  25:../swarm.c    **** 	Enemy *enemy;
+  26:../swarm.c    **** 
+  27:../swarm.c    **** 	self->state = swarmMovingRight;
+ 1489              		.loc 1 27 0
+ 1490 0014 18301BE5 		ldr	r3, [fp, #-24]
+ 1491 0018 0120A0E3 		mov	r2, #1
+ 1492 001c 0020C3E5 		strb	r2, [r3, #0]
+  28:../swarm.c    **** 	self->toMoveY = SWARM_YLEN - 1;
+ 1493              		.loc 1 28 0
+ 1494 0020 18301BE5 		ldr	r3, [fp, #-24]
+ 1495 0024 0420A0E3 		mov	r2, #4
+ 1496 0028 EE23C3E5 		strb	r2, [r3, #1006]
+  29:../swarm.c    **** 	self->toMoveX = 0;
+ 1497              		.loc 1 29 0
+ 1498 002c 18301BE5 		ldr	r3, [fp, #-24]
+ 1499 0030 0020A0E3 		mov	r2, #0
+ 1500 0034 ED23C3E5 		strb	r2, [r3, #1005]
+  30:../swarm.c    **** 
+  31:../swarm.c    **** 	for (y = 0; y < SWARM_YLEN; y++)
+ 1501              		.loc 1 31 0
+ 1502 0038 0030A0E3 		mov	r3, #0
+ 1503 003c 0E304BE5 		strb	r3, [fp, #-14]
+ 1504 0040 460000EA 		b	.L2
+ 1505              	.L5:
+  32:../swarm.c    **** 		for (x = 0; x < SWARM_XLEN; x++) {
+ 1506              		.loc 1 32 0
+ 1507 0044 0030A0E3 		mov	r3, #0
+ 1508 0048 0D304BE5 		strb	r3, [fp, #-13]
+ 1509 004c 3D0000EA 		b	.L3
+ 1510              	.L4:
+  33:../swarm.c    **** 			enemy = &self->enemies[y][x];
+ 1511              		.loc 1 33 0 discriminator 2
+ 1512 0050 18301BE5 		ldr	r3, [fp, #-24]
+ 1513 0054 043083E2 		add	r3, r3, #4
+ 1514 0058 0310A0E1 		mov	r1, r3
+ 1515 005c 0E205BE5 		ldrb	r2, [fp, #-14]	@ zero_extendqisi2
+ 1516 0060 0230A0E1 		mov	r3, r2
+ 1517 0064 0331A0E1 		mov	r3, r3, asl #2
+ 1518 0068 023083E0 		add	r3, r3, r2
+ 1519 006c 0321A0E1 		mov	r2, r3, asl #2
+ 1520 0070 023083E0 		add	r3, r3, r2
+ 1521 0074 8331A0E1 		mov	r3, r3, asl #3
+ 1522 0078 0300A0E1 		mov	r0, r3
+ 1523 007c 0D205BE5 		ldrb	r2, [fp, #-13]	@ zero_extendqisi2
+ 1524 0080 0230A0E1 		mov	r3, r2
+ 1525 0084 0331A0E1 		mov	r3, r3, asl #2
+ 1526 0088 023083E0 		add	r3, r3, r2
+ 1527 008c 8331A0E1 		mov	r3, r3, asl #3
+ 1528 0090 033080E0 		add	r3, r0, r3
+ 1529 0094 033081E0 		add	r3, r1, r3
+ 1530 0098 14300BE5 		str	r3, [fp, #-20]
+  34:../swarm.c    **** 			enemy_init(enemy, formation[y][x], formationSpriteSet[y][x],
+ 1531              		.loc 1 34 0 discriminator 2
+ 1532 009c 0E205BE5 		ldrb	r2, [fp, #-14]	@ zero_extendqisi2
+ 1533 00a0 0D005BE5 		ldrb	r0, [fp, #-13]	@ zero_extendqisi2
+ 1534 00a4 20119FE5 		ldr	r1, .L6
+ 1535 00a8 0230A0E1 		mov	r3, r2
+ 1536 00ac 0331A0E1 		mov	r3, r3, asl #2
+ 1537 00b0 023083E0 		add	r3, r3, r2
+ 1538 00b4 003083E0 		add	r3, r3, r0
+ 1539 00b8 033081E0 		add	r3, r1, r3
+ 1540 00bc 0010D3E5 		ldrb	r1, [r3, #0]	@ zero_extendqisi2
+ 1541 00c0 0E205BE5 		ldrb	r2, [fp, #-14]	@ zero_extendqisi2
+ 1542 00c4 0DC05BE5 		ldrb	ip, [fp, #-13]	@ zero_extendqisi2
+ 1543 00c8 00019FE5 		ldr	r0, .L6+4
+ 1544 00cc 0230A0E1 		mov	r3, r2
+ 1545 00d0 0331A0E1 		mov	r3, r3, asl #2
+ 1546 00d4 023083E0 		add	r3, r3, r2
+ 1547 00d8 0C3083E0 		add	r3, r3, ip
+ 1548 00dc 033080E0 		add	r3, r0, r3
+ 1549 00e0 0020D3E5 		ldrb	r2, [r3, #0]	@ zero_extendqisi2
+ 1550 00e4 0D305BE5 		ldrb	r3, [fp, #-13]	@ zero_extendqisi2
+ 1551 00e8 0338A0E1 		mov	r3, r3, asl #16
+ 1552 00ec 2338A0E1 		mov	r3, r3, lsr #16
+ 1553 00f0 0332A0E1 		mov	r3, r3, asl #4
+ 1554 00f4 0338A0E1 		mov	r3, r3, asl #16
+ 1555 00f8 23C8A0E1 		mov	ip, r3, lsr #16
+ 1556 00fc 0E305BE5 		ldrb	r3, [fp, #-14]	@ zero_extendqisi2
+ 1557 0100 0338A0E1 		mov	r3, r3, asl #16
+ 1558 0104 2338A0E1 		mov	r3, r3, lsr #16
+ 1559 0108 0300A0E1 		mov	r0, r3	@ movhi
+ 1560 010c 0001A0E1 		mov	r0, r0, asl #2
+ 1561 0110 033080E0 		add	r3, r0, r3
+ 1562 0114 8330A0E1 		mov	r3, r3, asl #1
+ 1563 0118 0338A0E1 		mov	r3, r3, asl #16
+ 1564 011c 2338A0E1 		mov	r3, r3, lsr #16
+ 1565 0120 123083E2 		add	r3, r3, #18
+ 1566 0124 0338A0E1 		mov	r3, r3, asl #16
+ 1567 0128 2338A0E1 		mov	r3, r3, lsr #16
+ 1568 012c 00308DE5 		str	r3, [sp, #0]
+ 1569 0130 14001BE5 		ldr	r0, [fp, #-20]
+ 1570 0134 0C30A0E1 		mov	r3, ip
+ 1571 0138 FEFFFFEB 		bl	enemy_init
+  32:../swarm.c    **** 		for (x = 0; x < SWARM_XLEN; x++) {
+ 1572              		.loc 1 32 0 discriminator 2
+ 1573 013c 0D305BE5 		ldrb	r3, [fp, #-13]
+ 1574 0140 013083E2 		add	r3, r3, #1
+ 1575 0144 0D304BE5 		strb	r3, [fp, #-13]
+ 1576              	.L3:
+  32:../swarm.c    **** 		for (x = 0; x < SWARM_XLEN; x++) {
+ 1577              		.loc 1 32 0 is_stmt 0 discriminator 1
+ 1578 0148 0D305BE5 		ldrb	r3, [fp, #-13]	@ zero_extendqisi2
+ 1579 014c 040053E3 		cmp	r3, #4
+ 1580 0150 BEFFFF9A 		bls	.L4
+  31:../swarm.c    **** 	for (y = 0; y < SWARM_YLEN; y++)
+ 1581              		.loc 1 31 0 is_stmt 1
+ 1582 0154 0E305BE5 		ldrb	r3, [fp, #-14]
+ 1583 0158 013083E2 		add	r3, r3, #1
+ 1584 015c 0E304BE5 		strb	r3, [fp, #-14]
+ 1585              	.L2:
+  31:../swarm.c    **** 	for (y = 0; y < SWARM_YLEN; y++)
+ 1586              		.loc 1 31 0 is_stmt 0 discriminator 1
+ 1587 0160 0E305BE5 		ldrb	r3, [fp, #-14]	@ zero_extendqisi2
+ 1588 0164 040053E3 		cmp	r3, #4
+ 1589 0168 B5FFFF9A 		bls	.L5
+  35:../swarm.c    **** 					SWARM_MIN_COL + x * ENEMY_WIDTH,
+  36:../swarm.c    **** 					SWARM_MIN_ROW + y * ENEMY_HEIGHT);
+  37:../swarm.c    **** 		}
+  38:../swarm.c    **** 	self->enemiesRemaining = SWARM_YLEN * SWARM_XLEN;
+ 1590              		.loc 1 38 0 is_stmt 1
+ 1591 016c 18301BE5 		ldr	r3, [fp, #-24]
+ 1592 0170 1920A0E3 		mov	r2, #25
+ 1593 0174 EC23C3E5 		strb	r2, [r3, #1004]
+  39:../swarm.c    **** 	swarm_updateLeftFront(self);
+ 1594              		.loc 1 39 0
+ 1595 0178 18001BE5 		ldr	r0, [fp, #-24]
+ 1596 017c 030200EB 		bl	swarm_updateLeftFront
+  40:../swarm.c    **** 	swarm_updateRightFront(self);
+ 1597              		.loc 1 40 0
+ 1598 0180 18001BE5 		ldr	r0, [fp, #-24]
+ 1599 0184 430200EB 		bl	swarm_updateRightFront
+  41:../swarm.c    **** 	swarm_updateDownFront(self);
+ 1600              		.loc 1 41 0
+ 1601 0188 18001BE5 		ldr	r0, [fp, #-24]
+ 1602 018c 830200EB 		bl	swarm_updateDownFront
+  42:../swarm.c    **** 	self->stepSound[0] = (Sound ) { SWARM_MOVE0 };
+ 1603              		.loc 1 42 0
+ 1604 0190 18301BE5 		ldr	r3, [fp, #-24]
+ 1605 0194 38209FE5 		ldr	r2, .L6+8
+ 1606 0198 002483E5 		str	r2, [r3, #1024]
+  43:../swarm.c    **** 	self->stepSound[1] = (Sound ) { SWARM_MOVE1 };
+ 1607              		.loc 1 43 0
+ 1608 019c 18301BE5 		ldr	r3, [fp, #-24]
+ 1609 01a0 30209FE5 		ldr	r2, .L6+12
+ 1610 01a4 042483E5 		str	r2, [r3, #1028]
+  44:../swarm.c    **** 	self->stepSound[2] = (Sound ) { SWARM_MOVE2 };
+ 1611              		.loc 1 44 0
+ 1612 01a8 18301BE5 		ldr	r3, [fp, #-24]
+ 1613 01ac 28209FE5 		ldr	r2, .L6+16
+ 1614 01b0 082483E5 		str	r2, [r3, #1032]
+  45:../swarm.c    **** 	self->stepSound[3] = (Sound ) { SWARM_MOVE3 };
+ 1615              		.loc 1 45 0
+ 1616 01b4 18301BE5 		ldr	r3, [fp, #-24]
+ 1617 01b8 20209FE5 		ldr	r2, .L6+20
+ 1618 01bc 0C2483E5 		str	r2, [r3, #1036]
+  46:../swarm.c    **** }
+ 1619              		.loc 1 46 0
+ 1620 01c0 0CD04BE2 		sub	sp, fp, #12
+ 1621 01c4 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1622 01c8 1EFF2FE1 		bx	lr
+ 1623              	.L7:
+ 1624              		.align	2
+ 1625              	.L6:
+ 1626 01cc 00000000 		.word	formation
+ 1627 01d0 1C000000 		.word	formationSpriteSet
+ 1628 01d4 00D24E0C 		.word	206492160
+ 1629 01d8 00E94E0C 		.word	206498048
+ 1630 01dc 00014F0C 		.word	206504192
+ 1631 01e0 001A4F0C 		.word	206510592
+ 1632              		.cfi_endproc
+ 1633              	.LFE0:
+ 1635              		.align	2
+ 1636              		.global	swarm_lauch
+ 1638              	swarm_lauch:
+ 1639              	.LFB1:
+  47:../swarm.c    **** 
+  48:../swarm.c    **** void swarm_lauch(Swarm *self) {
+ 1640              		.loc 1 48 0
+ 1641              		.cfi_startproc
+ 1642              		@ Function supports interworking.
+ 1643              		@ args = 0, pretend = 0, frame = 16
+ 1644              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1645 01e4 0DC0A0E1 		mov	ip, sp
+ 1646              	.LCFI2:
+ 1647              		.cfi_def_cfa_register 12
+ 1648 01e8 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1649 01ec 04B04CE2 		sub	fp, ip, #4
+ 1650              		.cfi_offset 14, -8
+ 1651              		.cfi_offset 13, -12
+ 1652              		.cfi_offset 11, -16
+ 1653              	.LCFI3:
+ 1654              		.cfi_def_cfa 11, 4
+ 1655 01f0 10D04DE2 		sub	sp, sp, #16
+ 1656 01f4 18000BE5 		str	r0, [fp, #-24]
+  49:../swarm.c    **** 	uint8 x, y;
+  50:../swarm.c    **** 	for (y = 0; y < SWARM_YLEN; y++)
+ 1657              		.loc 1 50 0
+ 1658 01f8 0030A0E3 		mov	r3, #0
+ 1659 01fc 0E304BE5 		strb	r3, [fp, #-14]
+ 1660 0200 1F0000EA 		b	.L9
+ 1661              	.L12:
+  51:../swarm.c    **** 		for (x = 0; x < SWARM_XLEN; x++)
+ 1662              		.loc 1 51 0
+ 1663 0204 0030A0E3 		mov	r3, #0
+ 1664 0208 0D304BE5 		strb	r3, [fp, #-13]
+ 1665 020c 160000EA 		b	.L10
+ 1666              	.L11:
+  52:../swarm.c    **** 			enemy_launch(&self->enemies[y][x]);
+ 1667              		.loc 1 52 0 discriminator 2
+ 1668 0210 18301BE5 		ldr	r3, [fp, #-24]
+ 1669 0214 043083E2 		add	r3, r3, #4
+ 1670 0218 0310A0E1 		mov	r1, r3
+ 1671 021c 0E205BE5 		ldrb	r2, [fp, #-14]	@ zero_extendqisi2
+ 1672 0220 0230A0E1 		mov	r3, r2
+ 1673 0224 0331A0E1 		mov	r3, r3, asl #2
+ 1674 0228 023083E0 		add	r3, r3, r2
+ 1675 022c 0321A0E1 		mov	r2, r3, asl #2
+ 1676 0230 023083E0 		add	r3, r3, r2
+ 1677 0234 8331A0E1 		mov	r3, r3, asl #3
+ 1678 0238 0300A0E1 		mov	r0, r3
+ 1679 023c 0D205BE5 		ldrb	r2, [fp, #-13]	@ zero_extendqisi2
+ 1680 0240 0230A0E1 		mov	r3, r2
+ 1681 0244 0331A0E1 		mov	r3, r3, asl #2
+ 1682 0248 023083E0 		add	r3, r3, r2
+ 1683 024c 8331A0E1 		mov	r3, r3, asl #3
+ 1684 0250 033080E0 		add	r3, r0, r3
+ 1685 0254 033081E0 		add	r3, r1, r3
+ 1686 0258 0300A0E1 		mov	r0, r3
+ 1687 025c FEFFFFEB 		bl	enemy_launch
+  51:../swarm.c    **** 		for (x = 0; x < SWARM_XLEN; x++)
+ 1688              		.loc 1 51 0 discriminator 2
+ 1689 0260 0D305BE5 		ldrb	r3, [fp, #-13]
+ 1690 0264 013083E2 		add	r3, r3, #1
+ 1691 0268 0D304BE5 		strb	r3, [fp, #-13]
+ 1692              	.L10:
+  51:../swarm.c    **** 		for (x = 0; x < SWARM_XLEN; x++)
+ 1693              		.loc 1 51 0 is_stmt 0 discriminator 1
+ 1694 026c 0D305BE5 		ldrb	r3, [fp, #-13]	@ zero_extendqisi2
+ 1695 0270 040053E3 		cmp	r3, #4
+ 1696 0274 E5FFFF9A 		bls	.L11
+  50:../swarm.c    **** 	for (y = 0; y < SWARM_YLEN; y++)
+ 1697              		.loc 1 50 0 is_stmt 1
+ 1698 0278 0E305BE5 		ldrb	r3, [fp, #-14]
+ 1699 027c 013083E2 		add	r3, r3, #1
+ 1700 0280 0E304BE5 		strb	r3, [fp, #-14]
+ 1701              	.L9:
+  50:../swarm.c    **** 	for (y = 0; y < SWARM_YLEN; y++)
+ 1702              		.loc 1 50 0 is_stmt 0 discriminator 1
+ 1703 0284 0E305BE5 		ldrb	r3, [fp, #-14]	@ zero_extendqisi2
+ 1704 0288 040053E3 		cmp	r3, #4
+ 1705 028c DCFFFF9A 		bls	.L12
+  53:../swarm.c    **** }
+ 1706              		.loc 1 53 0 is_stmt 1
+ 1707 0290 0CD04BE2 		sub	sp, fp, #12
+ 1708 0294 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1709 0298 1EFF2FE1 		bx	lr
+ 1710              		.cfi_endproc
+ 1711              	.LFE1:
+ 1713              		.align	2
+ 1714              		.global	swarm_update
+ 1716              	swarm_update:
+ 1717              	.LFB2:
+  54:../swarm.c    **** 
+  55:../swarm.c    **** void swarm_update(Swarm *self, Player *player) {
+ 1718              		.loc 1 55 0
+ 1719              		.cfi_startproc
+ 1720              		@ Function supports interworking.
+ 1721              		@ args = 0, pretend = 0, frame = 16
+ 1722              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1723 029c 0DC0A0E1 		mov	ip, sp
+ 1724              	.LCFI4:
+ 1725              		.cfi_def_cfa_register 12
+ 1726 02a0 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1727 02a4 04B04CE2 		sub	fp, ip, #4
+ 1728              		.cfi_offset 14, -8
+ 1729              		.cfi_offset 13, -12
+ 1730              		.cfi_offset 11, -16
+ 1731              	.LCFI5:
+ 1732              		.cfi_def_cfa 11, 4
+ 1733 02a8 10D04DE2 		sub	sp, sp, #16
+ 1734 02ac 18000BE5 		str	r0, [fp, #-24]
+ 1735 02b0 1C100BE5 		str	r1, [fp, #-28]
+  56:../swarm.c    **** 	Enemy *currentEnemy;
+  57:../swarm.c    **** 	boolean cycleComplete;
+  58:../swarm.c    **** 
+  59:../swarm.c    **** 	if (self->enemiesRemaining != 0){
+ 1736              		.loc 1 59 0
+ 1737 02b4 18301BE5 		ldr	r3, [fp, #-24]
+ 1738 02b8 EC33D3E5 		ldrb	r3, [r3, #1004]	@ zero_extendqisi2
+ 1739 02bc 000053E3 		cmp	r3, #0
+ 1740 02c0 9100000A 		beq	.L13
+  60:../swarm.c    **** 
+  61:../swarm.c    **** 		if (self->downFront->row + ENEMY_HEIGHT >= player->row) {
+ 1741              		.loc 1 61 0
+ 1742 02c4 18301BE5 		ldr	r3, [fp, #-24]
+ 1743 02c8 FC3393E5 		ldr	r3, [r3, #1020]
+ 1744 02cc B630D3E1 		ldrh	r3, [r3, #6]
+ 1745 02d0 0338A0E1 		mov	r3, r3, asl #16
+ 1746 02d4 4338A0E1 		mov	r3, r3, asr #16
+ 1747 02d8 0A2083E2 		add	r2, r3, #10
+ 1748 02dc 1C301BE5 		ldr	r3, [fp, #-28]
+ 1749 02e0 B630D3E1 		ldrh	r3, [r3, #6]
+ 1750 02e4 0338A0E1 		mov	r3, r3, asl #16
+ 1751 02e8 4338A0E1 		mov	r3, r3, asr #16
+ 1752 02ec 030052E1 		cmp	r2, r3
+ 1753 02f0 020000BA 		blt	.L15
+  62:../swarm.c    **** 			player_invaded(player);
+ 1754              		.loc 1 62 0
+ 1755 02f4 1C001BE5 		ldr	r0, [fp, #-28]
+ 1756 02f8 FEFFFFEB 		bl	player_invaded
+ 1757 02fc 820000EA 		b	.L13
+ 1758              	.L15:
+  63:../swarm.c    **** 		}
+  64:../swarm.c    **** 		else {
+  65:../swarm.c    **** 			if (swarm_findNextAlive(self)){
+ 1759              		.loc 1 65 0
+ 1760 0300 18001BE5 		ldr	r0, [fp, #-24]
+ 1761 0304 380100EB 		bl	swarm_findNextAlive
+ 1762 0308 0030A0E1 		mov	r3, r0
+ 1763 030c 000053E3 		cmp	r3, #0
+ 1764 0310 7D00000A 		beq	.L13
+  66:../swarm.c    **** 
+  67:../swarm.c    **** 				currentEnemy = &self->enemies[self->toMoveY][self->toMoveX];
+ 1765              		.loc 1 67 0
+ 1766 0314 18301BE5 		ldr	r3, [fp, #-24]
+ 1767 0318 043083E2 		add	r3, r3, #4
+ 1768 031c 0310A0E1 		mov	r1, r3
+ 1769 0320 18301BE5 		ldr	r3, [fp, #-24]
+ 1770 0324 EE33D3E5 		ldrb	r3, [r3, #1006]	@ zero_extendqisi2
+ 1771 0328 0320A0E1 		mov	r2, r3
+ 1772 032c 0230A0E1 		mov	r3, r2
+ 1773 0330 0331A0E1 		mov	r3, r3, asl #2
+ 1774 0334 023083E0 		add	r3, r3, r2
+ 1775 0338 0321A0E1 		mov	r2, r3, asl #2
+ 1776 033c 023083E0 		add	r3, r3, r2
+ 1777 0340 8331A0E1 		mov	r3, r3, asl #3
+ 1778 0344 0300A0E1 		mov	r0, r3
+ 1779 0348 18301BE5 		ldr	r3, [fp, #-24]
+ 1780 034c ED33D3E5 		ldrb	r3, [r3, #1005]	@ zero_extendqisi2
+ 1781 0350 0320A0E1 		mov	r2, r3
+ 1782 0354 0230A0E1 		mov	r3, r2
+ 1783 0358 0331A0E1 		mov	r3, r3, asl #2
+ 1784 035c 023083E0 		add	r3, r3, r2
+ 1785 0360 8331A0E1 		mov	r3, r3, asl #3
+ 1786 0364 033080E0 		add	r3, r0, r3
+ 1787 0368 033081E0 		add	r3, r1, r3
+ 1788 036c 14300BE5 		str	r3, [fp, #-20]
+  68:../swarm.c    **** 
+  69:../swarm.c    **** 				// Movemos al enemigo según el estado del enjambre
+  70:../swarm.c    **** 				switch (self->state) {
+ 1789              		.loc 1 70 0
+ 1790 0370 18301BE5 		ldr	r3, [fp, #-24]
+ 1791 0374 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 1792 0378 030053E3 		cmp	r3, #3
+ 1793 037c 03F19F97 		ldrls	pc, [pc, r3, asl #2]
+ 1794 0380 0F0000EA 		b	.L16
+ 1795              	.L21:
+ 1796 0384 A0030000 		.word	.L17
+ 1797 0388 94030000 		.word	.L18
+ 1798 038c B8030000 		.word	.L19
+ 1799 0390 AC030000 		.word	.L20
+ 1800              	.L18:
+  71:../swarm.c    **** 				case swarmMovingRight:
+  72:../swarm.c    **** 					enemy_right(currentEnemy);
+ 1801              		.loc 1 72 0
+ 1802 0394 14001BE5 		ldr	r0, [fp, #-20]
+ 1803 0398 FEFFFFEB 		bl	enemy_right
+  73:../swarm.c    **** 					break;
+ 1804              		.loc 1 73 0
+ 1805 039c 080000EA 		b	.L16
+ 1806              	.L17:
+  74:../swarm.c    **** 				case swarmMovingLeft:
+  75:../swarm.c    **** 					enemy_left(currentEnemy);
+ 1807              		.loc 1 75 0
+ 1808 03a0 14001BE5 		ldr	r0, [fp, #-20]
+ 1809 03a4 FEFFFFEB 		bl	enemy_left
+  76:../swarm.c    **** 					break;
+ 1810              		.loc 1 76 0
+ 1811 03a8 050000EA 		b	.L16
+ 1812              	.L20:
+  77:../swarm.c    **** 				case swarmMovingDownThenRight:
+  78:../swarm.c    **** 					enemy_down(currentEnemy);
+ 1813              		.loc 1 78 0
+ 1814 03ac 14001BE5 		ldr	r0, [fp, #-20]
+ 1815 03b0 FEFFFFEB 		bl	enemy_down
+  79:../swarm.c    **** 					break;
+ 1816              		.loc 1 79 0
+ 1817 03b4 020000EA 		b	.L16
+ 1818              	.L19:
+  80:../swarm.c    **** 				case swarmMovingDownThenLeft:
+  81:../swarm.c    **** 					enemy_down(currentEnemy);
+ 1819              		.loc 1 81 0
+ 1820 03b8 14001BE5 		ldr	r0, [fp, #-20]
+ 1821 03bc FEFFFFEB 		bl	enemy_down
+  82:../swarm.c    **** 					break;
+ 1822              		.loc 1 82 0
+ 1823 03c0 0000A0E1 		mov	r0, r0	@ nop
+ 1824              	.L16:
+  83:../swarm.c    **** 				}
+  84:../swarm.c    **** 
+  85:../swarm.c    **** 				//swarm_moveSound(self);
+  86:../swarm.c    **** 
+  87:../swarm.c    **** 				self->toMoveX++;
+ 1825              		.loc 1 87 0
+ 1826 03c4 18301BE5 		ldr	r3, [fp, #-24]
+ 1827 03c8 ED33D3E5 		ldrb	r3, [r3, #1005]	@ zero_extendqisi2
+ 1828 03cc 013083E2 		add	r3, r3, #1
+ 1829 03d0 FF2003E2 		and	r2, r3, #255
+ 1830 03d4 18301BE5 		ldr	r3, [fp, #-24]
+ 1831 03d8 ED23C3E5 		strb	r2, [r3, #1005]
+  88:../swarm.c    **** 				if (self->toMoveX >= SWARM_XLEN) {
+ 1832              		.loc 1 88 0
+ 1833 03dc 18301BE5 		ldr	r3, [fp, #-24]
+ 1834 03e0 ED33D3E5 		ldrb	r3, [r3, #1005]	@ zero_extendqisi2
+ 1835 03e4 040053E3 		cmp	r3, #4
+ 1836 03e8 1500009A 		bls	.L22
+  89:../swarm.c    **** 					self->toMoveX = 0;
+ 1837              		.loc 1 89 0
+ 1838 03ec 18301BE5 		ldr	r3, [fp, #-24]
+ 1839 03f0 0020A0E3 		mov	r2, #0
+ 1840 03f4 ED23C3E5 		strb	r2, [r3, #1005]
+  90:../swarm.c    **** 					if (self->toMoveY == 0) {
+ 1841              		.loc 1 90 0
+ 1842 03f8 18301BE5 		ldr	r3, [fp, #-24]
+ 1843 03fc EE33D3E5 		ldrb	r3, [r3, #1006]	@ zero_extendqisi2
+ 1844 0400 000053E3 		cmp	r3, #0
+ 1845 0404 0500001A 		bne	.L23
+  91:../swarm.c    **** 						self->toMoveY = SWARM_YLEN - 1;
+ 1846              		.loc 1 91 0
+ 1847 0408 18301BE5 		ldr	r3, [fp, #-24]
+ 1848 040c 0420A0E3 		mov	r2, #4
+ 1849 0410 EE23C3E5 		strb	r2, [r3, #1006]
+  92:../swarm.c    **** 						cycleComplete = TRUE;
+ 1850              		.loc 1 92 0
+ 1851 0414 0130A0E3 		mov	r3, #1
+ 1852 0418 0D304BE5 		strb	r3, [fp, #-13]
+ 1853 041c 0A0000EA 		b	.L24
+ 1854              	.L23:
+  93:../swarm.c    **** 					} else {
+  94:../swarm.c    **** 						self->toMoveY--;
+ 1855              		.loc 1 94 0
+ 1856 0420 18301BE5 		ldr	r3, [fp, #-24]
+ 1857 0424 EE33D3E5 		ldrb	r3, [r3, #1006]	@ zero_extendqisi2
+ 1858 0428 013043E2 		sub	r3, r3, #1
+ 1859 042c FF2003E2 		and	r2, r3, #255
+ 1860 0430 18301BE5 		ldr	r3, [fp, #-24]
+ 1861 0434 EE23C3E5 		strb	r2, [r3, #1006]
+  95:../swarm.c    **** 						cycleComplete = FALSE;
+ 1862              		.loc 1 95 0
+ 1863 0438 0030A0E3 		mov	r3, #0
+ 1864 043c 0D304BE5 		strb	r3, [fp, #-13]
+ 1865 0440 010000EA 		b	.L24
+ 1866              	.L22:
+  96:../swarm.c    **** 					}
+  97:../swarm.c    **** 				} else {
+  98:../swarm.c    **** 					cycleComplete = FALSE;
+ 1867              		.loc 1 98 0
+ 1868 0444 0030A0E3 		mov	r3, #0
+ 1869 0448 0D304BE5 		strb	r3, [fp, #-13]
+ 1870              	.L24:
+  99:../swarm.c    **** 				}
+ 100:../swarm.c    **** 
+ 101:../swarm.c    **** 				if (cycleComplete) {
+ 1871              		.loc 1 101 0
+ 1872 044c 0D305BE5 		ldrb	r3, [fp, #-13]	@ zero_extendqisi2
+ 1873 0450 000053E3 		cmp	r3, #0
+ 1874 0454 2C00000A 		beq	.L13
+ 102:../swarm.c    **** 					switch (self->state) {
+ 1875              		.loc 1 102 0
+ 1876 0458 18301BE5 		ldr	r3, [fp, #-24]
+ 1877 045c 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 1878 0460 030053E3 		cmp	r3, #3
+ 1879 0464 03F19F97 		ldrls	pc, [pc, r3, asl #2]
+ 1880 0468 270000EA 		b	.L13
+ 1881              	.L29:
+ 1882 046c AC040000 		.word	.L25
+ 1883 0470 7C040000 		.word	.L26
+ 1884 0474 EC040000 		.word	.L27
+ 1885 0478 DC040000 		.word	.L28
+ 1886              	.L26:
+ 103:../swarm.c    **** 					case swarmMovingRight:
+ 104:../swarm.c    **** 						if ((self->rightFront->col + ENEMY_WIDTH + ENEMY_ADVANCE_COL)>= GAME_WIDTH ) {
+ 1887              		.loc 1 104 0
+ 1888 047c 18301BE5 		ldr	r3, [fp, #-24]
+ 1889 0480 F83393E5 		ldr	r3, [r3, #1016]
+ 1890 0484 B430D3E1 		ldrh	r3, [r3, #4]
+ 1891 0488 0338A0E1 		mov	r3, r3, asl #16
+ 1892 048c 4338A0E1 		mov	r3, r3, asr #16
+ 1893 0490 123083E2 		add	r3, r3, #18
+ 1894 0494 9F0053E3 		cmp	r3, #159
+ 1895 0498 180000DA 		ble	.L32
+ 105:../swarm.c    **** 							self->state = swarmMovingDownThenLeft;
+ 1896              		.loc 1 105 0
+ 1897 049c 18301BE5 		ldr	r3, [fp, #-24]
+ 1898 04a0 0220A0E3 		mov	r2, #2
+ 1899 04a4 0020C3E5 		strb	r2, [r3, #0]
+ 106:../swarm.c    **** 						}
+ 107:../swarm.c    **** 						break;
+ 1900              		.loc 1 107 0
+ 1901 04a8 170000EA 		b	.L13
+ 1902              	.L25:
+ 108:../swarm.c    **** 					case swarmMovingLeft:
+ 109:../swarm.c    **** 						if ((self->leftFront->col - ENEMY_ADVANCE_COL)<= 0 ){
+ 1903              		.loc 1 109 0
+ 1904 04ac 18301BE5 		ldr	r3, [fp, #-24]
+ 1905 04b0 F43393E5 		ldr	r3, [r3, #1012]
+ 1906 04b4 B430D3E1 		ldrh	r3, [r3, #4]
+ 1907 04b8 0338A0E1 		mov	r3, r3, asl #16
+ 1908 04bc 4338A0E1 		mov	r3, r3, asr #16
+ 1909 04c0 023043E2 		sub	r3, r3, #2
+ 1910 04c4 000053E3 		cmp	r3, #0
+ 1911 04c8 0E0000CA 		bgt	.L33
+ 110:../swarm.c    **** 							self->state = swarmMovingDownThenRight;
+ 1912              		.loc 1 110 0
+ 1913 04cc 18301BE5 		ldr	r3, [fp, #-24]
+ 1914 04d0 0320A0E3 		mov	r2, #3
+ 1915 04d4 0020C3E5 		strb	r2, [r3, #0]
+ 111:../swarm.c    **** 						}
+ 112:../swarm.c    **** 						break;
+ 1916              		.loc 1 112 0
+ 1917 04d8 0B0000EA 		b	.L13
+ 1918              	.L28:
+ 113:../swarm.c    **** 					case swarmMovingDownThenRight:
+ 114:../swarm.c    **** 						self->state = swarmMovingRight;
+ 1919              		.loc 1 114 0
+ 1920 04dc 18301BE5 		ldr	r3, [fp, #-24]
+ 1921 04e0 0120A0E3 		mov	r2, #1
+ 1922 04e4 0020C3E5 		strb	r2, [r3, #0]
+ 115:../swarm.c    **** 						break;
+ 1923              		.loc 1 115 0
+ 1924 04e8 070000EA 		b	.L13
+ 1925              	.L27:
+ 116:../swarm.c    **** 					case swarmMovingDownThenLeft:
+ 117:../swarm.c    **** 						self->state = swarmMovingLeft;
+ 1926              		.loc 1 117 0
+ 1927 04ec 18301BE5 		ldr	r3, [fp, #-24]
+ 1928 04f0 0020A0E3 		mov	r2, #0
+ 1929 04f4 0020C3E5 		strb	r2, [r3, #0]
+ 118:../swarm.c    **** 						break;
+ 1930              		.loc 1 118 0
+ 1931 04f8 0000A0E1 		mov	r0, r0	@ nop
+ 1932 04fc 020000EA 		b	.L13
+ 1933              	.L32:
+ 107:../swarm.c    **** 						break;
+ 1934              		.loc 1 107 0
+ 1935 0500 0000A0E1 		mov	r0, r0	@ nop
+ 1936 0504 000000EA 		b	.L13
+ 1937              	.L33:
+ 112:../swarm.c    **** 						break;
+ 1938              		.loc 1 112 0
+ 1939 0508 0000A0E1 		mov	r0, r0	@ nop
+ 1940              	.L13:
+ 119:../swarm.c    **** 					}
+ 120:../swarm.c    **** 				}
+ 121:../swarm.c    **** 			}
+ 122:../swarm.c    **** 		}
+ 123:../swarm.c    **** 	}
+ 124:../swarm.c    **** }
+ 1941              		.loc 1 124 0
+ 1942 050c 0CD04BE2 		sub	sp, fp, #12
+ 1943 0510 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1944 0514 1EFF2FE1 		bx	lr
+ 1945              		.cfi_endproc
+ 1946              	.LFE2:
+ 1948              		.align	2
+ 1949              		.global	swarm_getShooter
+ 1951              	swarm_getShooter:
+ 1952              	.LFB3:
+ 125:../swarm.c    **** Enemy *swarm_getShooter(Swarm *self) {
+ 1953              		.loc 1 125 0
+ 1954              		.cfi_startproc
+ 1955              		@ Function supports interworking.
+ 1956              		@ args = 0, pretend = 0, frame = 16
+ 1957              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1958 0518 0DC0A0E1 		mov	ip, sp
+ 1959              	.LCFI6:
+ 1960              		.cfi_def_cfa_register 12
+ 1961 051c 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1962 0520 04B04CE2 		sub	fp, ip, #4
+ 1963              		.cfi_offset 14, -8
+ 1964              		.cfi_offset 13, -12
+ 1965              		.cfi_offset 11, -16
+ 1966              	.LCFI7:
+ 1967              		.cfi_def_cfa 11, 4
+ 1968 0524 10D04DE2 		sub	sp, sp, #16
+ 1969 0528 18000BE5 		str	r0, [fp, #-24]
+ 126:../swarm.c    **** 	uint8 col, row;
+ 127:../swarm.c    **** 	if (self->enemiesRemaining == 0)
+ 1970              		.loc 1 127 0
+ 1971 052c 18301BE5 		ldr	r3, [fp, #-24]
+ 1972 0530 EC33D3E5 		ldrb	r3, [r3, #1004]	@ zero_extendqisi2
+ 1973 0534 000053E3 		cmp	r3, #0
+ 1974 0538 0100001A 		bne	.L35
+ 128:../swarm.c    **** 		return NULL ;
+ 1975              		.loc 1 128 0
+ 1976 053c 0030A0E3 		mov	r3, #0
+ 1977 0540 7E0000EA 		b	.L36
+ 1978              	.L35:
+ 129:../swarm.c    **** 
+ 130:../swarm.c    **** 	uint8 attempts = 0;
+ 1979              		.loc 1 130 0
+ 1980 0544 0030A0E3 		mov	r3, #0
+ 1981 0548 0F304BE5 		strb	r3, [fp, #-15]
+ 1982              	.L40:
+ 131:../swarm.c    **** 	do {
+ 132:../swarm.c    **** 		col = random_get() % SWARM_XLEN;
+ 1983              		.loc 1 132 0
+ 1984 054c FEFFFFEB 		bl	random_get
+ 1985 0550 0010A0E1 		mov	r1, r0
+ 1986 0554 F4319FE5 		ldr	r3, .L46
+ 1987 0558 912383E0 		umull	r2, r3, r1, r3
+ 1988 055c 2321A0E1 		mov	r2, r3, lsr #2
+ 1989 0560 0230A0E1 		mov	r3, r2
+ 1990 0564 0331A0E1 		mov	r3, r3, asl #2
+ 1991 0568 023083E0 		add	r3, r3, r2
+ 1992 056c 012063E0 		rsb	r2, r3, r1
+ 1993 0570 0230A0E1 		mov	r3, r2
+ 1994 0574 0D304BE5 		strb	r3, [fp, #-13]
+ 133:../swarm.c    **** 		for (row = SWARM_YLEN; row > 0; row--)
+ 1995              		.loc 1 133 0
+ 1996 0578 0530A0E3 		mov	r3, #5
+ 1997 057c 0E304BE5 		strb	r3, [fp, #-14]
+ 1998 0580 2A0000EA 		b	.L37
+ 1999              	.L39:
+ 134:../swarm.c    **** 			if (self->enemies[row - 1][col].state == enemyAlive)
+ 2000              		.loc 1 134 0
+ 2001 0584 0E305BE5 		ldrb	r3, [fp, #-14]	@ zero_extendqisi2
+ 2002 0588 011043E2 		sub	r1, r3, #1
+ 2003 058c 0D305BE5 		ldrb	r3, [fp, #-13]	@ zero_extendqisi2
+ 2004 0590 18001BE5 		ldr	r0, [fp, #-24]
+ 2005 0594 0320A0E1 		mov	r2, r3
+ 2006 0598 0221A0E1 		mov	r2, r2, asl #2
+ 2007 059c 032082E0 		add	r2, r2, r3
+ 2008 05a0 8231A0E1 		mov	r3, r2, asl #3
+ 2009 05a4 0320A0E1 		mov	r2, r3
+ 2010 05a8 0130A0E1 		mov	r3, r1
+ 2011 05ac 0331A0E1 		mov	r3, r3, asl #2
+ 2012 05b0 013083E0 		add	r3, r3, r1
+ 2013 05b4 0311A0E1 		mov	r1, r3, asl #2
+ 2014 05b8 013083E0 		add	r3, r3, r1
+ 2015 05bc 8331A0E1 		mov	r3, r3, asl #3
+ 2016 05c0 033082E0 		add	r3, r2, r3
+ 2017 05c4 033080E0 		add	r3, r0, r3
+ 2018 05c8 0430D3E5 		ldrb	r3, [r3, #4]	@ zero_extendqisi2
+ 2019 05cc 000053E3 		cmp	r3, #0
+ 2020 05d0 1300001A 		bne	.L38
+ 135:../swarm.c    **** 				return &self->enemies[row - 1][col];
+ 2021              		.loc 1 135 0
+ 2022 05d4 18301BE5 		ldr	r3, [fp, #-24]
+ 2023 05d8 043083E2 		add	r3, r3, #4
+ 2024 05dc 0310A0E1 		mov	r1, r3
+ 2025 05e0 0E305BE5 		ldrb	r3, [fp, #-14]	@ zero_extendqisi2
+ 2026 05e4 012043E2 		sub	r2, r3, #1
+ 2027 05e8 0230A0E1 		mov	r3, r2
+ 2028 05ec 0331A0E1 		mov	r3, r3, asl #2
+ 2029 05f0 023083E0 		add	r3, r3, r2
+ 2030 05f4 0321A0E1 		mov	r2, r3, asl #2
+ 2031 05f8 023083E0 		add	r3, r3, r2
+ 2032 05fc 8331A0E1 		mov	r3, r3, asl #3
+ 2033 0600 0300A0E1 		mov	r0, r3
+ 2034 0604 0D205BE5 		ldrb	r2, [fp, #-13]	@ zero_extendqisi2
+ 2035 0608 0230A0E1 		mov	r3, r2
+ 2036 060c 0331A0E1 		mov	r3, r3, asl #2
+ 2037 0610 023083E0 		add	r3, r3, r2
+ 2038 0614 8331A0E1 		mov	r3, r3, asl #3
+ 2039 0618 033080E0 		add	r3, r0, r3
+ 2040 061c 033081E0 		add	r3, r1, r3
+ 2041 0620 460000EA 		b	.L36
+ 2042              	.L38:
+ 133:../swarm.c    **** 		for (row = SWARM_YLEN; row > 0; row--)
+ 2043              		.loc 1 133 0
+ 2044 0624 0E305BE5 		ldrb	r3, [fp, #-14]
+ 2045 0628 013043E2 		sub	r3, r3, #1
+ 2046 062c 0E304BE5 		strb	r3, [fp, #-14]
+ 2047              	.L37:
+ 133:../swarm.c    **** 		for (row = SWARM_YLEN; row > 0; row--)
+ 2048              		.loc 1 133 0 is_stmt 0 discriminator 1
+ 2049 0630 0E305BE5 		ldrb	r3, [fp, #-14]	@ zero_extendqisi2
+ 2050 0634 000053E3 		cmp	r3, #0
+ 2051 0638 D1FFFF1A 		bne	.L39
+ 136:../swarm.c    **** 		attempts++;
+ 2052              		.loc 1 136 0 is_stmt 1
+ 2053 063c 0F305BE5 		ldrb	r3, [fp, #-15]
+ 2054 0640 013083E2 		add	r3, r3, #1
+ 2055 0644 0F304BE5 		strb	r3, [fp, #-15]
+ 137:../swarm.c    **** 	} while (attempts < 20);
+ 2056              		.loc 1 137 0
+ 2057 0648 0F305BE5 		ldrb	r3, [fp, #-15]	@ zero_extendqisi2
+ 2058 064c 130053E3 		cmp	r3, #19
+ 2059 0650 BDFFFF9A 		bls	.L40
+ 138:../swarm.c    **** 
+ 139:../swarm.c    **** 	for (col = 0; col < SWARM_XLEN; col++)
+ 2060              		.loc 1 139 0
+ 2061 0654 0030A0E3 		mov	r3, #0
+ 2062 0658 0D304BE5 		strb	r3, [fp, #-13]
+ 2063 065c 330000EA 		b	.L41
+ 2064              	.L45:
+ 140:../swarm.c    **** 		for (row = SWARM_YLEN; row > 0; row--)
+ 2065              		.loc 1 140 0
+ 2066 0660 0530A0E3 		mov	r3, #5
+ 2067 0664 0E304BE5 		strb	r3, [fp, #-14]
+ 2068 0668 2A0000EA 		b	.L42
+ 2069              	.L44:
+ 141:../swarm.c    **** 			if (self->enemies[row - 1][col].state == enemyAlive)
+ 2070              		.loc 1 141 0
+ 2071 066c 0E305BE5 		ldrb	r3, [fp, #-14]	@ zero_extendqisi2
+ 2072 0670 011043E2 		sub	r1, r3, #1
+ 2073 0674 0D305BE5 		ldrb	r3, [fp, #-13]	@ zero_extendqisi2
+ 2074 0678 18001BE5 		ldr	r0, [fp, #-24]
+ 2075 067c 0320A0E1 		mov	r2, r3
+ 2076 0680 0221A0E1 		mov	r2, r2, asl #2
+ 2077 0684 032082E0 		add	r2, r2, r3
+ 2078 0688 8231A0E1 		mov	r3, r2, asl #3
+ 2079 068c 0320A0E1 		mov	r2, r3
+ 2080 0690 0130A0E1 		mov	r3, r1
+ 2081 0694 0331A0E1 		mov	r3, r3, asl #2
+ 2082 0698 013083E0 		add	r3, r3, r1
+ 2083 069c 0311A0E1 		mov	r1, r3, asl #2
+ 2084 06a0 013083E0 		add	r3, r3, r1
+ 2085 06a4 8331A0E1 		mov	r3, r3, asl #3
+ 2086 06a8 033082E0 		add	r3, r2, r3
+ 2087 06ac 033080E0 		add	r3, r0, r3
+ 2088 06b0 0430D3E5 		ldrb	r3, [r3, #4]	@ zero_extendqisi2
+ 2089 06b4 000053E3 		cmp	r3, #0
+ 2090 06b8 1300001A 		bne	.L43
+ 142:../swarm.c    **** 				return &self->enemies[row - 1][col];
+ 2091              		.loc 1 142 0
+ 2092 06bc 18301BE5 		ldr	r3, [fp, #-24]
+ 2093 06c0 043083E2 		add	r3, r3, #4
+ 2094 06c4 0310A0E1 		mov	r1, r3
+ 2095 06c8 0E305BE5 		ldrb	r3, [fp, #-14]	@ zero_extendqisi2
+ 2096 06cc 012043E2 		sub	r2, r3, #1
+ 2097 06d0 0230A0E1 		mov	r3, r2
+ 2098 06d4 0331A0E1 		mov	r3, r3, asl #2
+ 2099 06d8 023083E0 		add	r3, r3, r2
+ 2100 06dc 0321A0E1 		mov	r2, r3, asl #2
+ 2101 06e0 023083E0 		add	r3, r3, r2
+ 2102 06e4 8331A0E1 		mov	r3, r3, asl #3
+ 2103 06e8 0300A0E1 		mov	r0, r3
+ 2104 06ec 0D205BE5 		ldrb	r2, [fp, #-13]	@ zero_extendqisi2
+ 2105 06f0 0230A0E1 		mov	r3, r2
+ 2106 06f4 0331A0E1 		mov	r3, r3, asl #2
+ 2107 06f8 023083E0 		add	r3, r3, r2
+ 2108 06fc 8331A0E1 		mov	r3, r3, asl #3
+ 2109 0700 033080E0 		add	r3, r0, r3
+ 2110 0704 033081E0 		add	r3, r1, r3
+ 2111 0708 0C0000EA 		b	.L36
+ 2112              	.L43:
+ 140:../swarm.c    **** 		for (row = SWARM_YLEN; row > 0; row--)
+ 2113              		.loc 1 140 0
+ 2114 070c 0E305BE5 		ldrb	r3, [fp, #-14]
+ 2115 0710 013043E2 		sub	r3, r3, #1
+ 2116 0714 0E304BE5 		strb	r3, [fp, #-14]
+ 2117              	.L42:
+ 140:../swarm.c    **** 		for (row = SWARM_YLEN; row > 0; row--)
+ 2118              		.loc 1 140 0 is_stmt 0 discriminator 1
+ 2119 0718 0E305BE5 		ldrb	r3, [fp, #-14]	@ zero_extendqisi2
+ 2120 071c 000053E3 		cmp	r3, #0
+ 2121 0720 D1FFFF1A 		bne	.L44
+ 139:../swarm.c    **** 	for (col = 0; col < SWARM_XLEN; col++)
+ 2122              		.loc 1 139 0 is_stmt 1
+ 2123 0724 0D305BE5 		ldrb	r3, [fp, #-13]
+ 2124 0728 013083E2 		add	r3, r3, #1
+ 2125 072c 0D304BE5 		strb	r3, [fp, #-13]
+ 2126              	.L41:
+ 139:../swarm.c    **** 	for (col = 0; col < SWARM_XLEN; col++)
+ 2127              		.loc 1 139 0 is_stmt 0 discriminator 1
+ 2128 0730 0D305BE5 		ldrb	r3, [fp, #-13]	@ zero_extendqisi2
+ 2129 0734 040053E3 		cmp	r3, #4
+ 2130 0738 C8FFFF9A 		bls	.L45
+ 143:../swarm.c    **** 
+ 144:../swarm.c    **** 	return NULL ;
+ 2131              		.loc 1 144 0 is_stmt 1
+ 2132 073c 0030A0E3 		mov	r3, #0
+ 2133              	.L36:
+ 145:../swarm.c    **** }
+ 2134              		.loc 1 145 0
+ 2135 0740 0300A0E1 		mov	r0, r3
+ 2136 0744 0CD04BE2 		sub	sp, fp, #12
+ 2137 0748 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 2138 074c 1EFF2FE1 		bx	lr
+ 2139              	.L47:
+ 2140              		.align	2
+ 2141              	.L46:
+ 2142 0750 CDCCCCCC 		.word	-858993459
+ 2143              		.cfi_endproc
+ 2144              	.LFE3:
+ 2146              		.align	2
+ 2147              		.global	swarm_hit
+ 2149              	swarm_hit:
+ 2150              	.LFB4:
+ 146:../swarm.c    **** 
+ 147:../swarm.c    **** void swarm_hit(Swarm *self, Enemy *enemy) {
+ 2151              		.loc 1 147 0
+ 2152              		.cfi_startproc
+ 2153              		@ Function supports interworking.
+ 2154              		@ args = 0, pretend = 0, frame = 8
+ 2155              		@ frame_needed = 1, uses_anonymous_args = 0
+ 2156 0754 0DC0A0E1 		mov	ip, sp
+ 2157              	.LCFI8:
+ 2158              		.cfi_def_cfa_register 12
+ 2159 0758 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 2160 075c 04B04CE2 		sub	fp, ip, #4
+ 2161              		.cfi_offset 14, -8
+ 2162              		.cfi_offset 13, -12
+ 2163              		.cfi_offset 11, -16
+ 2164              	.LCFI9:
+ 2165              		.cfi_def_cfa 11, 4
+ 2166 0760 08D04DE2 		sub	sp, sp, #8
+ 2167 0764 10000BE5 		str	r0, [fp, #-16]
+ 2168 0768 14100BE5 		str	r1, [fp, #-20]
+ 148:../swarm.c    **** 	enemy_hit(enemy);
+ 2169              		.loc 1 148 0
+ 2170 076c 14001BE5 		ldr	r0, [fp, #-20]
+ 2171 0770 FEFFFFEB 		bl	enemy_hit
+ 149:../swarm.c    **** 	self->enemiesRemaining--;
+ 2172              		.loc 1 149 0
+ 2173 0774 10301BE5 		ldr	r3, [fp, #-16]
+ 2174 0778 EC33D3E5 		ldrb	r3, [r3, #1004]	@ zero_extendqisi2
+ 2175 077c 013043E2 		sub	r3, r3, #1
+ 2176 0780 FF2003E2 		and	r2, r3, #255
+ 2177 0784 10301BE5 		ldr	r3, [fp, #-16]
+ 2178 0788 EC23C3E5 		strb	r2, [r3, #1004]
+ 150:../swarm.c    **** 
+ 151:../swarm.c    **** 	if (enemy == self->leftFront)
+ 2179              		.loc 1 151 0
+ 2180 078c 10301BE5 		ldr	r3, [fp, #-16]
+ 2181 0790 F42393E5 		ldr	r2, [r3, #1012]
+ 2182 0794 14301BE5 		ldr	r3, [fp, #-20]
+ 2183 0798 030052E1 		cmp	r2, r3
+ 2184 079c 0100001A 		bne	.L49
+ 152:../swarm.c    **** 		swarm_updateLeftFront(self);
+ 2185              		.loc 1 152 0
+ 2186 07a0 10001BE5 		ldr	r0, [fp, #-16]
+ 2187 07a4 790000EB 		bl	swarm_updateLeftFront
+ 2188              	.L49:
+ 153:../swarm.c    **** 	if (enemy == self->rightFront)
+ 2189              		.loc 1 153 0
+ 2190 07a8 10301BE5 		ldr	r3, [fp, #-16]
+ 2191 07ac F82393E5 		ldr	r2, [r3, #1016]
+ 2192 07b0 14301BE5 		ldr	r3, [fp, #-20]
+ 2193 07b4 030052E1 		cmp	r2, r3
+ 2194 07b8 0100001A 		bne	.L50
+ 154:../swarm.c    **** 		swarm_updateRightFront(self);
+ 2195              		.loc 1 154 0
+ 2196 07bc 10001BE5 		ldr	r0, [fp, #-16]
+ 2197 07c0 B40000EB 		bl	swarm_updateRightFront
+ 2198              	.L50:
+ 155:../swarm.c    **** 	if (enemy == self->downFront)
+ 2199              		.loc 1 155 0
+ 2200 07c4 10301BE5 		ldr	r3, [fp, #-16]
+ 2201 07c8 FC2393E5 		ldr	r2, [r3, #1020]
+ 2202 07cc 14301BE5 		ldr	r3, [fp, #-20]
+ 2203 07d0 030052E1 		cmp	r2, r3
+ 2204 07d4 0100001A 		bne	.L48
+ 156:../swarm.c    **** 		swarm_updateDownFront(self);
+ 2205              		.loc 1 156 0
+ 2206 07d8 10001BE5 		ldr	r0, [fp, #-16]
+ 2207 07dc EF0000EB 		bl	swarm_updateDownFront
+ 2208              	.L48:
+ 157:../swarm.c    **** }
+ 2209              		.loc 1 157 0
+ 2210 07e0 0CD04BE2 		sub	sp, fp, #12
+ 2211 07e4 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 2212 07e8 1EFF2FE1 		bx	lr
+ 2213              		.cfi_endproc
+ 2214              	.LFE4:
+ 2216              		.align	2
+ 2218              	swarm_findNextAlive:
+ 2219              	.LFB5:
+ 158:../swarm.c    **** 
+ 159:../swarm.c    **** static boolean swarm_findNextAlive(Swarm *self) {
+ 2220              		.loc 1 159 0
+ 2221              		.cfi_startproc
+ 2222              		@ Function supports interworking.
+ 2223              		@ args = 0, pretend = 0, frame = 16
+ 2224              		@ frame_needed = 1, uses_anonymous_args = 0
+ 2225 07ec 0DC0A0E1 		mov	ip, sp
+ 2226              	.LCFI10:
+ 2227              		.cfi_def_cfa_register 12
+ 2228 07f0 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 2229 07f4 04B04CE2 		sub	fp, ip, #4
+ 2230              		.cfi_offset 14, -8
+ 2231              		.cfi_offset 13, -12
+ 2232              		.cfi_offset 11, -16
+ 2233              	.LCFI11:
+ 2234              		.cfi_def_cfa 11, 4
+ 2235 07f8 10D04DE2 		sub	sp, sp, #16
+ 2236 07fc 18000BE5 		str	r0, [fp, #-24]
+ 160:../swarm.c    **** 	uint8 startX = self->toMoveX;
+ 2237              		.loc 1 160 0
+ 2238 0800 18301BE5 		ldr	r3, [fp, #-24]
+ 2239 0804 ED33D3E5 		ldrb	r3, [r3, #1005]
+ 2240 0808 0D304BE5 		strb	r3, [fp, #-13]
+ 161:../swarm.c    **** 	uint8 startY = self->toMoveY;
+ 2241              		.loc 1 161 0
+ 2242 080c 18301BE5 		ldr	r3, [fp, #-24]
+ 2243 0810 EE33D3E5 		ldrb	r3, [r3, #1006]
+ 2244 0814 0E304BE5 		strb	r3, [fp, #-14]
+ 2245              	.L57:
+ 162:../swarm.c    **** 
+ 163:../swarm.c    **** 	do {
+ 164:../swarm.c    **** 		if (self->enemies[self->toMoveY][self->toMoveX].state == enemyAlive)
+ 2246              		.loc 1 164 0
+ 2247 0818 18301BE5 		ldr	r3, [fp, #-24]
+ 2248 081c EE33D3E5 		ldrb	r3, [r3, #1006]	@ zero_extendqisi2
+ 2249 0820 0310A0E1 		mov	r1, r3
+ 2250 0824 18301BE5 		ldr	r3, [fp, #-24]
+ 2251 0828 ED33D3E5 		ldrb	r3, [r3, #1005]	@ zero_extendqisi2
+ 2252 082c 18001BE5 		ldr	r0, [fp, #-24]
+ 2253 0830 0320A0E1 		mov	r2, r3
+ 2254 0834 0221A0E1 		mov	r2, r2, asl #2
+ 2255 0838 032082E0 		add	r2, r2, r3
+ 2256 083c 8231A0E1 		mov	r3, r2, asl #3
+ 2257 0840 0320A0E1 		mov	r2, r3
+ 2258 0844 0130A0E1 		mov	r3, r1
+ 2259 0848 0331A0E1 		mov	r3, r3, asl #2
+ 2260 084c 013083E0 		add	r3, r3, r1
+ 2261 0850 0311A0E1 		mov	r1, r3, asl #2
+ 2262 0854 013083E0 		add	r3, r3, r1
+ 2263 0858 8331A0E1 		mov	r3, r3, asl #3
+ 2264 085c 033082E0 		add	r3, r2, r3
+ 2265 0860 033080E0 		add	r3, r0, r3
+ 2266 0864 0430D3E5 		ldrb	r3, [r3, #4]	@ zero_extendqisi2
+ 2267 0868 000053E3 		cmp	r3, #0
+ 2268 086c 0100001A 		bne	.L53
+ 165:../swarm.c    **** 			return TRUE;
+ 2269              		.loc 1 165 0
+ 2270 0870 0130A0E3 		mov	r3, #1
+ 2271 0874 250000EA 		b	.L54
+ 2272              	.L53:
+ 166:../swarm.c    **** 
+ 167:../swarm.c    **** 		self->toMoveX++;
+ 2273              		.loc 1 167 0
+ 2274 0878 18301BE5 		ldr	r3, [fp, #-24]
+ 2275 087c ED33D3E5 		ldrb	r3, [r3, #1005]	@ zero_extendqisi2
+ 2276 0880 013083E2 		add	r3, r3, #1
+ 2277 0884 FF2003E2 		and	r2, r3, #255
+ 2278 0888 18301BE5 		ldr	r3, [fp, #-24]
+ 2279 088c ED23C3E5 		strb	r2, [r3, #1005]
+ 168:../swarm.c    **** 		if (self->toMoveX >= SWARM_XLEN) {
+ 2280              		.loc 1 168 0
+ 2281 0890 18301BE5 		ldr	r3, [fp, #-24]
+ 2282 0894 ED33D3E5 		ldrb	r3, [r3, #1005]	@ zero_extendqisi2
+ 2283 0898 040053E3 		cmp	r3, #4
+ 2284 089c 1000009A 		bls	.L55
+ 169:../swarm.c    **** 			self->toMoveX = 0;
+ 2285              		.loc 1 169 0
+ 2286 08a0 18301BE5 		ldr	r3, [fp, #-24]
+ 2287 08a4 0020A0E3 		mov	r2, #0
+ 2288 08a8 ED23C3E5 		strb	r2, [r3, #1005]
+ 170:../swarm.c    **** 			if (self->toMoveY == 0)
+ 2289              		.loc 1 170 0
+ 2290 08ac 18301BE5 		ldr	r3, [fp, #-24]
+ 2291 08b0 EE33D3E5 		ldrb	r3, [r3, #1006]	@ zero_extendqisi2
+ 2292 08b4 000053E3 		cmp	r3, #0
+ 2293 08b8 0300001A 		bne	.L56
+ 171:../swarm.c    **** 				self->toMoveY = SWARM_YLEN - 1;
+ 2294              		.loc 1 171 0
+ 2295 08bc 18301BE5 		ldr	r3, [fp, #-24]
+ 2296 08c0 0420A0E3 		mov	r2, #4
+ 2297 08c4 EE23C3E5 		strb	r2, [r3, #1006]
+ 2298 08c8 050000EA 		b	.L55
+ 2299              	.L56:
+ 172:../swarm.c    **** 			else
+ 173:../swarm.c    **** 				self->toMoveY--;
+ 2300              		.loc 1 173 0
+ 2301 08cc 18301BE5 		ldr	r3, [fp, #-24]
+ 2302 08d0 EE33D3E5 		ldrb	r3, [r3, #1006]	@ zero_extendqisi2
+ 2303 08d4 013043E2 		sub	r3, r3, #1
+ 2304 08d8 FF2003E2 		and	r2, r3, #255
+ 2305 08dc 18301BE5 		ldr	r3, [fp, #-24]
+ 2306 08e0 EE23C3E5 		strb	r2, [r3, #1006]
+ 2307              	.L55:
+ 174:../swarm.c    **** 		}
+ 175:../swarm.c    **** 
+ 176:../swarm.c    **** 	} while (self->toMoveX != startX || self->toMoveY != startY);
+ 2308              		.loc 1 176 0
+ 2309 08e4 18301BE5 		ldr	r3, [fp, #-24]
+ 2310 08e8 ED33D3E5 		ldrb	r3, [r3, #1005]	@ zero_extendqisi2
+ 2311 08ec 0D205BE5 		ldrb	r2, [fp, #-13]	@ zero_extendqisi2
+ 2312 08f0 030052E1 		cmp	r2, r3
+ 2313 08f4 C7FFFF1A 		bne	.L57
+ 2314              		.loc 1 176 0 is_stmt 0 discriminator 1
+ 2315 08f8 18301BE5 		ldr	r3, [fp, #-24]
+ 2316 08fc EE33D3E5 		ldrb	r3, [r3, #1006]	@ zero_extendqisi2
+ 2317 0900 0E205BE5 		ldrb	r2, [fp, #-14]	@ zero_extendqisi2
+ 2318 0904 030052E1 		cmp	r2, r3
+ 2319 0908 C2FFFF1A 		bne	.L57
+ 177:../swarm.c    **** 
+ 178:../swarm.c    **** 	return FALSE;
+ 2320              		.loc 1 178 0 is_stmt 1
+ 2321 090c 0030A0E3 		mov	r3, #0
+ 2322              	.L54:
+ 179:../swarm.c    **** }
+ 2323              		.loc 1 179 0
+ 2324 0910 0300A0E1 		mov	r0, r3
+ 2325 0914 0CD04BE2 		sub	sp, fp, #12
+ 2326 0918 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 2327 091c 1EFF2FE1 		bx	lr
+ 2328              		.cfi_endproc
+ 2329              	.LFE5:
+ 2331              		.align	2
+ 2333              	swarm_moveSound:
+ 2334              	.LFB6:
+ 180:../swarm.c    **** 
+ 181:../swarm.c    **** static void swarm_moveSound(Swarm *self) {
+ 2335              		.loc 1 181 0
+ 2336              		.cfi_startproc
+ 2337              		@ Function supports interworking.
+ 2338              		@ args = 0, pretend = 0, frame = 8
+ 2339              		@ frame_needed = 1, uses_anonymous_args = 0
+ 2340 0920 0DC0A0E1 		mov	ip, sp
+ 2341              	.LCFI12:
+ 2342              		.cfi_def_cfa_register 12
+ 2343 0924 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 2344 0928 04B04CE2 		sub	fp, ip, #4
+ 2345              		.cfi_offset 14, -8
+ 2346              		.cfi_offset 13, -12
+ 2347              		.cfi_offset 11, -16
+ 2348              	.LCFI13:
+ 2349              		.cfi_def_cfa 11, 4
+ 2350 092c 08D04DE2 		sub	sp, sp, #8
+ 2351 0930 10000BE5 		str	r0, [fp, #-16]
+ 182:../swarm.c    **** 	static uint8 soundIndex = 0;
+ 183:../swarm.c    **** 	sound_play(&self->stepSound[soundIndex]);
+ 2352              		.loc 1 183 0
+ 2353 0934 10301BE5 		ldr	r3, [fp, #-16]
+ 2354 0938 012B83E2 		add	r2, r3, #1024
+ 2355 093c 48309FE5 		ldr	r3, .L59
+ 2356 0940 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 2357 0944 0331A0E1 		mov	r3, r3, asl #2
+ 2358 0948 033082E0 		add	r3, r2, r3
+ 2359 094c 0300A0E1 		mov	r0, r3
+ 2360 0950 FEFFFFEB 		bl	sound_play
+ 184:../swarm.c    **** 	soundIndex = (soundIndex + 1) % 4;
+ 2361              		.loc 1 184 0
+ 2362 0954 30309FE5 		ldr	r3, .L59
+ 2363 0958 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 2364 095c 012083E2 		add	r2, r3, #1
+ 2365 0960 C23FA0E1 		mov	r3, r2, asr #31
+ 2366 0964 233FA0E1 		mov	r3, r3, lsr #30
+ 2367 0968 032082E0 		add	r2, r2, r3
+ 2368 096c 032002E2 		and	r2, r2, #3
+ 2369 0970 023063E0 		rsb	r3, r3, r2
+ 2370 0974 FF2003E2 		and	r2, r3, #255
+ 2371 0978 0C309FE5 		ldr	r3, .L59
+ 2372 097c 0020C3E5 		strb	r2, [r3, #0]
+ 185:../swarm.c    **** }
+ 2373              		.loc 1 185 0
+ 2374 0980 0CD04BE2 		sub	sp, fp, #12
+ 2375 0984 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 2376 0988 1EFF2FE1 		bx	lr
+ 2377              	.L60:
+ 2378              		.align	2
+ 2379              	.L59:
+ 2380 098c 00000000 		.word	soundIndex.4313
+ 2381              		.cfi_endproc
+ 2382              	.LFE6:
+ 2384              		.align	2
+ 2386              	swarm_updateLeftFront:
+ 2387              	.LFB7:
+ 186:../swarm.c    **** 
+ 187:../swarm.c    **** static void swarm_updateLeftFront(Swarm *self) {
+ 2388              		.loc 1 187 0
+ 2389              		.cfi_startproc
+ 2390              		@ Function supports interworking.
+ 2391              		@ args = 0, pretend = 0, frame = 16
+ 2392              		@ frame_needed = 1, uses_anonymous_args = 0
+ 2393 0990 0DC0A0E1 		mov	ip, sp
+ 2394              	.LCFI14:
+ 2395              		.cfi_def_cfa_register 12
+ 2396 0994 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 2397 0998 04B04CE2 		sub	fp, ip, #4
+ 2398              		.cfi_offset 14, -8
+ 2399              		.cfi_offset 13, -12
+ 2400              		.cfi_offset 11, -16
+ 2401              	.LCFI15:
+ 2402              		.cfi_def_cfa 11, 4
+ 2403 099c 10D04DE2 		sub	sp, sp, #16
+ 2404 09a0 18000BE5 		str	r0, [fp, #-24]
+ 188:../swarm.c    **** 	uint8 x, y;
+ 189:../swarm.c    **** 	for (x = 0; x < SWARM_XLEN; x++)
+ 2405              		.loc 1 189 0
+ 2406 09a4 0030A0E3 		mov	r3, #0
+ 2407 09a8 0D304BE5 		strb	r3, [fp, #-13]
+ 2408 09ac 330000EA 		b	.L62
+ 2409              	.L67:
+ 190:../swarm.c    **** 		for (y = 0; y < SWARM_YLEN; y++)
+ 2410              		.loc 1 190 0
+ 2411 09b0 0030A0E3 		mov	r3, #0
+ 2412 09b4 0E304BE5 		strb	r3, [fp, #-14]
+ 2413 09b8 2A0000EA 		b	.L63
+ 2414              	.L66:
+ 191:../swarm.c    **** 			if (self->enemies[y][x].state == enemyAlive) {
+ 2415              		.loc 1 191 0
+ 2416 09bc 0E105BE5 		ldrb	r1, [fp, #-14]	@ zero_extendqisi2
+ 2417 09c0 0D305BE5 		ldrb	r3, [fp, #-13]	@ zero_extendqisi2
+ 2418 09c4 18001BE5 		ldr	r0, [fp, #-24]
+ 2419 09c8 0320A0E1 		mov	r2, r3
+ 2420 09cc 0221A0E1 		mov	r2, r2, asl #2
+ 2421 09d0 032082E0 		add	r2, r2, r3
+ 2422 09d4 8231A0E1 		mov	r3, r2, asl #3
+ 2423 09d8 0320A0E1 		mov	r2, r3
+ 2424 09dc 0130A0E1 		mov	r3, r1
+ 2425 09e0 0331A0E1 		mov	r3, r3, asl #2
+ 2426 09e4 013083E0 		add	r3, r3, r1
+ 2427 09e8 0311A0E1 		mov	r1, r3, asl #2
+ 2428 09ec 013083E0 		add	r3, r3, r1
+ 2429 09f0 8331A0E1 		mov	r3, r3, asl #3
+ 2430 09f4 033082E0 		add	r3, r2, r3
+ 2431 09f8 033080E0 		add	r3, r0, r3
+ 2432 09fc 0430D3E5 		ldrb	r3, [r3, #4]	@ zero_extendqisi2
+ 2433 0a00 000053E3 		cmp	r3, #0
+ 2434 0a04 1400001A 		bne	.L64
+ 192:../swarm.c    **** 				self->leftFront = &self->enemies[y][x];
+ 2435              		.loc 1 192 0
+ 2436 0a08 18301BE5 		ldr	r3, [fp, #-24]
+ 2437 0a0c 043083E2 		add	r3, r3, #4
+ 2438 0a10 0310A0E1 		mov	r1, r3
+ 2439 0a14 0E205BE5 		ldrb	r2, [fp, #-14]	@ zero_extendqisi2
+ 2440 0a18 0230A0E1 		mov	r3, r2
+ 2441 0a1c 0331A0E1 		mov	r3, r3, asl #2
+ 2442 0a20 023083E0 		add	r3, r3, r2
+ 2443 0a24 0321A0E1 		mov	r2, r3, asl #2
+ 2444 0a28 023083E0 		add	r3, r3, r2
+ 2445 0a2c 8331A0E1 		mov	r3, r3, asl #3
+ 2446 0a30 0300A0E1 		mov	r0, r3
+ 2447 0a34 0D205BE5 		ldrb	r2, [fp, #-13]	@ zero_extendqisi2
+ 2448 0a38 0230A0E1 		mov	r3, r2
+ 2449 0a3c 0331A0E1 		mov	r3, r3, asl #2
+ 2450 0a40 023083E0 		add	r3, r3, r2
+ 2451 0a44 8331A0E1 		mov	r3, r3, asl #3
+ 2452 0a48 033080E0 		add	r3, r0, r3
+ 2453 0a4c 032081E0 		add	r2, r1, r3
+ 2454 0a50 18301BE5 		ldr	r3, [fp, #-24]
+ 2455 0a54 F42383E5 		str	r2, [r3, #1012]
+ 193:../swarm.c    **** 				return;
+ 2456              		.loc 1 193 0
+ 2457 0a58 0B0000EA 		b	.L61
+ 2458              	.L64:
+ 190:../swarm.c    **** 		for (y = 0; y < SWARM_YLEN; y++)
+ 2459              		.loc 1 190 0
+ 2460 0a5c 0E305BE5 		ldrb	r3, [fp, #-14]
+ 2461 0a60 013083E2 		add	r3, r3, #1
+ 2462 0a64 0E304BE5 		strb	r3, [fp, #-14]
+ 2463              	.L63:
+ 190:../swarm.c    **** 		for (y = 0; y < SWARM_YLEN; y++)
+ 2464              		.loc 1 190 0 is_stmt 0 discriminator 1
+ 2465 0a68 0E305BE5 		ldrb	r3, [fp, #-14]	@ zero_extendqisi2
+ 2466 0a6c 040053E3 		cmp	r3, #4
+ 2467 0a70 D1FFFF9A 		bls	.L66
+ 189:../swarm.c    **** 	for (x = 0; x < SWARM_XLEN; x++)
+ 2468              		.loc 1 189 0 is_stmt 1
+ 2469 0a74 0D305BE5 		ldrb	r3, [fp, #-13]
+ 2470 0a78 013083E2 		add	r3, r3, #1
+ 2471 0a7c 0D304BE5 		strb	r3, [fp, #-13]
+ 2472              	.L62:
+ 189:../swarm.c    **** 	for (x = 0; x < SWARM_XLEN; x++)
+ 2473              		.loc 1 189 0 is_stmt 0 discriminator 1
+ 2474 0a80 0D305BE5 		ldrb	r3, [fp, #-13]	@ zero_extendqisi2
+ 2475 0a84 040053E3 		cmp	r3, #4
+ 2476 0a88 C8FFFF9A 		bls	.L67
+ 2477              	.L61:
+ 194:../swarm.c    **** 			}
+ 195:../swarm.c    **** }
+ 2478              		.loc 1 195 0 is_stmt 1
+ 2479 0a8c 0CD04BE2 		sub	sp, fp, #12
+ 2480 0a90 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 2481 0a94 1EFF2FE1 		bx	lr
+ 2482              		.cfi_endproc
+ 2483              	.LFE7:
+ 2485              		.align	2
+ 2487              	swarm_updateRightFront:
+ 2488              	.LFB8:
+ 196:../swarm.c    **** 
+ 197:../swarm.c    **** static void swarm_updateRightFront(Swarm *self) {
+ 2489              		.loc 1 197 0
+ 2490              		.cfi_startproc
+ 2491              		@ Function supports interworking.
+ 2492              		@ args = 0, pretend = 0, frame = 16
+ 2493              		@ frame_needed = 1, uses_anonymous_args = 0
+ 2494 0a98 0DC0A0E1 		mov	ip, sp
+ 2495              	.LCFI16:
+ 2496              		.cfi_def_cfa_register 12
+ 2497 0a9c 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 2498 0aa0 04B04CE2 		sub	fp, ip, #4
+ 2499              		.cfi_offset 14, -8
+ 2500              		.cfi_offset 13, -12
+ 2501              		.cfi_offset 11, -16
+ 2502              	.LCFI17:
+ 2503              		.cfi_def_cfa 11, 4
+ 2504 0aa4 10D04DE2 		sub	sp, sp, #16
+ 2505 0aa8 18000BE5 		str	r0, [fp, #-24]
+ 198:../swarm.c    **** 	int8 x, y;
+ 199:../swarm.c    **** 	for (x = SWARM_XLEN - 1; x >= 0; x--)
+ 2506              		.loc 1 199 0
+ 2507 0aac 0430A0E3 		mov	r3, #4
+ 2508 0ab0 0D304BE5 		strb	r3, [fp, #-13]
+ 2509 0ab4 330000EA 		b	.L69
+ 2510              	.L74:
+ 200:../swarm.c    **** 		for (y = 0; y < SWARM_YLEN; y++)
+ 2511              		.loc 1 200 0
+ 2512 0ab8 0030A0E3 		mov	r3, #0
+ 2513 0abc 0E304BE5 		strb	r3, [fp, #-14]
+ 2514 0ac0 2A0000EA 		b	.L70
+ 2515              	.L73:
+ 201:../swarm.c    **** 			if (self->enemies[y][x].state == enemyAlive) {
+ 2516              		.loc 1 201 0
+ 2517 0ac4 DE105BE1 		ldrsb	r1, [fp, #-14]
+ 2518 0ac8 DD305BE1 		ldrsb	r3, [fp, #-13]
+ 2519 0acc 18001BE5 		ldr	r0, [fp, #-24]
+ 2520 0ad0 0320A0E1 		mov	r2, r3
+ 2521 0ad4 0221A0E1 		mov	r2, r2, asl #2
+ 2522 0ad8 032082E0 		add	r2, r2, r3
+ 2523 0adc 8231A0E1 		mov	r3, r2, asl #3
+ 2524 0ae0 0320A0E1 		mov	r2, r3
+ 2525 0ae4 0130A0E1 		mov	r3, r1
+ 2526 0ae8 0331A0E1 		mov	r3, r3, asl #2
+ 2527 0aec 013083E0 		add	r3, r3, r1
+ 2528 0af0 0311A0E1 		mov	r1, r3, asl #2
+ 2529 0af4 013083E0 		add	r3, r3, r1
+ 2530 0af8 8331A0E1 		mov	r3, r3, asl #3
+ 2531 0afc 033082E0 		add	r3, r2, r3
+ 2532 0b00 033080E0 		add	r3, r0, r3
+ 2533 0b04 0430D3E5 		ldrb	r3, [r3, #4]	@ zero_extendqisi2
+ 2534 0b08 000053E3 		cmp	r3, #0
+ 2535 0b0c 1400001A 		bne	.L71
+ 202:../swarm.c    **** 				self->rightFront = &self->enemies[y][x];
+ 2536              		.loc 1 202 0
+ 2537 0b10 18301BE5 		ldr	r3, [fp, #-24]
+ 2538 0b14 043083E2 		add	r3, r3, #4
+ 2539 0b18 0310A0E1 		mov	r1, r3
+ 2540 0b1c DE205BE1 		ldrsb	r2, [fp, #-14]
+ 2541 0b20 0230A0E1 		mov	r3, r2
+ 2542 0b24 0331A0E1 		mov	r3, r3, asl #2
+ 2543 0b28 023083E0 		add	r3, r3, r2
+ 2544 0b2c 0321A0E1 		mov	r2, r3, asl #2
+ 2545 0b30 023083E0 		add	r3, r3, r2
+ 2546 0b34 8331A0E1 		mov	r3, r3, asl #3
+ 2547 0b38 0300A0E1 		mov	r0, r3
+ 2548 0b3c DD205BE1 		ldrsb	r2, [fp, #-13]
+ 2549 0b40 0230A0E1 		mov	r3, r2
+ 2550 0b44 0331A0E1 		mov	r3, r3, asl #2
+ 2551 0b48 023083E0 		add	r3, r3, r2
+ 2552 0b4c 8331A0E1 		mov	r3, r3, asl #3
+ 2553 0b50 033080E0 		add	r3, r0, r3
+ 2554 0b54 032081E0 		add	r2, r1, r3
+ 2555 0b58 18301BE5 		ldr	r3, [fp, #-24]
+ 2556 0b5c F82383E5 		str	r2, [r3, #1016]
+ 203:../swarm.c    **** 				return;
+ 2557              		.loc 1 203 0
+ 2558 0b60 0B0000EA 		b	.L68
+ 2559              	.L71:
+ 200:../swarm.c    **** 		for (y = 0; y < SWARM_YLEN; y++)
+ 2560              		.loc 1 200 0
+ 2561 0b64 0E305BE5 		ldrb	r3, [fp, #-14]
+ 2562 0b68 013083E2 		add	r3, r3, #1
+ 2563 0b6c 0E304BE5 		strb	r3, [fp, #-14]
+ 2564              	.L70:
+ 200:../swarm.c    **** 		for (y = 0; y < SWARM_YLEN; y++)
+ 2565              		.loc 1 200 0 is_stmt 0 discriminator 1
+ 2566 0b70 DE305BE1 		ldrsb	r3, [fp, #-14]
+ 2567 0b74 040053E3 		cmp	r3, #4
+ 2568 0b78 D1FFFFDA 		ble	.L73
+ 199:../swarm.c    **** 	for (x = SWARM_XLEN - 1; x >= 0; x--)
+ 2569              		.loc 1 199 0 is_stmt 1
+ 2570 0b7c 0D305BE5 		ldrb	r3, [fp, #-13]
+ 2571 0b80 013043E2 		sub	r3, r3, #1
+ 2572 0b84 0D304BE5 		strb	r3, [fp, #-13]
+ 2573              	.L69:
+ 199:../swarm.c    **** 	for (x = SWARM_XLEN - 1; x >= 0; x--)
+ 2574              		.loc 1 199 0 is_stmt 0 discriminator 1
+ 2575 0b88 DD305BE1 		ldrsb	r3, [fp, #-13]
+ 2576 0b8c 000053E3 		cmp	r3, #0
+ 2577 0b90 C8FFFFAA 		bge	.L74
+ 2578              	.L68:
+ 204:../swarm.c    **** 			}
+ 205:../swarm.c    **** }
+ 2579              		.loc 1 205 0 is_stmt 1
+ 2580 0b94 0CD04BE2 		sub	sp, fp, #12
+ 2581 0b98 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 2582 0b9c 1EFF2FE1 		bx	lr
+ 2583              		.cfi_endproc
+ 2584              	.LFE8:
+ 2586              		.align	2
+ 2588              	swarm_updateDownFront:
+ 2589              	.LFB9:
+ 206:../swarm.c    **** 
+ 207:../swarm.c    **** static void swarm_updateDownFront( Swarm *self )
+ 208:../swarm.c    **** {
+ 2590              		.loc 1 208 0
+ 2591              		.cfi_startproc
+ 2592              		@ Function supports interworking.
+ 2593              		@ args = 0, pretend = 0, frame = 16
+ 2594              		@ frame_needed = 1, uses_anonymous_args = 0
+ 2595 0ba0 0DC0A0E1 		mov	ip, sp
+ 2596              	.LCFI18:
+ 2597              		.cfi_def_cfa_register 12
+ 2598 0ba4 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 2599 0ba8 04B04CE2 		sub	fp, ip, #4
+ 2600              		.cfi_offset 14, -8
+ 2601              		.cfi_offset 13, -12
+ 2602              		.cfi_offset 11, -16
+ 2603              	.LCFI19:
+ 2604              		.cfi_def_cfa 11, 4
+ 2605 0bac 10D04DE2 		sub	sp, sp, #16
+ 2606 0bb0 18000BE5 		str	r0, [fp, #-24]
+ 209:../swarm.c    ****     int8 x, y;
+ 210:../swarm.c    ****     for( y = SWARM_YLEN - 1; y >= 0; y-- )
+ 2607              		.loc 1 210 0
+ 2608 0bb4 0430A0E3 		mov	r3, #4
+ 2609 0bb8 0E304BE5 		strb	r3, [fp, #-14]
+ 2610 0bbc 330000EA 		b	.L76
+ 2611              	.L81:
+ 211:../swarm.c    ****     {
+ 212:../swarm.c    ****         for( x = 0; x < SWARM_XLEN; x++ )
+ 2612              		.loc 1 212 0
+ 2613 0bc0 0030A0E3 		mov	r3, #0
+ 2614 0bc4 0D304BE5 		strb	r3, [fp, #-13]
+ 2615 0bc8 2A0000EA 		b	.L77
+ 2616              	.L80:
+ 213:../swarm.c    ****         {
+ 214:../swarm.c    ****             if( self->enemies[y][x].state == enemyAlive )
+ 2617              		.loc 1 214 0
+ 2618 0bcc DE105BE1 		ldrsb	r1, [fp, #-14]
+ 2619 0bd0 DD305BE1 		ldrsb	r3, [fp, #-13]
+ 2620 0bd4 18001BE5 		ldr	r0, [fp, #-24]
+ 2621 0bd8 0320A0E1 		mov	r2, r3
+ 2622 0bdc 0221A0E1 		mov	r2, r2, asl #2
+ 2623 0be0 032082E0 		add	r2, r2, r3
+ 2624 0be4 8231A0E1 		mov	r3, r2, asl #3
+ 2625 0be8 0320A0E1 		mov	r2, r3
+ 2626 0bec 0130A0E1 		mov	r3, r1
+ 2627 0bf0 0331A0E1 		mov	r3, r3, asl #2
+ 2628 0bf4 013083E0 		add	r3, r3, r1
+ 2629 0bf8 0311A0E1 		mov	r1, r3, asl #2
+ 2630 0bfc 013083E0 		add	r3, r3, r1
+ 2631 0c00 8331A0E1 		mov	r3, r3, asl #3
+ 2632 0c04 033082E0 		add	r3, r2, r3
+ 2633 0c08 033080E0 		add	r3, r0, r3
+ 2634 0c0c 0430D3E5 		ldrb	r3, [r3, #4]	@ zero_extendqisi2
+ 2635 0c10 000053E3 		cmp	r3, #0
+ 2636 0c14 1400001A 		bne	.L78
+ 215:../swarm.c    ****             {
+ 216:../swarm.c    ****                 self->downFront = &self->enemies[y][x];
+ 2637              		.loc 1 216 0
+ 2638 0c18 18301BE5 		ldr	r3, [fp, #-24]
+ 2639 0c1c 043083E2 		add	r3, r3, #4
+ 2640 0c20 0310A0E1 		mov	r1, r3
+ 2641 0c24 DE205BE1 		ldrsb	r2, [fp, #-14]
+ 2642 0c28 0230A0E1 		mov	r3, r2
+ 2643 0c2c 0331A0E1 		mov	r3, r3, asl #2
+ 2644 0c30 023083E0 		add	r3, r3, r2
+ 2645 0c34 0321A0E1 		mov	r2, r3, asl #2
+ 2646 0c38 023083E0 		add	r3, r3, r2
+ 2647 0c3c 8331A0E1 		mov	r3, r3, asl #3
+ 2648 0c40 0300A0E1 		mov	r0, r3
+ 2649 0c44 DD205BE1 		ldrsb	r2, [fp, #-13]
+ 2650 0c48 0230A0E1 		mov	r3, r2
+ 2651 0c4c 0331A0E1 		mov	r3, r3, asl #2
+ 2652 0c50 023083E0 		add	r3, r3, r2
+ 2653 0c54 8331A0E1 		mov	r3, r3, asl #3
+ 2654 0c58 033080E0 		add	r3, r0, r3
+ 2655 0c5c 032081E0 		add	r2, r1, r3
+ 2656 0c60 18301BE5 		ldr	r3, [fp, #-24]
+ 2657 0c64 FC2383E5 		str	r2, [r3, #1020]
+ 217:../swarm.c    ****                 return;
+ 2658              		.loc 1 217 0
+ 2659 0c68 0B0000EA 		b	.L75
+ 2660              	.L78:
+ 212:../swarm.c    ****         for( x = 0; x < SWARM_XLEN; x++ )
+ 2661              		.loc 1 212 0
+ 2662 0c6c 0D305BE5 		ldrb	r3, [fp, #-13]
+ 2663 0c70 013083E2 		add	r3, r3, #1
+ 2664 0c74 0D304BE5 		strb	r3, [fp, #-13]
+ 2665              	.L77:
+ 212:../swarm.c    ****         for( x = 0; x < SWARM_XLEN; x++ )
+ 2666              		.loc 1 212 0 is_stmt 0 discriminator 1
+ 2667 0c78 DD305BE1 		ldrsb	r3, [fp, #-13]
+ 2668 0c7c 040053E3 		cmp	r3, #4
+ 2669 0c80 D1FFFFDA 		ble	.L80
+ 210:../swarm.c    ****     for( y = SWARM_YLEN - 1; y >= 0; y-- )
+ 2670              		.loc 1 210 0 is_stmt 1
+ 2671 0c84 0E305BE5 		ldrb	r3, [fp, #-14]
+ 2672 0c88 013043E2 		sub	r3, r3, #1
+ 2673 0c8c 0E304BE5 		strb	r3, [fp, #-14]
+ 2674              	.L76:
+ 210:../swarm.c    ****     for( y = SWARM_YLEN - 1; y >= 0; y-- )
+ 2675              		.loc 1 210 0 is_stmt 0 discriminator 1
+ 2676 0c90 DE305BE1 		ldrsb	r3, [fp, #-14]
+ 2677 0c94 000053E3 		cmp	r3, #0
+ 2678 0c98 C8FFFFAA 		bge	.L81
+ 2679              	.L75:
+ 218:../swarm.c    ****             }
+ 219:../swarm.c    ****         }
+ 220:../swarm.c    ****     }
+ 221:../swarm.c    **** }
+ 2680              		.loc 1 221 0 is_stmt 1
+ 2681 0c9c 0CD04BE2 		sub	sp, fp, #12
+ 2682 0ca0 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 2683 0ca4 1EFF2FE1 		bx	lr
+ 2684              		.cfi_endproc
+ 2685              	.LFE9:
+ 2687              		.align	2
+ 2688              		.global	swarm_checkHit
+ 2690              	swarm_checkHit:
+ 2691              	.LFB10:
+ 222:../swarm.c    **** 
+ 223:../swarm.c    **** Enemy *swarm_checkHit( Swarm *self, uint16 col, uint16 row, uint16 width, uint16 height )
+ 224:../swarm.c    **** {
+ 2692              		.loc 1 224 0
+ 2693              		.cfi_startproc
+ 2694              		@ Function supports interworking.
+ 2695              		@ args = 4, pretend = 0, frame = 24
+ 2696              		@ frame_needed = 1, uses_anonymous_args = 0
+ 2697 0ca8 0DC0A0E1 		mov	ip, sp
+ 2698              	.LCFI20:
+ 2699              		.cfi_def_cfa_register 12
+ 2700 0cac 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 2701 0cb0 04B04CE2 		sub	fp, ip, #4
+ 2702              		.cfi_offset 14, -8
+ 2703              		.cfi_offset 13, -12
+ 2704              		.cfi_offset 11, -16
+ 2705              	.LCFI21:
+ 2706              		.cfi_def_cfa 11, 4
+ 2707 0cb4 18D04DE2 		sub	sp, sp, #24
+ 2708 0cb8 18000BE5 		str	r0, [fp, #-24]
+ 2709 0cbc BA114BE1 		strh	r1, [fp, #-26]	@ movhi
+ 2710 0cc0 BC214BE1 		strh	r2, [fp, #-28]	@ movhi
+ 2711 0cc4 BE314BE1 		strh	r3, [fp, #-30]	@ movhi
+ 225:../swarm.c    ****     uint8 x, y;
+ 226:../swarm.c    ****     Enemy *enemy;
+ 227:../swarm.c    **** 
+ 228:../swarm.c    ****     for( y = 0; y < SWARM_YLEN; y++ )
+ 2712              		.loc 1 228 0
+ 2713 0cc8 0030A0E3 		mov	r3, #0
+ 2714 0ccc 0E304BE5 		strb	r3, [fp, #-14]
+ 2715 0cd0 460000EA 		b	.L83
+ 2716              	.L88:
+ 229:../swarm.c    ****         for( x = 0; x < SWARM_XLEN; x++ ) {
+ 2717              		.loc 1 229 0
+ 2718 0cd4 0030A0E3 		mov	r3, #0
+ 2719 0cd8 0D304BE5 		strb	r3, [fp, #-13]
+ 2720 0cdc 3D0000EA 		b	.L84
+ 2721              	.L87:
+ 230:../swarm.c    ****             enemy = &self->enemies[y][x];
+ 2722              		.loc 1 230 0
+ 2723 0ce0 18301BE5 		ldr	r3, [fp, #-24]
+ 2724 0ce4 043083E2 		add	r3, r3, #4
+ 2725 0ce8 0310A0E1 		mov	r1, r3
+ 2726 0cec 0E205BE5 		ldrb	r2, [fp, #-14]	@ zero_extendqisi2
+ 2727 0cf0 0230A0E1 		mov	r3, r2
+ 2728 0cf4 0331A0E1 		mov	r3, r3, asl #2
+ 2729 0cf8 023083E0 		add	r3, r3, r2
+ 2730 0cfc 0321A0E1 		mov	r2, r3, asl #2
+ 2731 0d00 023083E0 		add	r3, r3, r2
+ 2732 0d04 8331A0E1 		mov	r3, r3, asl #3
+ 2733 0d08 0300A0E1 		mov	r0, r3
+ 2734 0d0c 0D205BE5 		ldrb	r2, [fp, #-13]	@ zero_extendqisi2
+ 2735 0d10 0230A0E1 		mov	r3, r2
+ 2736 0d14 0331A0E1 		mov	r3, r3, asl #2
+ 2737 0d18 023083E0 		add	r3, r3, r2
+ 2738 0d1c 8331A0E1 		mov	r3, r3, asl #3
+ 2739 0d20 033080E0 		add	r3, r0, r3
+ 2740 0d24 033081E0 		add	r3, r1, r3
+ 2741 0d28 14300BE5 		str	r3, [fp, #-20]
+ 231:../swarm.c    **** 
+ 232:../swarm.c    ****             if( enemy->state == enemyAlive ) {
+ 2742              		.loc 1 232 0
+ 2743 0d2c 14301BE5 		ldr	r3, [fp, #-20]
+ 2744 0d30 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 2745 0d34 000053E3 		cmp	r3, #0
+ 2746 0d38 2300001A 		bne	.L85
+ 233:../swarm.c    ****                 if( col < (enemy->col + ENEMY_WIDTH) &&
+ 2747              		.loc 1 233 0
+ 2748 0d3c BA215BE1 		ldrh	r2, [fp, #-26]
+ 2749 0d40 14301BE5 		ldr	r3, [fp, #-20]
+ 2750 0d44 B430D3E1 		ldrh	r3, [r3, #4]
+ 2751 0d48 0338A0E1 		mov	r3, r3, asl #16
+ 2752 0d4c 4338A0E1 		mov	r3, r3, asr #16
+ 2753 0d50 103083E2 		add	r3, r3, #16
+ 2754 0d54 030052E1 		cmp	r2, r3
+ 2755 0d58 1B0000AA 		bge	.L85
+ 234:../swarm.c    ****                     (col + width) > enemy->col &&
+ 2756              		.loc 1 234 0 discriminator 1
+ 2757 0d5c BA215BE1 		ldrh	r2, [fp, #-26]
+ 2758 0d60 BE315BE1 		ldrh	r3, [fp, #-30]
+ 2759 0d64 032082E0 		add	r2, r2, r3
+ 2760 0d68 14301BE5 		ldr	r3, [fp, #-20]
+ 2761 0d6c B430D3E1 		ldrh	r3, [r3, #4]
+ 2762 0d70 0338A0E1 		mov	r3, r3, asl #16
+ 2763 0d74 4338A0E1 		mov	r3, r3, asr #16
+ 233:../swarm.c    ****                 if( col < (enemy->col + ENEMY_WIDTH) &&
+ 2764              		.loc 1 233 0 discriminator 1
+ 2765 0d78 030052E1 		cmp	r2, r3
+ 2766 0d7c 120000DA 		ble	.L85
+ 235:../swarm.c    ****                     row < (enemy->row + ENEMY_HEIGHT) &&
+ 2767              		.loc 1 235 0
+ 2768 0d80 BC215BE1 		ldrh	r2, [fp, #-28]
+ 2769 0d84 14301BE5 		ldr	r3, [fp, #-20]
+ 2770 0d88 B630D3E1 		ldrh	r3, [r3, #6]
+ 2771 0d8c 0338A0E1 		mov	r3, r3, asl #16
+ 2772 0d90 4338A0E1 		mov	r3, r3, asr #16
+ 2773 0d94 0A3083E2 		add	r3, r3, #10
+ 234:../swarm.c    ****                     (col + width) > enemy->col &&
+ 2774              		.loc 1 234 0
+ 2775 0d98 030052E1 		cmp	r2, r3
+ 2776 0d9c 0A0000AA 		bge	.L85
+ 236:../swarm.c    ****                     (row + height) > enemy->row ){
+ 2777              		.loc 1 236 0
+ 2778 0da0 BC215BE1 		ldrh	r2, [fp, #-28]
+ 2779 0da4 B430DBE1 		ldrh	r3, [fp, #4]
+ 2780 0da8 032082E0 		add	r2, r2, r3
+ 2781 0dac 14301BE5 		ldr	r3, [fp, #-20]
+ 2782 0db0 B630D3E1 		ldrh	r3, [r3, #6]
+ 2783 0db4 0338A0E1 		mov	r3, r3, asl #16
+ 2784 0db8 4338A0E1 		mov	r3, r3, asr #16
+ 235:../swarm.c    ****                     row < (enemy->row + ENEMY_HEIGHT) &&
+ 2785              		.loc 1 235 0
+ 2786 0dbc 030052E1 		cmp	r2, r3
+ 2787 0dc0 010000DA 		ble	.L85
+ 237:../swarm.c    ****                     return enemy;
+ 2788              		.loc 1 237 0
+ 2789 0dc4 14301BE5 		ldr	r3, [fp, #-20]
+ 2790 0dc8 0C0000EA 		b	.L86
+ 2791              	.L85:
+ 229:../swarm.c    ****         for( x = 0; x < SWARM_XLEN; x++ ) {
+ 2792              		.loc 1 229 0
+ 2793 0dcc 0D305BE5 		ldrb	r3, [fp, #-13]
+ 2794 0dd0 013083E2 		add	r3, r3, #1
+ 2795 0dd4 0D304BE5 		strb	r3, [fp, #-13]
+ 2796              	.L84:
+ 229:../swarm.c    ****         for( x = 0; x < SWARM_XLEN; x++ ) {
+ 2797              		.loc 1 229 0 is_stmt 0 discriminator 1
+ 2798 0dd8 0D305BE5 		ldrb	r3, [fp, #-13]	@ zero_extendqisi2
+ 2799 0ddc 040053E3 		cmp	r3, #4
+ 2800 0de0 BEFFFF9A 		bls	.L87
+ 228:../swarm.c    ****     for( y = 0; y < SWARM_YLEN; y++ )
+ 2801              		.loc 1 228 0 is_stmt 1
+ 2802 0de4 0E305BE5 		ldrb	r3, [fp, #-14]
+ 2803 0de8 013083E2 		add	r3, r3, #1
+ 2804 0dec 0E304BE5 		strb	r3, [fp, #-14]
+ 2805              	.L83:
+ 228:../swarm.c    ****     for( y = 0; y < SWARM_YLEN; y++ )
+ 2806              		.loc 1 228 0 is_stmt 0 discriminator 1
+ 2807 0df0 0E305BE5 		ldrb	r3, [fp, #-14]	@ zero_extendqisi2
+ 2808 0df4 040053E3 		cmp	r3, #4
+ 2809 0df8 B5FFFF9A 		bls	.L88
+ 238:../swarm.c    ****                 }
+ 239:../swarm.c    ****             }
+ 240:../swarm.c    ****         }
+ 241:../swarm.c    ****     return NULL;
+ 2810              		.loc 1 241 0 is_stmt 1
+ 2811 0dfc 0030A0E3 		mov	r3, #0
+ 2812              	.L86:
+ 242:../swarm.c    **** }
+ 2813              		.loc 1 242 0
+ 2814 0e00 0300A0E1 		mov	r0, r3
+ 2815 0e04 0CD04BE2 		sub	sp, fp, #12
+ 2816 0e08 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 2817 0e0c 1EFF2FE1 		bx	lr
+ 2818              		.cfi_endproc
+ 2819              	.LFE10:
+ 2821              		.bss
+ 2822              	soundIndex.4313:
+ 2823 0000 00       		.space	1
+ 2824              		.text
+ 2825              	.Letext0:
+DEFINED SYMBOLS
+                            *ABS*:00000000 swarm.c
+C:\Users\alber\AppData\Local\Temp\ccAUXhtn.s:1408   .rodata:00000000 $d
+C:\Users\alber\AppData\Local\Temp\ccAUXhtn.s:1411   .rodata:00000000 formation
+C:\Users\alber\AppData\Local\Temp\ccAUXhtn.s:1440   .rodata:0000001c formationSpriteSet
+C:\Users\alber\AppData\Local\Temp\ccAUXhtn.s:1467   .text:00000000 $a
+C:\Users\alber\AppData\Local\Temp\ccAUXhtn.s:1470   .text:00000000 swarm_init
+C:\Users\alber\AppData\Local\Temp\ccAUXhtn.s:2386   .text:00000990 swarm_updateLeftFront
+C:\Users\alber\AppData\Local\Temp\ccAUXhtn.s:2487   .text:00000a98 swarm_updateRightFront
+C:\Users\alber\AppData\Local\Temp\ccAUXhtn.s:2588   .text:00000ba0 swarm_updateDownFront
+C:\Users\alber\AppData\Local\Temp\ccAUXhtn.s:1626   .text:000001cc $d
+C:\Users\alber\AppData\Local\Temp\ccAUXhtn.s:1635   .text:000001e4 $a
+C:\Users\alber\AppData\Local\Temp\ccAUXhtn.s:1638   .text:000001e4 swarm_lauch
+C:\Users\alber\AppData\Local\Temp\ccAUXhtn.s:1716   .text:0000029c swarm_update
+C:\Users\alber\AppData\Local\Temp\ccAUXhtn.s:2218   .text:000007ec swarm_findNextAlive
+C:\Users\alber\AppData\Local\Temp\ccAUXhtn.s:1796   .text:00000384 $d
+C:\Users\alber\AppData\Local\Temp\ccAUXhtn.s:1802   .text:00000394 $a
+C:\Users\alber\AppData\Local\Temp\ccAUXhtn.s:1882   .text:0000046c $d
+C:\Users\alber\AppData\Local\Temp\ccAUXhtn.s:1888   .text:0000047c $a
+C:\Users\alber\AppData\Local\Temp\ccAUXhtn.s:1951   .text:00000518 swarm_getShooter
+C:\Users\alber\AppData\Local\Temp\ccAUXhtn.s:2142   .text:00000750 $d
+C:\Users\alber\AppData\Local\Temp\ccAUXhtn.s:2146   .text:00000754 $a
+C:\Users\alber\AppData\Local\Temp\ccAUXhtn.s:2149   .text:00000754 swarm_hit
+C:\Users\alber\AppData\Local\Temp\ccAUXhtn.s:2333   .text:00000920 swarm_moveSound
+C:\Users\alber\AppData\Local\Temp\ccAUXhtn.s:2380   .text:0000098c $d
+C:\Users\alber\AppData\Local\Temp\ccAUXhtn.s:2822   .bss:00000000 soundIndex.4313
+C:\Users\alber\AppData\Local\Temp\ccAUXhtn.s:2384   .text:00000990 $a
+C:\Users\alber\AppData\Local\Temp\ccAUXhtn.s:2690   .text:00000ca8 swarm_checkHit
+C:\Users\alber\AppData\Local\Temp\ccAUXhtn.s:2823   .bss:00000000 $d
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+enemy_init
+enemy_launch
+player_invaded
+enemy_right
+enemy_left
+enemy_down
+random_get
+enemy_hit
+sound_play

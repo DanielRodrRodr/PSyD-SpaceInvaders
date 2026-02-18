@@ -1,0 +1,264 @@
+#include <timers.h>
+#include "config.h"
+#include "random.h"
+#include "pixmaps.h"
+#include "wavs.h"
+#include "swarm.h"
+
+static const enemy_type_t formation[SWARM_YLEN][SWARM_XLEN] =
+{
+    { squid,    squid,    squid,    squid,    squid   }, 
+    { alien,    alien,    alien,    alien,    alien   },
+    { alien,    alien,    alien,    alien,    alien   },       
+    { metroid,  metroid,  metroid,  metroid,  metroid },
+    { metroid,  metroid,  metroid,  metroid,  metroid }
+};
+    
+static const uint8 formationSpriteSet[SWARM_YLEN][SWARM_XLEN] =
+{
+    { 1, 0, 1, 0, 1 }, 
+    { 1, 0, 1, 0, 1 },
+    { 1, 0, 1, 0, 1 },       
+    { 1, 0, 1, 0, 1 },
+    { 1, 0, 1, 0, 1 }
+};
+
+static boolean swarm_findNextAlive( Swarm *self );
+static void swarm_moveSound( Swarm *self );
+static void swarm_updateLeftFront( Swarm *self );
+static void swarm_updateRightFront( Swarm *self );
+static void swarm_updateDownFront( Swarm *self );
+
+void swarm_init( Swarm *self )
+{
+    uint8 x;
+    uint8 y;
+    Enemy *enemy;
+        
+    self->state = swarmMovingRight;
+    self->toMoveY = SWARM_YLEN - 1; // Comenzar abajo a la izquierda para el ciclo
+    self->toMoveX = 0;
+
+    for( y = 0; y < SWARM_YLEN; y++ )
+    {
+        for( x = 0; x < SWARM_XLEN; x++ )
+        {
+        	enemy = &self->enemies[y][x];
+            enemy_init( enemy, formation[y][x], formationSpriteSet[y][x], SWARM_MIN_COL + x*ENEMY_WIDTH + x*4, SWARM_MIN_ROW + y*ENEMY_HEIGHT + y*4 );
+            enemy_launch( enemy );
+        }
+    }
+
+    self->enemiesRemaining = SWARM_YLEN * SWARM_XLEN;
+
+    // Inicializar frentes aproximados
+    self->leftFront  = &self->enemies[0][0];
+    self->rightFront = &self->enemies[0][SWARM_XLEN-1];
+    self->downFront  = &self->enemies[SWARM_YLEN-1][0];
+
+    swarm_updateLeftFront( self );
+    swarm_updateRightFront( self );
+    swarm_updateDownFront( self );   
+
+    self->stepSound[0] = (Sound){ SWARM_MOVE0 };
+    self->stepSound[1] = (Sound){ SWARM_MOVE1 };
+    self->stepSound[2] = (Sound){ SWARM_MOVE2 };
+    self->stepSound[3] = (Sound){ SWARM_MOVE3 };
+}
+
+void swarm_lauch( Swarm *self )
+{
+    // No requiere implementación explícita si init ya dibuja
+}
+
+void swarm_update( Swarm *self, Player *player )
+{
+    Enemy *currentEnemy;
+
+    if( self->state != swarmDead )
+    {
+        // Encontrar siguiente enemigo vivo en el ciclo
+        if( swarm_findNextAlive( self ) )
+        {
+            currentEnemy = &self->enemies[self->toMoveY][self->toMoveX];
+            
+            if( currentEnemy->state == enemyExploding )
+            {
+                enemy_kill( currentEnemy );
+            }
+            else if( currentEnemy->state == enemyAlive )
+            {
+                switch( self->state )
+                {
+                    case swarmMovingRight:
+                        enemy_right( currentEnemy );
+                        break;
+                    case swarmMovingLeft:
+                        enemy_left( currentEnemy );
+                        break;
+                    case swarmMovingDownThenLeft:
+                    case swarmMovingDownThenRight:
+                        enemy_down( currentEnemy );
+                        break;
+                    default:
+                        break;
+                }
+
+                // Invasión
+                if( currentEnemy->row + ENEMY_HEIGHT >= player->row )
+                {
+                    player_invaded( player );
+                }
+            }
+
+            swarm_moveSound( self );
+        }
+
+        // Comprobar fin de ciclo completo de movimiento (todos los enemigos movidos)
+        // El último en moverse es el (0, 4) si el orden es Y descendente X ascendente.
+        if( self->toMoveY == 0 && self->toMoveX == SWARM_XLEN - 1 )
+        {
+            if( self->state == swarmMovingRight )
+            {
+                if( self->rightFront->col + ENEMY_WIDTH >= SWARM_MAX_COL )
+                    self->state = swarmMovingDownThenLeft;
+            }
+            else if( self->state == swarmMovingDownThenLeft )
+            {
+                self->state = swarmMovingLeft;
+            }
+            else if( self->state == swarmMovingLeft )
+            {
+                if( self->leftFront->col <= SWARM_MIN_COL )
+                    self->state = swarmMovingDownThenRight;
+            }
+            else if( self->state == swarmMovingDownThenRight )
+            {
+                self->state = swarmMovingRight;
+            }
+        }
+    }
+}
+
+Enemy *swarm_getShooter( Swarm *self )
+{
+    uint8 col = random_get() % SWARM_XLEN;
+    int8 row;
+    Enemy *shooter = NULL;
+    
+    for( row = SWARM_YLEN-1; row >= 0 && shooter == NULL; row-- )
+    {
+        if( self->enemies[row][col].state == enemyAlive )
+        {
+            shooter = &self->enemies[row][col];
+        }
+    }
+    return shooter;
+}
+
+void swarm_hit( Swarm *self, Enemy *enemy )
+{
+    enemy_hit( enemy );
+    self->enemiesRemaining--;
+
+    if( self->enemiesRemaining == 0 )
+    {
+        self->state = swarmDead;
+    }
+    else
+    {
+        if( enemy == self->leftFront ) swarm_updateLeftFront( self );
+        if( enemy == self->rightFront ) swarm_updateRightFront( self );
+        if( enemy == self->downFront ) swarm_updateDownFront( self );
+    }
+}
+
+static boolean swarm_findNextAlive( Swarm *self )
+{   
+    uint8 searchedCount = 0;
+    uint8 found = FALSE;
+
+    while( searchedCount < (SWARM_XLEN * SWARM_YLEN) && !found )
+    {
+        self->toMoveX++;
+        if( self->toMoveX >= SWARM_XLEN )
+        {
+            self->toMoveX = 0;
+            if( self->toMoveY == 0 )
+                self->toMoveY = SWARM_YLEN - 1;
+            else
+                self->toMoveY--;
+        }
+
+        if( self->enemies[self->toMoveY][self->toMoveX].state != enemyDead )
+        {
+            found = TRUE;
+        }
+        searchedCount++;
+    }
+    return found;
+}
+
+static void swarm_moveSound( Swarm *self )
+{
+    static uint8 soundIdx = 0;
+    sound_play( &self->stepSound[soundIdx] );
+    soundIdx = (soundIdx + 1) % 4;
+}
+
+static void swarm_updateLeftFront( Swarm *self )
+{
+    uint8 x;
+    uint8 y;
+    Enemy *front = NULL;
+
+    for( x = 0; x < SWARM_XLEN && front == NULL; x++ )
+    {
+        for( y = 0; y < SWARM_YLEN && front == NULL; y++ )
+        {
+            if( self->enemies[y][x].state == enemyAlive )
+            {
+                front = &self->enemies[y][x];
+            }
+        }
+    }
+    self->leftFront = front;
+}
+
+static void swarm_updateRightFront( Swarm *self )
+{
+    int8 x;
+    int8 y;
+    Enemy *front = NULL;
+
+    for( x = SWARM_XLEN-1; x >= 0 && front == NULL; x-- )
+    {
+        for( y = 0; y < SWARM_YLEN && front == NULL; y++ )
+        {
+            if( self->enemies[y][x].state == enemyAlive )
+            {
+                front = &self->enemies[y][x];
+            }
+        }
+    }
+    self->rightFront = front;
+}
+
+static void swarm_updateDownFront( Swarm *self )
+{
+    int8 x;
+    int8 y;
+    Enemy *front = NULL;
+
+    for( y = SWARM_YLEN-1; y >= 0 && front == NULL; y-- )
+    {
+        for( x = 0; x < SWARM_XLEN && front == NULL; x++ )
+        {
+            if( self->enemies[y][x].state == enemyAlive )
+            {
+                front = &self->enemies[y][x];
+            }
+        }
+    }
+    self->downFront = front;
+}

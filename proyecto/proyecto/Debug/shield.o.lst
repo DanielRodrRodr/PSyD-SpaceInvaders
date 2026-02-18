@@ -1,0 +1,308 @@
+   1              		.cpu arm7tdmi
+   2              		.fpu softvfp
+   3              		.eabi_attribute 20, 1
+   4              		.eabi_attribute 21, 1
+   5              		.eabi_attribute 23, 3
+   6              		.eabi_attribute 24, 1
+   7              		.eabi_attribute 25, 1
+   8              		.eabi_attribute 26, 1
+   9              		.eabi_attribute 30, 6
+  10              		.eabi_attribute 18, 4
+  11              		.file	"shield.c"
+  21              	.Ltext0:
+  22              		.file 1 "../shield.c"
+ 1311              		.align	2
+ 1312              		.global	shield_init
+ 1314              	shield_init:
+ 1315              	.LFB0:
+   1:../shield.c   **** #include "config.h"
+   2:../shield.c   **** #include "pixmaps.h"
+   3:../shield.c   **** #include "shield.h"
+   4:../shield.c   **** #include "sprite.h"
+   5:../shield.c   **** 
+   6:../shield.c   **** // Necesitamos acceso al buffer de pantalla para "borrar" píxeles
+   7:../shield.c   **** extern uint8 lcd_buffer[];
+   8:../shield.c   **** 
+   9:../shield.c   **** void shield_init(Shield *self, uint16 col) {
+ 1316              		.loc 1 9 0
+ 1317              		.cfi_startproc
+ 1318              		@ Function supports interworking.
+ 1319              		@ args = 0, pretend = 0, frame = 8
+ 1320              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1321 0000 0DC0A0E1 		mov	ip, sp
+ 1322              	.LCFI0:
+ 1323              		.cfi_def_cfa_register 12
+ 1324 0004 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1325 0008 04B04CE2 		sub	fp, ip, #4
+ 1326              		.cfi_offset 14, -8
+ 1327              		.cfi_offset 13, -12
+ 1328              		.cfi_offset 11, -16
+ 1329              	.LCFI1:
+ 1330              		.cfi_def_cfa 11, 4
+ 1331 000c 08D04DE2 		sub	sp, sp, #8
+ 1332 0010 10000BE5 		str	r0, [fp, #-16]
+ 1333 0014 0130A0E1 		mov	r3, r1
+ 1334 0018 B2314BE1 		strh	r3, [fp, #-18]	@ movhi
+  10:../shield.c   **** 	self->col = col;
+ 1335              		.loc 1 10 0
+ 1336 001c B2215BE1 		ldrh	r2, [fp, #-18]
+ 1337 0020 10301BE5 		ldr	r3, [fp, #-16]
+ 1338 0024 B020C3E1 		strh	r2, [r3, #0]	@ movhi
+  11:../shield.c   **** 	self->row = SHIELD_ROW;
+ 1339              		.loc 1 11 0
+ 1340 0028 10301BE5 		ldr	r3, [fp, #-16]
+ 1341 002c 5020A0E3 		mov	r2, #80
+ 1342 0030 B220C3E1 		strh	r2, [r3, #2]	@ movhi
+  12:../shield.c   **** 	self->sprite = (Sprite ) { SHIELD_WIDTH, SHIELD_HEIGHT, shieldPixMap };
+ 1343              		.loc 1 12 0
+ 1344 0034 10301BE5 		ldr	r3, [fp, #-16]
+ 1345 0038 1C209FE5 		ldr	r2, .L2
+ 1346 003c 043083E2 		add	r3, r3, #4
+ 1347 0040 030092E8 		ldmia	r2, {r0, r1}
+ 1348 0044 030083E8 		stmia	r3, {r0, r1}
+  13:../shield.c   **** 	shield_launch(self);
+ 1349              		.loc 1 13 0
+ 1350 0048 10001BE5 		ldr	r0, [fp, #-16]
+ 1351 004c FEFFFFEB 		bl	shield_launch
+  14:../shield.c   **** }
+ 1352              		.loc 1 14 0
+ 1353 0050 0CD04BE2 		sub	sp, fp, #12
+ 1354 0054 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1355 0058 1EFF2FE1 		bx	lr
+ 1356              	.L3:
+ 1357              		.align	2
+ 1358              	.L2:
+ 1359 005c 00000000 		.word	C.1.4889
+ 1360              		.cfi_endproc
+ 1361              	.LFE0:
+ 1363              		.align	2
+ 1364              		.global	shield_launch
+ 1366              	shield_launch:
+ 1367              	.LFB1:
+  15:../shield.c   **** 
+  16:../shield.c   **** void shield_launch(Shield *self) {
+ 1368              		.loc 1 16 0
+ 1369              		.cfi_startproc
+ 1370              		@ Function supports interworking.
+ 1371              		@ args = 0, pretend = 0, frame = 8
+ 1372              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1373 0060 0DC0A0E1 		mov	ip, sp
+ 1374              	.LCFI2:
+ 1375              		.cfi_def_cfa_register 12
+ 1376 0064 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1377 0068 04B04CE2 		sub	fp, ip, #4
+ 1378              		.cfi_offset 14, -8
+ 1379              		.cfi_offset 13, -12
+ 1380              		.cfi_offset 11, -16
+ 1381              	.LCFI3:
+ 1382              		.cfi_def_cfa 11, 4
+ 1383 006c 08D04DE2 		sub	sp, sp, #8
+ 1384 0070 10000BE5 		str	r0, [fp, #-16]
+  17:../shield.c   **** 	sprite_draw(&self->sprite, self->col, self->row);
+ 1385              		.loc 1 17 0
+ 1386 0074 10301BE5 		ldr	r3, [fp, #-16]
+ 1387 0078 041083E2 		add	r1, r3, #4
+ 1388 007c 10301BE5 		ldr	r3, [fp, #-16]
+ 1389 0080 B030D3E1 		ldrh	r3, [r3, #0]
+ 1390 0084 0338A0E1 		mov	r3, r3, asl #16
+ 1391 0088 2328A0E1 		mov	r2, r3, lsr #16
+ 1392 008c 10301BE5 		ldr	r3, [fp, #-16]
+ 1393 0090 B230D3E1 		ldrh	r3, [r3, #2]
+ 1394 0094 0338A0E1 		mov	r3, r3, asl #16
+ 1395 0098 2338A0E1 		mov	r3, r3, lsr #16
+ 1396 009c 0100A0E1 		mov	r0, r1
+ 1397 00a0 0210A0E1 		mov	r1, r2
+ 1398 00a4 0320A0E1 		mov	r2, r3
+ 1399 00a8 FEFFFFEB 		bl	sprite_draw
+  18:../shield.c   **** }
+ 1400              		.loc 1 18 0
+ 1401 00ac 0CD04BE2 		sub	sp, fp, #12
+ 1402 00b0 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1403 00b4 1EFF2FE1 		bx	lr
+ 1404              		.cfi_endproc
+ 1405              	.LFE1:
+ 1407              		.align	2
+ 1408              		.global	shield_hit
+ 1410              	shield_hit:
+ 1411              	.LFB2:
+  19:../shield.c   **** 
+  20:../shield.c   **** void shield_hit(Shield *self, uint16 col, uint16 row, uint16 width,
+  21:../shield.c   **** 		uint16 height) {
+ 1412              		.loc 1 21 0
+ 1413              		.cfi_startproc
+ 1414              		@ Function supports interworking.
+ 1415              		@ args = 4, pretend = 0, frame = 32
+ 1416              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1417 00b8 0DC0A0E1 		mov	ip, sp
+ 1418              	.LCFI4:
+ 1419              		.cfi_def_cfa_register 12
+ 1420 00bc 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1421 00c0 04B04CE2 		sub	fp, ip, #4
+ 1422              		.cfi_offset 14, -8
+ 1423              		.cfi_offset 13, -12
+ 1424              		.cfi_offset 11, -16
+ 1425              	.LCFI5:
+ 1426              		.cfi_def_cfa 11, 4
+ 1427 00c4 20D04DE2 		sub	sp, sp, #32
+ 1428 00c8 20000BE5 		str	r0, [fp, #-32]
+ 1429 00cc B2124BE1 		strh	r1, [fp, #-34]	@ movhi
+ 1430 00d0 B4224BE1 		strh	r2, [fp, #-36]	@ movhi
+ 1431 00d4 B6324BE1 		strh	r3, [fp, #-38]	@ movhi
+  22:../shield.c   **** 	uint16 r, c;
+  23:../shield.c   **** 	uint16 pX, pY;
+  24:../shield.c   **** 	uint32 lcdOffset;
+  25:../shield.c   **** 
+  26:../shield.c   **** 	for (r = 0; r < height; r++) {
+ 1432              		.loc 1 26 0
+ 1433 00d8 0030A0E3 		mov	r3, #0
+ 1434 00dc BE304BE1 		strh	r3, [fp, #-14]	@ movhi
+ 1435 00e0 420000EA 		b	.L6
+ 1436              	.L13:
+  27:../shield.c   **** 		pY = row + r;
+ 1437              		.loc 1 27 0
+ 1438 00e4 B4225BE1 		ldrh	r2, [fp, #-36]	@ movhi
+ 1439 00e8 BE305BE1 		ldrh	r3, [fp, #-14]	@ movhi
+ 1440 00ec 033082E0 		add	r3, r2, r3
+ 1441 00f0 B2314BE1 		strh	r3, [fp, #-18]	@ movhi
+  28:../shield.c   **** 
+  29:../shield.c   **** 		if (pY < self->row || pY >= (self->row + SHIELD_HEIGHT))
+ 1442              		.loc 1 29 0
+ 1443 00f4 B2215BE1 		ldrh	r2, [fp, #-18]
+ 1444 00f8 20301BE5 		ldr	r3, [fp, #-32]
+ 1445 00fc B230D3E1 		ldrh	r3, [r3, #2]
+ 1446 0100 0338A0E1 		mov	r3, r3, asl #16
+ 1447 0104 4338A0E1 		mov	r3, r3, asr #16
+ 1448 0108 030052E1 		cmp	r2, r3
+ 1449 010c 310000BA 		blt	.L14
+ 1450              		.loc 1 29 0 is_stmt 0 discriminator 1
+ 1451 0110 B2215BE1 		ldrh	r2, [fp, #-18]
+ 1452 0114 20301BE5 		ldr	r3, [fp, #-32]
+ 1453 0118 B230D3E1 		ldrh	r3, [r3, #2]
+ 1454 011c 0338A0E1 		mov	r3, r3, asl #16
+ 1455 0120 4338A0E1 		mov	r3, r3, asr #16
+ 1456 0124 103083E2 		add	r3, r3, #16
+ 1457 0128 030052E1 		cmp	r2, r3
+ 1458 012c 2B0000AA 		bge	.L15
+ 1459              	.L8:
+  30:../shield.c   **** 			continue;
+  31:../shield.c   **** 
+  32:../shield.c   **** 		lcdOffset = pY * 2 * GAME_WIDTH;
+ 1460              		.loc 1 32 0 is_stmt 1
+ 1461 0130 B2215BE1 		ldrh	r2, [fp, #-18]
+ 1462 0134 0230A0E1 		mov	r3, r2
+ 1463 0138 0331A0E1 		mov	r3, r3, asl #2
+ 1464 013c 023083E0 		add	r3, r3, r2
+ 1465 0140 0333A0E1 		mov	r3, r3, asl #6
+ 1466 0144 18300BE5 		str	r3, [fp, #-24]
+  33:../shield.c   **** 
+  34:../shield.c   **** 		for (c = 0; c < width; c++) {
+ 1467              		.loc 1 34 0
+ 1468 0148 0030A0E3 		mov	r3, #0
+ 1469 014c B0314BE1 		strh	r3, [fp, #-16]	@ movhi
+ 1470 0150 1B0000EA 		b	.L10
+ 1471              	.L12:
+  35:../shield.c   **** 			pX = col + c;
+ 1472              		.loc 1 35 0
+ 1473 0154 B2225BE1 		ldrh	r2, [fp, #-34]	@ movhi
+ 1474 0158 B0315BE1 		ldrh	r3, [fp, #-16]	@ movhi
+ 1475 015c 033082E0 		add	r3, r2, r3
+ 1476 0160 BA314BE1 		strh	r3, [fp, #-26]	@ movhi
+  36:../shield.c   **** 			if (pX >= self->col && pX < (self->col + SHIELD_WIDTH)) {
+ 1477              		.loc 1 36 0
+ 1478 0164 BA215BE1 		ldrh	r2, [fp, #-26]
+ 1479 0168 20301BE5 		ldr	r3, [fp, #-32]
+ 1480 016c B030D3E1 		ldrh	r3, [r3, #0]
+ 1481 0170 0338A0E1 		mov	r3, r3, asl #16
+ 1482 0174 4338A0E1 		mov	r3, r3, asr #16
+ 1483 0178 030052E1 		cmp	r2, r3
+ 1484 017c 0D0000BA 		blt	.L11
+ 1485              		.loc 1 36 0 is_stmt 0 discriminator 1
+ 1486 0180 BA215BE1 		ldrh	r2, [fp, #-26]
+ 1487 0184 20301BE5 		ldr	r3, [fp, #-32]
+ 1488 0188 B030D3E1 		ldrh	r3, [r3, #0]
+ 1489 018c 0338A0E1 		mov	r3, r3, asl #16
+ 1490 0190 4338A0E1 		mov	r3, r3, asr #16
+ 1491 0194 163083E2 		add	r3, r3, #22
+ 1492 0198 030052E1 		cmp	r2, r3
+ 1493 019c 050000AA 		bge	.L11
+  37:../shield.c   **** 				lcd_buffer[lcdOffset + pX] = 0;
+ 1494              		.loc 1 37 0 is_stmt 1
+ 1495 01a0 BA215BE1 		ldrh	r2, [fp, #-26]
+ 1496 01a4 18301BE5 		ldr	r3, [fp, #-24]
+ 1497 01a8 033082E0 		add	r3, r2, r3
+ 1498 01ac 58209FE5 		ldr	r2, .L16
+ 1499 01b0 0010A0E3 		mov	r1, #0
+ 1500 01b4 0310C2E7 		strb	r1, [r2, r3]
+ 1501              	.L11:
+  34:../shield.c   **** 		for (c = 0; c < width; c++) {
+ 1502              		.loc 1 34 0
+ 1503 01b8 B0315BE1 		ldrh	r3, [fp, #-16]	@ movhi
+ 1504 01bc 013083E2 		add	r3, r3, #1
+ 1505 01c0 B0314BE1 		strh	r3, [fp, #-16]	@ movhi
+ 1506              	.L10:
+  34:../shield.c   **** 		for (c = 0; c < width; c++) {
+ 1507              		.loc 1 34 0 is_stmt 0 discriminator 1
+ 1508 01c4 B0215BE1 		ldrh	r2, [fp, #-16]
+ 1509 01c8 B6325BE1 		ldrh	r3, [fp, #-38]
+ 1510 01cc 030052E1 		cmp	r2, r3
+ 1511 01d0 DFFFFF3A 		bcc	.L12
+ 1512 01d4 020000EA 		b	.L9
+ 1513              	.L14:
+  30:../shield.c   **** 			continue;
+ 1514              		.loc 1 30 0 is_stmt 1
+ 1515 01d8 0000A0E1 		mov	r0, r0	@ nop
+ 1516 01dc 000000EA 		b	.L9
+ 1517              	.L15:
+ 1518 01e0 0000A0E1 		mov	r0, r0	@ nop
+ 1519              	.L9:
+  26:../shield.c   **** 	for (r = 0; r < height; r++) {
+ 1520              		.loc 1 26 0
+ 1521 01e4 BE305BE1 		ldrh	r3, [fp, #-14]	@ movhi
+ 1522 01e8 013083E2 		add	r3, r3, #1
+ 1523 01ec BE304BE1 		strh	r3, [fp, #-14]	@ movhi
+ 1524              	.L6:
+  26:../shield.c   **** 	for (r = 0; r < height; r++) {
+ 1525              		.loc 1 26 0 is_stmt 0 discriminator 1
+ 1526 01f0 BE205BE1 		ldrh	r2, [fp, #-14]
+ 1527 01f4 B430DBE1 		ldrh	r3, [fp, #4]
+ 1528 01f8 030052E1 		cmp	r2, r3
+ 1529 01fc B8FFFF3A 		bcc	.L13
+  38:../shield.c   **** 			}
+  39:../shield.c   **** 		}
+  40:../shield.c   **** 	}
+  41:../shield.c   **** }
+ 1530              		.loc 1 41 0 is_stmt 1
+ 1531 0200 0CD04BE2 		sub	sp, fp, #12
+ 1532 0204 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1533 0208 1EFF2FE1 		bx	lr
+ 1534              	.L17:
+ 1535              		.align	2
+ 1536              	.L16:
+ 1537 020c 00000000 		.word	lcd_buffer
+ 1538              		.cfi_endproc
+ 1539              	.LFE2:
+ 1541              		.section	.rodata
+ 1542              		.align	2
+ 1545              	C.1.4889:
+ 1546 0000 1600     		.short	22
+ 1547 0002 1000     		.short	16
+ 1548 0004 00000000 		.word	shieldPixMap
+ 1549              		.text
+ 1550              	.Letext0:
+DEFINED SYMBOLS
+                            *ABS*:00000000 shield.c
+C:\Users\alber\AppData\Local\Temp\ccnW22lT.s:1311   .text:00000000 $a
+C:\Users\alber\AppData\Local\Temp\ccnW22lT.s:1314   .text:00000000 shield_init
+C:\Users\alber\AppData\Local\Temp\ccnW22lT.s:1366   .text:00000060 shield_launch
+C:\Users\alber\AppData\Local\Temp\ccnW22lT.s:1359   .text:0000005c $d
+C:\Users\alber\AppData\Local\Temp\ccnW22lT.s:1545   .rodata:00000000 C.1.4889
+C:\Users\alber\AppData\Local\Temp\ccnW22lT.s:1363   .text:00000060 $a
+C:\Users\alber\AppData\Local\Temp\ccnW22lT.s:1410   .text:000000b8 shield_hit
+C:\Users\alber\AppData\Local\Temp\ccnW22lT.s:1537   .text:0000020c $d
+C:\Users\alber\AppData\Local\Temp\ccnW22lT.s:1542   .rodata:00000000 $d
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+sprite_draw
+lcd_buffer
+shieldPixMap

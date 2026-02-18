@@ -1,0 +1,31 @@
+#include <iis.h>
+#include "sound.h"
+
+// Variables de estado local para simular la gestión de reproducción
+static boolean playing = FALSE;
+
+void sound_play( Sound *self )
+{
+    // Reproduce una vez
+    iis_playWawFile( self->wav, FALSE );
+    playing = TRUE;
+}
+
+void sound_loop( Sound *self )
+{
+    // Reproduce en bucle
+    iis_playWawFile( self->wav, TRUE );
+    playing = TRUE;
+}
+
+void sound_stop( void )
+{
+    iis_pause();
+    playing = FALSE;
+}
+
+boolean sound_isPlaying( void )
+{
+    // iis_status devuelve ON (1) si está reproduciendo
+    return (iis_status() == ON);
+}

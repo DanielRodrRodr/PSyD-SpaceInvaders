@@ -1,7 +1,11 @@
-15:27:19 **** Clean-only build of configuration Debug for project proyecto ****
-cs-make clean 
-cs-rm -rf  proyecto.siz  ./credit.o ./enemy.o ./enemyshot.o ./game.o ./hiscore.o ./kernelcoop.o ./lives.o ./pixmaps.o ./player.o ./playershot.o ./proyecto.o ./random.o ./score.o ./shield.o ./sound.o ./sprite.o ./swarm.o ./ufo.o  ./credit.d ./enemy.d ./enemyshot.d ./game.d ./hiscore.d ./kernelcoop.d ./lives.d ./pixmaps.d ./player.d ./playershot.d ./proyecto.d ./random.d ./score.d ./shield.d ./sound.d ./sprite.d ./swarm.d ./ufo.d  proyecto.hex  proyecto.lst  proyecto.elf
+18:08:25 **** Incremental Build of configuration Debug for project proyecto ****
+cs-make all 
+'Invoking: ARM Sourcery Windows GNU Print Size'
+arm-none-eabi-size  --format=berkeley proyecto.elf
+   text	   data	    bss	    dec	    hex	filename
+  48768	  43400	   1472	  93640	  16dc8	proyecto.elf
+'Finished building: proyecto.siz'
 ' '
 
-15:27:19 Build Finished (took 152ms)
+18:08:25 Build Finished (took 293ms)
 

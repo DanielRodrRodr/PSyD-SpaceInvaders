@@ -1,0 +1,93 @@
+#include "enemy.h"
+#include "config.h"
+#include "pixmaps.h"
+#include "wavs.h"
+
+static void enemy_draw(Enemy *self);
+static void enemy_clear(Enemy *self);
+
+void enemy_init(Enemy *self, enemy_type_t type, uint8 spriteSet, uint16 col,
+                uint16 row) {
+    self->state = enemyAlive;
+    self->type = type;
+    self->col = col;
+    self->row = row;
+    self->spriteSet = spriteSet;
+    switch (type) {
+    case alien:
+        self->score = ALIEN_SCORE;
+        self->sprite[0] = (Sprite){ENEMY_WIDTH, ENEMY_HEIGHT, alienPixMap_0};
+        self->sprite[1] = (Sprite){ENEMY_WIDTH, ENEMY_HEIGHT, alienPixMap_1};
+        break;
+    case metroid:
+        self->score = METROID_SCORE;
+        self->sprite[0] = (Sprite){ENEMY_WIDTH, ENEMY_HEIGHT, metroidPixMap_0};
+        self->sprite[1] = (Sprite){ENEMY_WIDTH, ENEMY_HEIGHT, metroidPixMap_1};
+        break;
+    case squid:
+        self->score = SQUID_SCORE;
+        self->sprite[0] = (Sprite){ENEMY_WIDTH, ENEMY_HEIGHT, squidPixMap_0};
+        self->sprite[1] = (Sprite){ENEMY_WIDTH, ENEMY_HEIGHT, squidPixMap_1};
+        break;
+    }
+    self->explosionSprite =
+        (Sprite){ENEMY_WIDTH, ENEMY_HEIGHT, enemyExplosionPixMap};
+    self->explosionSound = (Sound){ENEMY_EXPLOSION};
+}
+
+static void enemy_draw(Enemy *self) {
+    if (self->state == enemyAlive) {
+        sprite_draw(&self->sprite[self->spriteSet], &self->col, &self->row);
+    } else if (self->state == enemyExploding) {
+        sprite_draw(&self->explosionSprite, &self->col, &self->row);
+    }
+}
+
+static void enemy_clear(Enemy *self) {
+    if (self->state == enemyAlive) {
+        sprite_clear(&self->sprite[self->spriteSet], &self->col, &self->row);
+    } else if (self->state == enemyExploding) {
+        sprite_clear(&self->explosionSprite, &self->col, &self->row);
+    }
+}
+
+void enemy_launch(Enemy *self) {
+    enemy_draw(self);
+}
+
+void enemy_left(Enemy *self) {
+    if (self->state == enemyAlive) {
+        enemy_clear(self);
+        self->col -= ENEMY_ADVANCE_COL;
+        enemy_draw(self);
+    }
+}
+
+void enemy_right(Enemy *self) {
+    if (self->state == enemyAlive) {
+        enemy_clear(self);
+        self->col += ENEMY_ADVANCE_COL;
+        enemy_draw(self);
+    }
+}
+
+void enemy_down(Enemy *self) {
+    if (self->state == enemyAlive) {
+        enemy_clear(self);
+        self->row += ENEMY_ADVANCE_ROW;
+        self->spriteSet = !self->spriteSet; 
+        enemy_draw(self);
+    }
+}
+
+void enemy_hit(Enemy *self) {
+    enemy_clear(self);
+    self->state = enemyExploding;
+    sound_play(&self->explosionSound);
+    enemy_draw(self);
+}
+
+void enemy_kill(Enemy *self) {
+    enemy_clear(self);
+    self->state = enemyDead;
+}

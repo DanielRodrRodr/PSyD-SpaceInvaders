@@ -1,0 +1,81 @@
+#include <lcd.h>
+#include "config.h"
+#include "sprite.h"
+
+// No usamos el buffer externo directamente para evitar errores de memoria,
+// usamos las primitivas del LCD que son mas seguras y gestionan el hardware.
+
+boolean sprite_draw( Sprite *self, uint16 col, uint16 row )
+{
+    uint8 collision = FALSE;
+    uint16 x;
+    uint16 y;
+    uint16 spriteIdx;
+    uint16 lcdX;
+    uint16 lcdY;
+
+    spriteIdx = 0;
+
+    // Recorremos el mapa de bits del sprite
+    for( y = 0; y < self->height; y++ )
+    {
+        for( x = 0; x < self->width; x++ )
+        {
+            // Si el pixel del sprite no es transparente (0)
+            if( self->pixMap[spriteIdx] != 0 )
+            {
+                // Calculamos coordenadas LCD con factor de escala x2
+                lcdX = (col + x) * 2;
+                lcdY = (row + y) * 2;
+
+                // DETECCION DE COLISION (Sobreescritura de pixeles)
+                // Comprobamos si en la posicion destino ya hay algo pintado que no sea el color de fondo (BLACK)
+                // Comprobamos cualquiera de los 4 pixeles del bloque 2x2
+                if( lcd_getpixel(lcdX, lcdY) != BLACK )
+                {
+                    collision = TRUE;
+                }
+
+                // DIBUJADO (Escalado 2x2)
+                // Pintamos un bloque de 2x2 pixeles en el LCD
+                lcd_putpixel(lcdX, lcdY, self->pixMap[spriteIdx]);         // Arriba-Izq
+                lcd_putpixel(lcdX + 1, lcdY, self->pixMap[spriteIdx]);     // Arriba-Der
+                lcd_putpixel(lcdX, lcdY + 1, self->pixMap[spriteIdx]);     // Abajo-Izq
+                lcd_putpixel(lcdX + 1, lcdY + 1, self->pixMap[spriteIdx]); // Abajo-Der
+            }
+            spriteIdx++;
+        }
+    }
+    return collision;
+}
+
+void sprite_clear( Sprite *self, uint16 col, uint16 row )
+{
+    uint16 x;
+    uint16 y;
+    uint16 spriteIdx;
+    uint16 lcdX;
+    uint16 lcdY;
+
+    spriteIdx = 0;
+
+    for( y = 0; y < self->height; y++ )
+    {
+        for( x = 0; x < self->width; x++ )
+        {
+            if( self->pixMap[spriteIdx] != 0 )
+            {
+                // Calculamos coordenadas LCD con factor de escala x2
+                lcdX = (col + x) * 2;
+                lcdY = (row + y) * 2;
+
+                // Borramos pintando de NEGRO el bloque 2x2
+                lcd_putpixel(lcdX, lcdY, BLACK);
+                lcd_putpixel(lcdX + 1, lcdY, BLACK);
+                lcd_putpixel(lcdX, lcdY + 1, BLACK);
+                lcd_putpixel(lcdX + 1, lcdY + 1, BLACK);
+            }
+            spriteIdx++;
+        }
+    }
+}

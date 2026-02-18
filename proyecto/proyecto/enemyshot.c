@@ -53,43 +53,64 @@ void enemyShot_launch(EnemyShot *self, uint16 col, uint16 row) {
 }
 
 void enemyShot_update(EnemyShot *self, Shield *shield, Player *player) {
-	int i;
+    int i;
 
-	if (self->state == enemyShotExplodingFloor
-			|| self->state == enemyShotExplodingShield
-			|| self->state == enemyShotExploding) {
-		enemyShot_clear(self);
-		if (self->countDown > 0) {
-			self->countDown--;
-			enemyShot_draw(self);
-		} else
-			self->state = noEnemyShot;
-	} else if (self->state == enemyShotMovingDown) {
+    // Si el disparo ya está explotando, actualizamos la animación
+    if (self->state == enemyShotExplodingFloor
+            || self->state == enemyShotExplodingShield
+            || self->state == enemyShotExploding) {
+        enemyShot_clear(self);
+        if (self->countDown > 0) {
+            self->countDown--;
+            enemyShot_draw(self);
+        } else
+            self->state = noEnemyShot;
 
-		enemyShot_clear(self);
-		self->row += ENEMYSHOT_ADVANCE_ROW;
+    } else if (self->state == enemyShotMovingDown) {
 
-		if (self->row + ENEMYSHOT_HEIGHT >= GAME_HEIGHT) {
-			self->state = enemyShotExplodingFloor;
-			enemyShot_hit(self);
-		} else if (player->state != playerDead
-				&& self->col
-						< (player->col + PLAYER_WIDTH)&& (self->col + ENEMYSHOT_WIDTH) > player->col && self->row < (player->row + PLAYER_HEIGHT) && (self->row + ENEMYSHOT_HEIGHT) > player->row )enemyShot_onPlayer( self, player );
-				else {
-					boolean hitShield = FALSE;
-					for( i = 0; i < MAX_SHIELDS || hitShield; i++ ) {
-						if( self->col < (shield[i].col + SHIELD_WIDTH) && (self->col + ENEMYSHOT_WIDTH) > shield[i].col && self->row < (shield[i].row + SHIELD_HEIGHT) && (self->row + ENEMYSHOT_HEIGHT) > shield[i].row ) {
-							enemyShot_onShield( self, &shield[i] );
-							hitShield = TRUE;
-						}
-					}
+        // Movemos el disparo
+        enemyShot_clear(self);
+        self->row += ENEMYSHOT_ADVANCE_ROW;
 
-					if( !hitShield )
-					enemyShot_draw( self );
-				}
-			}
-		}
+        // Comprobaciones de colisión en ORDEN
 
+        // Jugador
+        if (player->state != playerDead &&
+            self->col < (player->col + PLAYER_WIDTH) &&
+            (self->col + ENEMYSHOT_WIDTH) > player->col &&
+            self->row < (player->row + PLAYER_HEIGHT) &&
+            (self->row + ENEMYSHOT_HEIGHT) > player->row) {
+
+            enemyShot_onPlayer(self, player);
+
+        } else {
+            // Escudos
+            boolean hitShield = FALSE;
+            for (i = 0; i < MAX_SHIELDS && !hitShield; i++) { // TU CORRECCIÓN AQUÍ ES CORRECTA
+                if (self->col < (shield[i].col + SHIELD_WIDTH) &&
+                    (self->col + ENEMYSHOT_WIDTH) > shield[i].col &&
+                    self->row < (shield[i].row + SHIELD_HEIGHT) &&
+                    (self->row + ENEMYSHOT_HEIGHT) > shield[i].row) {
+
+                    enemyShot_onShield(self, &shield[i]);
+                    hitShield = TRUE;
+                }
+            }
+
+            // Suelo
+            if (!hitShield) {
+                if (self->row + ENEMYSHOT_HEIGHT >= GAME_HEIGHT) {
+                    self->state = enemyShotExplodingFloor;
+                    self->row = ENEMYSHOT_EXPLOSION_MIN_ROW;
+                    enemyShot_hit(self);
+                } else {
+                    // D) Si no ha chocado con nada, lo dibujamos
+                    enemyShot_draw(self);
+                }
+            }
+        }
+    }
+}
 void enemyShot_onShield(EnemyShot *self, Shield *shield) {
 	shield_hit(shield, self->col, self->row, ENEMYSHOT_WIDTH, ENEMYSHOT_HEIGHT);
 	self->state = enemyShotExplodingShield;
